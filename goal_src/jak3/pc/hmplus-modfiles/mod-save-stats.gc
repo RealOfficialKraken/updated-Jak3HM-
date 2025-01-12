@@ -1,0 +1,705 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: mod-save-stats.gc
+
+
+
+;(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 0)
+
+
+(defun stat-tracker! ()
+
+;;GREEN SECTION BELOW IS DEPRACATED
+;;kept in case I, or someone, wants to add modifiers
+
+;;Good Modifiers
+#|
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 1) ;modifier boost-tap
+(= has-boost-tap? #f)
+)
+(set! has-boost-tap? #t)
+(set! gm-string "Jak X Vehicle Boost Tap")
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 1)
+(= has-boost-tap? #t)
+)
+(set! has-boost-tap? #f)
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 2) ;modifier fast-attacks
+(= has-fast-attacks? #f)
+)
+(set! has-fast-attacks? #t)
+(set! gm-string "Fast Attacks")
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 2)
+(= has-fast-attacks? #t)
+)
+(set! has-fast-attacks? #f)
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 3) ;modifier luck-stat?
+(= has-luck-stat? #f)
+)
+(set! has-luck-stat? #t)
+(set! gm-string "Luck Stat")
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 3)
+(= has-luck-stat? #t)
+)
+(set! has-luck-stat? #f)
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 4) ;modifier triple-jump?
+(= has-triple-jump? #f)
+)
+(set! has-triple-jump? #t)
+(set! gm-string "Triple Jump")
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 4)
+(= has-triple-jump? #t)
+)
+(set! has-triple-jump? #f)
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 5) ;modifier triple-jump?
+(= has-flight-boost? #f)
+)
+(set! has-flight-boost? #t)
+(set! gm-string "Bigger LightJak Flight Boost")
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 5)
+(= has-flight-boost? #t)
+)
+(set! has-flight-boost? #f)
+)
+
+
+;;Bad modifiers
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1) ;modifier enemy-hp?
+(= has-enemy-hp? #f)
+)
+(set! has-enemy-hp? #t)
+(set! bm-string "Boosted Enemy HP X6")
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
+(= has-enemy-hp? #t)
+)
+(set! has-enemy-hp? #f)
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 2) ;modifier ambush?
+(= has-ambush? #f)
+)
+(set! has-ambush? #t)
+(set! bm-string "Ambush")
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 2)
+(= has-ambush? #t)
+)
+(set! has-ambush? #f)
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 3) ;modifier more-enemies?
+(= has-more-enemies? #f)
+)
+(set! has-more-enemies? #t)
+(set! bm-string "More Enemies, Less Friendlies")
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 3)
+(= has-more-enemies? #t)
+)
+(set! has-more-enemies? #f)
+)
+|#
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;has weapon?;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when 
+(and 
+(= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1) ;gun-red-2
+(not (logtest? (-> *game-info* features) (game-feature gun-red-2)))
+)
+(set! has-red-2 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-red-2))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1)
+(task-node-closed? (game-task-node arena-fight-2-gun-training))
+(logtest? (-> *game-info* features) (game-feature gun-red-2))
+)
+(set! has-red-2 #f)
+(logclear! (-> *game-info* features) (game-feature gun-red-2))
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1) ;gun-red-3
+(not (logtest? (-> *game-info* features) (game-feature gun-red-3)))
+)
+(set! has-red-3 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-red-3))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1)
+(logtest? (-> *game-info* features) (game-feature gun-red-3))
+)
+(set! has-red-3 #f)
+(logclear! (-> *game-info* features) (game-feature gun-red-3))
+)
+
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1) ;gun-yellow-2
+(not (logtest? (-> *game-info* features) (game-feature gun-yellow-2)))
+)
+(set! has-yellow-2 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-yellow-2))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1)
+(logtest? (-> *game-info* features) (game-feature gun-yellow-2))
+)
+(set! has-yellow-2 #f)
+(logclear! (-> *game-info* features) (game-feature gun-yellow-2))
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1) ;gun-yellow-3
+(not (logtest? (-> *game-info* features) (game-feature gun-yellow-3)))
+)
+(set! has-yellow-3 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-yellow-3))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1)
+(logtest? (-> *game-info* features) (game-feature gun-yellow-3))
+)
+(set! has-yellow-3 #f)
+(logclear! (-> *game-info* features) (game-feature gun-yellow-3))
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1) ;gun-dark-1
+(not (logtest? (-> *game-info* features) (game-feature gun-dark-1)))
+)
+(set! has-dark-1 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-dark-1))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1)
+(logtest? (-> *game-info* features) (game-feature gun-dark-1))
+)
+(set! has-dark-1 #f)
+(logclear! (-> *game-info* features) (game-feature gun-dark-1))
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1) ;gun-dark-2
+(not (logtest? (-> *game-info* features) (game-feature gun-dark-2)))
+)
+(set! has-dark-2 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-dark-2))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1)
+(logtest? (-> *game-info* features) (game-feature gun-dark-2))
+)
+(set! has-dark-2 #f)
+(logclear! (-> *game-info* features) (game-feature gun-dark-2))
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* task-deaths) 100) 10) 1) ;gun-dark-3
+(not (logtest? (-> *game-info* features) (game-feature gun-dark-3)))
+)
+(set! has-dark-3 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-dark-3))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* task-deaths) 100) 10) 1)
+(logtest? (-> *game-info* features) (game-feature gun-dark-3))
+)
+(set! has-dark-3 #f)
+(logclear! (-> *game-info* features) (game-feature gun-dark-3))
+)
+
+;(!= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1) ;gun-blue-2
+(not (logtest? (-> *game-info* features) (game-feature gun-blue-2)))
+)
+(set! has-blue-2 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-blue-2))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
+(logtest? (-> *game-info* features) (game-feature gun-blue-2))
+)
+(set! has-blue-2 #f)
+(logclear! (-> *game-info* features) (game-feature gun-blue-2))
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1) ;gun-blue-3
+(not (logtest? (-> *game-info* features) (game-feature gun-blue-3)))
+)
+(set! has-blue-3 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-blue-3))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
+(logtest? (-> *game-info* features) (game-feature gun-blue-3))
+)
+(set! has-blue-3 #f)
+(logclear! (-> *game-info* features) (game-feature gun-blue-3))
+)
+
+(when 
+(and 
+(= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1) ;gun-blue-1
+(not (logtest? (-> *game-info* features) (game-feature gun-blue-1)))
+)
+(set! has-blue-1 #t)
+(logior! (-> *game-info* features) (game-feature gun gun-blue-1))
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
+(logtest? (-> *game-info* features) (game-feature gun-blue-1))
+(task-node-closed? (game-task-node arena-fight-3-training))
+)
+(set! has-blue-1 #f)
+(logclear! (-> *game-info* features) (game-feature gun-blue-1))
+)
+
+    (none)
+)
+
+(defun give-weapon! ((str string) (yn int))
+    (when 
+            (and 
+                (not (string= str "yellow-2"))
+                (not (string= str "yellow-3"))
+                (not (string= str "red-2"))
+                (not (string= str "red-3"))
+                (not (string= str "blue-1"))
+                (not (string= str "blue-2"))
+                (not (string= str "blue-3"))
+                (not (string= str "dark-1"))
+                (not (string= str "dark-2"))
+                (not (string= str "dark-3"))
+                )
+            (format #t "~%~%INCORRECT USAGE~%Please Use a given weapon name:~%~%yellow-2~%yellow-3~%red-2~%red-3~%blue-1~%blue-2~%blue-3~%dark-1~%dark-2~%dark-3~%~%")
+        )
+    (when (and (!= yn 1) (!= yn 0))
+        (format #t "~%~%Please use 1 for give the weapon, or a 0 to clear the weapon")
+    )
+    (when 
+        (and 
+            (string= str "yellow-2")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 0)
+            (+! (-> *game-info* task-deaths) 10000000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "yellow-2")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 100000000) 10000000) 1)
+            (-! (-> *game-info* task-deaths) 10000000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "yellow-3")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 0)
+            (+! (-> *game-info* task-deaths) 1000000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "yellow-3")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1)
+            (-! (-> *game-info* task-deaths) 1000000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "red-2")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 0)
+            (+! (-> *game-info* task-deaths) 100000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "red-2")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1)
+            (-! (-> *game-info* task-deaths) 100000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "red-3")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 0)
+            (+! (-> *game-info* task-deaths) 10000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "red-3")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1)
+            (-! (-> *game-info* task-deaths) 10000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "dark-1")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 0)
+            (+! (-> *game-info* task-deaths) 1000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "dark-1")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1)
+            (-! (-> *game-info* task-deaths) 1000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "dark-2")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* task-deaths) 1000) 100) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 1000) 100) 0)
+            (+! (-> *game-info* task-deaths) 100)
+        )
+    )
+    (when 
+        (and 
+            (string= str "dark-2")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1)
+            (-! (-> *game-info* task-deaths) 100)
+        )
+    )
+    (when 
+        (and 
+            (string= str "dark-3")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* task-deaths) 100) 10) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 100) 10) 0)
+            (+! (-> *game-info* task-deaths) 10)
+        )
+    )
+    (when 
+        (and 
+            (string= str "dark-3")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* task-deaths) 100) 10) 1)
+            (-! (-> *game-info* task-deaths) 10)
+        )
+    )
+    (when 
+        (and 
+            (string= str "blue-2")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 0)
+            (+! (-> *game-info* continue-deaths) 100000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "blue-2")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1)
+            (-! (-> *game-info* continue-deaths) 100000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "blue-3")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 0)
+            (+! (-> *game-info* continue-deaths) 10000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "blue-3")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)
+            (-! (-> *game-info* continue-deaths) 10000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "blue-1")
+            (= yn 1)
+        )
+        (when (!= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 0)
+            (mod-killed? (rand-vu-float-range 60.0 150.0))
+        )
+        (when (= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 0)
+            (+! (-> *game-info* continue-deaths) 1000)
+        )
+    )
+    (when 
+        (and 
+            (string= str "blue-1")
+            (= yn 0)
+        )
+        (when (= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1)
+            (-! (-> *game-info* continue-deaths) 1000)
+        )
+    )
+    (none)
+)
+
+(defun give-random-weapon ()
+    (let (
+          (rnd 0)
+          (item-pool 3)
+          (crossed? #f)
+        )
+        (when (>= notoriety-level 10)
+            (set! item-pool 4)
+        )
+        (when (>= notoriety-level 20)
+            (set! item-pool 5)
+        )
+        (when (>= notoriety-level 30)
+            (set! item-pool 6)
+        )
+        (when (>= notoriety-level 40)
+            (set! item-pool 7)
+        )
+        (when (task-node-closed? (game-task-node arena-fight-1-resolution))
+            (when (= crossed? #f)
+                (set! rnd (rand-vu-int-range 1 item-pool))
+            (cond ((and 
+                      (= rnd 1)
+                      (not (logtest? (-> *game-info* features) (game-feature gun-blue-1))) 
+                   )
+                (give-weapon! "blue-1" 1)
+                (set! crossed? #t)
+                )
+                ((and 
+                      (= rnd 1)
+                      (logtest? (-> *game-info* features) (game-feature gun-blue-1))
+                   )
+                (set! rnd (rand-vu-int-range 1 item-pool))
+                )
+            )
+            (cond ((and 
+                      (= rnd 2)
+                      (not (logtest? (-> *game-info* features) (game-feature gun-red-2))) 
+                   )
+                (give-weapon! "red-2" 1)
+                (set! crossed? #t)
+                )
+                ((and 
+                      (= rnd 2)
+                      (logtest? (-> *game-info* features) (game-feature gun-red-2))
+                   )
+                (set! rnd (rand-vu-int-range 1 item-pool))
+                )
+            )
+            (cond ((and 
+                      (= rnd 3)
+                      (not (logtest? (-> *game-info* features) (game-feature gun-red-3))) 
+                   )
+                (give-weapon! "red-3" 1)
+                (set! crossed? #t)
+                )
+                ((and 
+                      (= rnd 3)
+                      (logtest? (-> *game-info* features) (game-feature gun-red-3))
+                   )
+                (set! rnd (rand-vu-int-range 1 item-pool))
+                )
+            )
+            (cond ((and 
+                      (= rnd 4)
+                      (not (logtest? (-> *game-info* features) (game-feature gun-yellow-3))) 
+                   )
+                (give-weapon! "yellow-3" 1)
+                (set! crossed? #t)
+                )
+                ((and 
+                      (= rnd 4)
+                      (logtest? (-> *game-info* features) (game-feature gun-yellow-3))
+                   )
+                (set! rnd (rand-vu-int-range 1 item-pool))
+                )
+            )
+            (cond ((and 
+                      (= rnd 5)
+                      (not (logtest? (-> *game-info* features) (game-feature gun-blue-2))) 
+                   )
+                (give-weapon! "blue-2" 1)
+                (set! crossed? #t)
+                )
+                ((and 
+                      (= rnd 5)
+                      (logtest? (-> *game-info* features) (game-feature gun-blue-2))
+                   )
+                (set! rnd (rand-vu-int-range 1 item-pool))
+                )
+            )
+            (cond ((and 
+                      (= rnd 6)
+                      (not (logtest? (-> *game-info* features) (game-feature gun-blue-3))) 
+                   )
+                (give-weapon! "blue-3" 1)
+                (set! crossed? #t)
+                )
+                ((and 
+                      (= rnd 6)
+                      (logtest? (-> *game-info* features) (game-feature gun-blue-3))
+                   )
+                (set! rnd (rand-vu-int-range 1 item-pool))
+                )
+            )
+            (cond ((and 
+                      (= rnd 7)
+                      (not (logtest? (-> *game-info* features) (game-feature gun-yellow-2))) 
+                   )
+                (give-weapon! "yellow-2" 1)
+                (set! crossed? #t)
+                )
+                ((and 
+                      (= rnd 7)
+                      (logtest? (-> *game-info* features) (game-feature gun-yellow-2))
+                   )
+                (set! rnd (rand-vu-int-range 1 item-pool))
+                )
+            )
+            (when (= crossed? #f)
+                (mod-killed? (rand-vu-float-range 400.0 650.0))
+            )
+            )
+            (auto-save-user)
+        )
+    )
+(none)
+)

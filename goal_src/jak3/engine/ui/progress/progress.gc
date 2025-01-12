@@ -228,7 +228,9 @@
 
 (defun progress-intro-start ()
   (set! (-> *game-info* mode) 'play)
-  (initialize! *game-info* 'game (the-as game-save #f) "intro-start" (the-as resetter-spec #f))
+  (set! in-pre-tutorial? #t)
+  (set! weather-dark-mode #t)
+  (set! tutorial-prologue #t)
   (set-master-mode 'game)
   0
   )
@@ -1792,6 +1794,7 @@
       )
     )
   :enter (behavior ()
+    (set! mainmenu-camera #f)
     (set! (-> self menu-transition) 1.0)
     )
   :trans progress-trans
@@ -2837,14 +2840,14 @@
                  (cond
                    ((pair? s3-1)
                     (start 'play (get-continue-by-name *game-info* s4-2))
-                    (process-spawn
+                    #|(process-spawn
                       scene-player
                       :init scene-player-init
                       (-> (the-as pair (-> (the-as pair s3-1) cdr)) car)
                       #t
                       s4-2
                       :name "scene-player"
-                      )
+                      )|#
                     )
                    (else
                      (send-event (handle->process (-> *game-info* controller 0)) 'control-spec (get-play-list-idx s5-1))
@@ -3003,7 +3006,7 @@
 (defmethod respond-progress ((this menu-missions-option) (arg0 progress) (arg1 symbol))
   (let ((v1-0 #f))
     (let ((f0-1 (the float (+ (-> arg0 total-num-tasks) -1))))
-      (cond
+      #|(cond
         ((or (cpad-pressed? 0 up l-analog-up)
              (and (cpad-hold? 0 up l-analog-up) (= (-> this current-index) (-> this target-index)))
              )
@@ -3044,11 +3047,12 @@
          (set! (-> this scroll-speed) 1000.0)
          (set! (-> this target-index) (fmin (+ 5.0 (-> this target-index)) f0-1))
          )
-        )
+        )|#
       )
     (if v1-0
         (sound-play "mission-scroll")
         )
+    ;(activate-progress *dproc* 'error-disc-removed)
     )
   0
   )

@@ -51,6 +51,7 @@
    (hit-ground-count          uint32)
    (fade-level                float)
    (pad                       uint8   8)
+   (albino?                   symbol)
    )
   (:state-methods
     land-approach
@@ -1690,9 +1691,12 @@
      (logclear! (-> this enemy-flags) (enemy-flag use-notice-distance))
      (logior! (-> this enemy-flags) (enemy-flag alert))
      (logior! (-> this focus-status) (focus-status hit))
-     (if (= (-> this hit-points) 0.0)
+     (when (= (-> this albino?) #t)
+      (set! enemy-string "Albino Manta Ray")
+     )
+     (when (= (-> this hit-points) 0.0)
          (logior! (-> this focus-status) (focus-status dead))
-         )
+     )
      (logclear! (-> this enemy-flags) (enemy-flag lock-focus))
      (enemy-method-69 this)
      (logior! (-> this enemy-flags) (enemy-flag lock-focus))
@@ -1871,6 +1875,25 @@
 (defmethod knocked-land-anim ((this manta) (arg0 enemy-knocked-info))
   (set! (-> arg0 anim-speed) 0.5)
   (ja-channel-push! 1 (seconds 0.1))
+     (when (= (-> this hit-points) 0.0)
+         (logior! (-> this focus-status) (focus-status dead))
+         (when 
+          (and
+            (task-node-open? (game-task-node wascity-kleeverquest-mantaray))
+            (= (-> this albino?) #t)
+            (< (-> *game-info* side-enemies-killed?) 4)
+          )
+          (+! (-> *game-info* side-enemies-killed?) 1)
+         )
+         )
+      (when (and
+              (>= (-> *game-info* side-enemies-killed?) 4)
+              (task-node-open? (game-task-node wascity-kleeverquest-mantaray))
+            )
+          (r3-hint)
+          (auto-save-user)
+          (task-node-close! (game-task-node wascity-kleeverquest-mantaray) #t)
+         )
   (let ((a0-2 (-> this skel root-channel 0)))
     (set! (-> a0-2 frame-group) (the-as art-joint-anim (-> this draw art-group data 18)))
     (set! (-> a0-2 param 0)
@@ -1964,3 +1987,43 @@
   0
   (none)
   )
+
+  (defbehavior manta-init-by-other manta ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  (set! (-> self hit-points) (+ (-> self enemy-info default-hit-points) (* enemy-noto 2)))
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+    ;; verts for the path
+    (cverts (new 'static 'inline-array vector 3
+            (static-vectorm 1 0 0)
+            (static-vectorm 0 1 0)
+            (static-vectorm 0 0 1)
+            )
+      )
+    )
+;; if a nav mesh is close by, use that, otherwise use default
+(if nav
+  (change-to nav self)
+  (change-to *default-nav-mesh* self)
+  )
+;; allocate path
+(set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+(set! (-> self path curve cverts) cverts)
+(set! (-> self path curve num-cverts) 3)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when (and
+        (task-node-open? (game-task-node wascity-kleeverquest-mantaray))
+        (rand-vu-percent? 0.3)
+      )
+  (set-vector! (-> self draw color-mult) 255.0 255.0 255.0 255.0)
+  (set! (-> self albino?) #t)
+)
+(go (method-of-object self ambush))
+(none)
+)

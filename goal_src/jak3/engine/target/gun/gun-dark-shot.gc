@@ -140,6 +140,7 @@
   (let ((s5-0 (-> self gun))
         (gp-0 (new 'stack-no-clear 'projectile-init-by-other-params))
         )
+    (+! (-> *game-info* buzzer-total) 45.0)
     (set! (-> gp-0 ent) (-> self entity))
     (set! (-> gp-0 charge) (-> s5-0 fire-charge))
     (set! (-> gp-0 options) (projectile-options))
@@ -1416,6 +1417,7 @@
     (set! (-> s5-0 owner-handle) (the-as handle #f))
     (set! (-> s5-0 target-handle) (the-as handle #f))
     (set! (-> s5-0 target-pos quad) (the-as uint128 0))
+    (+! (-> *game-info* buzzer-total) 150.0)
     (set! (-> s5-0 ignore-handle) (process->handle (send-event self 'get-vehicle)))
     (let* ((v1-17 *game-info*)
            (a0-17 (+ (-> v1-17 attack-id) 1))
@@ -1460,7 +1462,14 @@
         )
   (sound-params-set! *gui-control* (-> this explode-sound) #t 50 150 11 -1.0)
   (set! (-> this start-pilot?) (the-as symbol (and *target* (focus-test? *target* pilot))))
-  (set! (-> this damage) 16.0)
+  (cond
+    ((>= notoriety-level 25)
+      (set! (-> this damage) (+ (+ (/ (* (the float guns-level) 1.85) 2.0) 16.0) (/ notoriety-level 1.2)))
+    )
+    (else
+      (set! (-> this damage) (+ (+ (/ (the float guns-level) 1.85) 2.0) 16.0))
+    )
+  )
   (set! (-> this vehicle-damage-factor) 1.0)
   (set! (-> this vehicle-impulse-factor) 2.0)
   (when (logtest? (game-secrets gun-upgrade-dark-1) (-> *game-info* secrets))
@@ -3753,6 +3762,7 @@
       (part-tracker-spawn part-tracker :to *entity-pool* :group (-> *part-group-id-table* 120))
       )
     )
+    (+! (-> *game-info* buzzer-total) 36.0)
   (process-spawn
     gun-gravity
     (-> self gun fire-point)

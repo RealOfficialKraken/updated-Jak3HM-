@@ -818,6 +818,9 @@
 (defun target-update-segs ((arg0 process-drawable))
   (let ((f30-0 (-> *FACT-bank* health-max-default)))
     (let ((s5-0 (-> *game-info* features)))
+      (when (!= f30-0 (-> *target* fact health-max))
+        (set! f30-0 (-> *target* fact health-max))
+      )
       (when (!= (-> arg0 type) target)
         (if (-> *setting-control* user-current beard)
             (setup-masks (-> arg0 draw) 4 0)
@@ -827,7 +830,7 @@
         )
       (cond
         ((logtest? (game-feature armor0) s5-0)
-         (set! f30-0 (+ 2.0 f30-0))
+         ;(set! f30-0 (+ 2.0 f30-0))
          (setup-masks (-> arg0 draw) 2 0)
          )
         (else
@@ -836,7 +839,7 @@
         )
       (cond
         ((logtest? (game-feature armor1) s5-0)
-         (set! f30-0 (+ 2.0 f30-0))
+         ;(set! f30-0 (+ 2.0 f30-0))
          (setup-masks (-> arg0 draw) 16 0)
          )
         (else
@@ -845,7 +848,7 @@
         )
       (cond
         ((logtest? (game-feature armor2) s5-0)
-         (set! f30-0 (+ 2.0 f30-0))
+         ;(set! f30-0 (+ 2.0 f30-0))
          (setup-masks (-> arg0 draw) 128 0)
          )
         (else
@@ -854,7 +857,7 @@
         )
       (cond
         ((logtest? (game-feature armor3) s5-0)
-         (set! f30-0 (+ 2.0 f30-0))
+         ;(set! f30-0 (+ 2.0 f30-0))
          (setup-masks (-> arg0 draw) 512 256)
          )
         (else

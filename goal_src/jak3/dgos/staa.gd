@@ -11,7 +11,6 @@
   "rubble-obs.o"
   "spyder.o"
   "rapid-gunner.o"
-  "dm-mine-spider.o"
   "mantis.o"
   "tpage-2814.go"
   "tpage-2816.go"

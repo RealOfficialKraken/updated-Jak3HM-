@@ -10,7 +10,7 @@
 ;; DECOMP BEGINS
 
 ;; this file is debug only
-(declare-file (debug))
+;(declare-file (debug))
 
 (defpart 537
   :init-specs ((:texture (glow level-default-sprite))
@@ -690,7 +690,7 @@
     (:r 128.0 128.0)
     (:g 0.0 64.0)
     (:b 0.0)
-    (:a 24.0)
+    (:a 64.0)
     (:omega (degrees 0) (degrees 360))
     (:vel-x (meters 0.0148148155) (meters 0.0044444446))
     (:vel-y (meters 0))

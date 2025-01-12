@@ -132,7 +132,7 @@
     :turn-anim -1
     :run-anim 6
     :taunt-anim -1
-    :run-travel-speed (meters 35)
+    :run-travel-speed (meters 40)
     :run-acceleration (meters 5.8333335)
     :run-turning-acceleration (meters 100)
     :walk-travel-speed (meters 5)
@@ -720,4 +720,30 @@
     (set! (-> this root) s5-0)
     )
   (none)
+  )
+
+  (defbehavior flut-racer-init-by-other flut-racer ((vec vector))
+    (init-enemy-collision! self)
+    (logior! (-> self mask) (process-mask actor-pause))
+    (vector-copy! (-> self root trans) vec)
+    (quaternion-identity! (-> self root quat))
+    (vector-identity! (-> self root scale))
+    (init-enemy! self)
+    (let ((nav (find-nearest-nav-mesh vec 0.0))
+      (cverts (new 'static 'inline-array vector 3
+              (static-vectorm 1 0 0)
+              (static-vectorm 0 1 0)
+              (static-vectorm 0 0 1)
+              )
+        )
+      )
+    (if nav
+      (change-to nav self)
+      (change-to *default-nav-mesh* self)
+      )
+    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+    (set! (-> self path curve cverts) cverts)
+    (set! (-> self path curve num-cverts) 3)
+    )
+    (go (method-of-object self race))
   )

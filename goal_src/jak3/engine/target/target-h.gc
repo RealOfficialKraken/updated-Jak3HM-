@@ -99,6 +99,7 @@
 (define-extern target-generic-event-handler (function process int symbol event-message-block object :behavior target))
 (define-extern target-exit (function none :behavior target))
 (define-extern activate-hud (function target none))
+(define-extern activate-crystalhud (function target none))
 (define-extern *target-geo-control* external-art-buffer)
 (define-extern *target-anim-control* external-art-buffer)
 

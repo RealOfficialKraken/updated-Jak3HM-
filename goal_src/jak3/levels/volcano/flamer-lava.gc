@@ -7,9 +7,6 @@
 
 ;; DECOMP BEGINS
 
-(deftype flying-formation (hover-formation)
-  ()
-  )
 
 
 (deftype flamer-lava (nav-enemy)
@@ -213,7 +210,7 @@
     :maximum-rotation-rate (degrees 360)
     :notice-nav-radius (meters 55)
     :frustration-distance (meters 8)
-    :frustration-time (seconds 4)
+    :frustration-time (seconds 1.3)
     :blocked-time (seconds 0.3)
     :circle-dist-lo 20480.0
     :circle-dist-hi 61440.0
@@ -1061,9 +1058,12 @@
             )
         )
       )
-    (let ((gp-1 (get-focus! self)))
+    (let ((gp-1 (get-focus! self))
+          (flit-level-start (- 1.0 (* enemy-noto 0.08)))
+          (flit-level-end (- 3.0 (* enemy-noto 0.08)))
+          )
       (if (and gp-1
-               (time-elapsed? (-> self last-fire-time) (the int (* 300.0 (rand-vu-float-range 3.0 6.0))))
+               (time-elapsed? (-> self last-fire-time) (the int (* 300.0 (rand-vu-float-range flit-level-start flit-level-end))))
                (< (vector-vector-distance (get-trans gp-1 3) (-> self root trans)) 245760.0)
                )
           (go-virtual attack)
@@ -1111,7 +1111,7 @@
                  (set! (-> v1-24 attack-id) a0-25)
                  (set! (-> gp-2 attack-id) a0-25)
                  )
-               (set! (-> gp-2 timeout) (seconds 4))
+               (set! (-> gp-2 timeout) (seconds 1.3))
                (sound-play "gren-launch")
                (spawn-projectile metalhead-grenade-shot gp-2 self *default-dead-pool*)
                )
@@ -1549,3 +1549,36 @@
 (deftype flaming-lava (flamer-lava)
   ()
   )
+
+(defbehavior flamer-lava-init-by-other flamer-lava ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  (set! (-> self hit-points) (+ (-> self enemy-info default-hit-points) (* enemy-noto 2)))
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+    ;; verts for the path
+    (cverts (new 'static 'inline-array vector 3
+            (static-vectorm 1 0 0)
+            (static-vectorm 0 1 0)
+            (static-vectorm 0 0 1)
+            )
+      )
+    )
+;; if a nav mesh is close by, use that, otherwise use default
+(if nav
+  (change-to nav self)
+  (change-to *default-nav-mesh* self)
+  )
+;; allocate path
+(set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+(set! (-> self path curve cverts) cverts)
+(set! (-> self path curve num-cverts) 3)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(go-idle2 self)
+(none)
+)

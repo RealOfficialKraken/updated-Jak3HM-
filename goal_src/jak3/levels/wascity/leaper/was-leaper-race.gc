@@ -759,6 +759,7 @@
    (hud-position             handle  :overlay-at (-> hud 2))
    (hint-timer               time-frame)
    (played-speeches          uint32)
+   (hacked-count             int)
    )
   (:methods
     (get-current-ring-idx (_type_ int) int)
@@ -1112,6 +1113,12 @@
         )
       (let ((s5-2 #f))
         (until (and (-> self ring-manager-entity) (= (-> *game-info* counter) 0.0))
+          (when (< (-> self hacked-count) 12)
+            (let ((vec (new 'static 'vector :x (meters 2246.1547) :y (meters 6.4893) :z (meters -71.6522) :w 1.0)))
+              ;(process-spawn flut-racer vec :name "flut-racer")
+              (+! (-> self hacked-count) 1)
+            )
+          )
           (cond
             ((-> self ring-manager-entity)
              (format

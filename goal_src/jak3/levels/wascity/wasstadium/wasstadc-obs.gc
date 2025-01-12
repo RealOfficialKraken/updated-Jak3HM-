@@ -378,8 +378,7 @@
       (suspend)
       (ja :num! (seek!))
       )
-    (suspend-for (seconds 1)
-      )
+    (suspend-for (seconds 1))
     (ja-no-eval :group! wstd-fight-house-a-open-ja :num! (seek! 0.0) :frame-num 5.0)
     (until (ja-done? 0)
       (suspend)
@@ -2142,8 +2141,7 @@
       )
     (let ((gp-1 (-> *game-info* gun-type)))
       (set-setting! 'change-gun #t 0.0 0)
-      (suspend-for (seconds 5)
-        )
+      (suspend-for (seconds 5))
       (set! (-> self gui-id)
             (add-process *gui-control* self (gui-channel message) (gui-action play) (-> self name) 81920.0 0)
             )
@@ -2158,9 +2156,7 @@
           (send-event (-> v1-33 extra process) 'off)
           )
       )
-    (suspend-for (seconds 2)
-      (print-text self (-> self text-id))
-      )
+    (suspend-for (seconds 2) (print-text self (-> self text-id)))
     (send-event self 'complete)
     (until #f
       (suspend)
@@ -2214,8 +2210,7 @@
       )
     (let ((gp-2 32))
       (set-setting! 'change-gun #t 0.0 0)
-      (suspend-for (seconds 5)
-        )
+      (suspend-for (seconds 5))
       (set! (-> self gui-id)
             (add-process *gui-control* self (gui-channel message) (gui-action play) (-> self name) 81920.0 0)
             )
@@ -2434,8 +2429,7 @@
     (send-event (handle->process (-> self arrow-h)) 'leave)
     (send-event *target* 'end-mode 'darkjak)
     (send-event *target* 'end-mode 'grab)
-    (suspend-for (seconds 2)
-      )
+    (suspend-for (seconds 2))
     (go-virtual complete)
     )
   )
@@ -2563,7 +2557,7 @@
      (go (method-of-object this throne))
      )
     (else
-      (set! (-> this count) (the-as uint 20))
+      (set! (-> this count) (the-as uint 40))
       (set-setting! 'music 'arenafi 0.0 0)
       (set-setting! 'extra-bank '((wascity1 wasstad4)) 0.0 0)
       (talker-spawn-func (-> *talker-speech* 81) *entity-pool* (target-pos 0) (the-as region #f))
@@ -3038,7 +3032,7 @@
   (let ((t9-0 (method-of-type task-manager set-time-limit)))
     (t9-0 this)
     )
-  (set! (-> this count) (the-as uint 30))
+  (set! (-> this count) (the-as uint 60))
   (set! (-> this angle) (the-as uint 0))
   (set! (-> this gui-id) (new 'static 'sound-id))
   (set! (-> this dj-train) (the-as uint 0))
@@ -3186,6 +3180,9 @@
 
 (deftype task-manager-arena-fight-3 (task-manager-arena-fight-2)
   ()
+  (:state-methods
+    boss-summon
+  )
   )
 
 
@@ -3253,7 +3250,10 @@
       0
       )
     )
-  (when (and (zero? (-> this count-alive)) (zero? (-> this count)))
+  (when (and 
+        (zero? (-> this count-alive)) 
+        (zero? (-> this count))
+        )
     (let ((s5-2 #t))
       (let ((s4-1 (handle->process (-> this platform 0))))
         (when (and (if (type? s4-1 wstd-fight-plat-large)
@@ -3266,12 +3266,26 @@
           )
         )
       (if s5-2
-          (go (method-of-object this done))
+          (go (method-of-object this boss-summon))
           )
       )
     )
   (none)
   )
+
+(defstate boss-summon (task-manager-arena-fight-3)
+  :virtual #t
+  :code
+  (behavior ()
+    (process-spawn leaper-boss2 (target-pos 0) :name "Skull Snapper")
+    (loop 
+      (when (not (search-process-tree *active-pool* (lambda ((p process)) (type? p leaper-boss2))))
+        (go-virtual done)
+      )
+      (suspend)
+    )
+  )
+)
 
 (defstate done (task-manager-arena-fight-3)
   :virtual #t
@@ -3306,6 +3320,12 @@
         (send-event (-> gp-1 extra process) 'go-pos 1)
         )
       )
+    #|(let ((vec (new 'static 'vector :x (meters 2325.2958) :y (meters 48.0426) :z (meters -413.0069) :w 1.0)))
+      (when (<= (vector-vector-distance (target-pos 0) vec) 30000.0)
+        (process-spawn scene-player :init scene-player-init "arena-fight-3-intro" #t "wasstada-pre-fight-1" :name "scene-player")
+        (task-node-close! (game-task-node arena-fight-3-training) 'event)
+      )
+    )|#
     (let ((gp-2 (new 'static 'vector :x 9526845.0 :y 196812.8 :z -1692794.9 :w 1.0)))
       (if (< 24576.0 (vector-vector-xz-distance gp-2 (target-pos 0)))
           (task-node-close! (game-task-node arena-fight-3-training) 'event)
@@ -3320,7 +3340,7 @@
   (let ((t9-0 (method-of-type task-manager set-time-limit)))
     (t9-0 this)
     )
-  (set! (-> this count) (the-as uint 30))
+  (set! (-> this count) (the-as uint 75))
   (set! (-> this angle) (the-as uint 0))
   (if (kiosk?)
       (talker-spawn-func (-> *talker-speech* 98) *entity-pool* (target-pos 0) (the-as region #f))

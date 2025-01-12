@@ -97,6 +97,7 @@
       (vector-orient-by-quat! s5-0 s5-0 s3-0)
       )
     (let ((s4-1 (new 'stack-no-clear 'projectile-init-by-other-params)))
+      (+! (-> *game-info* buzzer-total) 4.0)
       (set! (-> s4-1 ent) (-> self entity))
       (set! (-> s4-1 charge) 1.0)
       (set! (-> s4-1 options) (projectile-options po17))
@@ -385,7 +386,14 @@
   (set! (-> this move) gun-blue-shot-3-move)
   (set! (-> this timeout) (seconds 3))
   (set! (-> this sound-id) (new-sound-id))
-  (set! (-> this damage) 1.0)
+  (cond
+    ((>= notoriety-level 25)
+      (set! (-> this damage) (+ (+ (/ (* (the float guns-level) 1.85) 2.0) 16.0) (/ notoriety-level 1.2)))
+    )
+    (else
+      (set! (-> this damage) (+ (+ (/ (the float guns-level) 1.85) 2.0) 16.0))
+    )
+  )
   (set! (-> this vehicle-damage-factor) 2.0)
   (set! (-> this vehicle-impulse-factor) 2.0)
   (logior! (-> this options) (projectile-options po13))
@@ -465,6 +473,7 @@
     (sv-1296 float)
     (sv-1300 object)
     )
+  (+! (-> *game-info* buzzer-total) 18.0)
   (set! sv-144 (-> self gun))
   (set! sv-148 (new 'stack-no-clear 'projectile-init-by-other-params))
   (draw-beam (-> *part-id-table* 364) (-> sv-144 fire-point) (-> sv-144 fire-dir-out) #f)
@@ -2018,6 +2027,7 @@
   (let ((v1-8 (new 'stack-no-clear 'gun-blue-lightning-command)))
     (set! (-> v1-8 msg) (gun-blue-lightning-cmd-msg active))
     (send-event (handle->process (-> self gun gun 0 extra)) 'gun-blue-lightning v1-8)
+    (+! (-> *game-info* buzzer-total) 2.0)
     )
   0
   )
@@ -2318,7 +2328,14 @@
       )
   (when (logtest? (game-secrets gun-upgrade-blue-2) (-> *game-info* secrets))
     (if (logtest? (process-mask kg-robot) (-> arg0 mask))
-        (set! (-> this damage) (* 2.0 (-> this damage)))
+        (cond
+          ((>= notoriety-level 25)
+            (set! (-> this damage) (+ (+ (/ (* (the float guns-level) 1.85) 2.0) 16.0) (/ notoriety-level 1.2)))
+          )
+          (else
+            (set! (-> this damage) (+ (+ (/ (the float guns-level) 1.85) 2.0) 16.0))
+          )
+        )
         )
     )
   (if (< (mod (the-as int (rand-uint31-gen *random-generator*)) 11) 2)
@@ -2592,10 +2609,19 @@
     (set! (-> this timeout) 1)
     (set! (-> this move) gun-blue-shot-move)
     (vector-reset! (-> this collide-normal))
-    (set! (-> this damage) 2.0)
+    #|(set! (-> this damage) 2.0)
     (if (logtest? (game-secrets gun-upgrade-blue-1) (-> *game-info* secrets))
         (set! (-> this damage) 2.5)
         )
+    |#
+    (cond
+      ((>= notoriety-level 25)
+        (set! (-> this damage) (+ (+ (/ (* (the float guns-level) 1.85) 2.0) 16.0) (/ notoriety-level 1.2)))
+      )
+      (else
+        (set! (-> this damage) (+ (+ (/ (the float guns-level) 1.85) 2.0) 16.0))
+      )
+    )
     (logior! (-> this options) (projectile-options po13))
     0
     (none)
@@ -2612,7 +2638,14 @@
     (set! (-> this timeout) 1)
     (set! (-> this move) gun-blue-shot-move)
     (vector-reset! (-> this collide-normal))
-    (set! (-> this damage) 2.5)
+    (cond
+      ((>= notoriety-level 25)
+        (set! (-> this damage) (+ (+ (/ (* (the float guns-level) 1.85) 2.0) 16.0) (/ notoriety-level 1.2)))
+      )
+      (else
+        (set! (-> this damage) (+ (+ (/ (the float guns-level) 1.85) 2.0) 16.0))
+      )
+    )
     (set! (-> this vehicle-damage-factor) 2.0)
     (set! (-> this vehicle-impulse-factor) 0.5)
     (logior! (-> this options) (projectile-options po13))

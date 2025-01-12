@@ -203,66 +203,7 @@
   (none)
   )
 
-(defpartgroup group-arena-token
-  :id 499
-  :flags (sp0)
-  :bounds (static-bspherem 0 0 0 10)
-  :parts ((sp-item 1968 :fade-after (meters 100) :period (seconds 0.167) :length (seconds 0.035))
-    (sp-item 1969 :fade-after (meters 100) :period (seconds 0.167) :length (seconds 0.035))
-    (sp-item 1970 :fade-after (meters 100) :period (seconds 0.167) :length (seconds 0.035))
-    )
-  )
 
-(defpart 1968
-  :init-specs ((:texture (starflash level-default-sprite))
-    (:num 1.0)
-    (:scale-x (meters 1))
-    (:scale-y :copy scale-x)
-    (:r 20.0)
-    (:g 20.0)
-    (:b 128.0)
-    (:a 200.0)
-    (:rotvel-z (degrees 0.1))
-    (:timer (seconds 0.335))
-    (:flags (sp-cpuinfo-flag-3))
-    (:func 'sparticle-track-root)
-    )
-  )
-
-(defpart 1969
-  :init-specs ((:texture (starflash level-default-sprite))
-    (:num 1.0)
-    (:scale-x (meters 1))
-    (:scale-y :copy scale-x)
-    (:r 20.0)
-    (:g 20.0)
-    (:b 128.0)
-    (:a 200.0)
-    (:rotvel-z (degrees -0.1))
-    (:timer (seconds 0.335))
-    (:flags (sp-cpuinfo-flag-3))
-    (:func 'sparticle-track-root)
-    )
-  )
-
-(defpart 1970
-  :init-specs ((:texture (laser-hit level-default-sprite))
-    (:num 1.0)
-    (:scale-x (meters 0.5))
-    (:rot-z (degrees 0) (degrees 360))
-    (:scale-y :copy scale-x)
-    (:r 20.0)
-    (:g 20.0)
-    (:b 255.0)
-    (:a 255.0)
-    (:scalevel-x (meters 0.01))
-    (:scalevel-y :copy scalevel-x)
-    (:fade-a -1.275)
-    (:timer (seconds 0.667))
-    (:flags (sp-cpuinfo-flag-3))
-    (:func 'sparticle-track-root)
-    )
-  )
 
 (defpartgroup group-arena-token-pickup
   :id 500
@@ -342,11 +283,7 @@
     )
   )
 
-(defskelgroup skel-arena-token arena-token arena-token-lod0-jg arena-token-idle-ja
-              ((arena-token-lod0-mg (meters 999999)))
-              :bounds (static-spherem 0 0 0 1)
-              :shadow arena-token-shadow-mg
-              )
+
 
 (deftype arena-token (process-drawable)
   ((root      collide-shape-moving :override)
@@ -403,6 +340,15 @@
   :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
     (case message
       (('touch 'attack)
+      (+! arena-token-count 1)
+      (when (= arena-token-count 1)
+        (set! tutorial-msg 0)
+        (set! in-tutorial? #t)
+      )
+       (when (= arena-token-count 18)
+        (set! tutorial-msg 1)
+        (set! in-tutorial? #t)
+       )
        (cond
          ((logtest? (-> *part-group-id-table* 500 flags) (sp-group-flag sp13))
           (set! (-> *launch-matrix* trans quad) (-> self root trans quad))
@@ -566,6 +512,18 @@
     (the-as skeleton-group (art-group-get-by-name *level* "skel-arena-token" (the-as (pointer level) #f)))
     (the-as pair 0)
     )
+  (set! (-> *part-id-table* 1968 init-specs 4 initial-valuef) 20.0) ;r
+  (set! (-> *part-id-table* 1968 init-specs 5 initial-valuef) 20.0) ;g
+  (set! (-> *part-id-table* 1968 init-specs 6 initial-valuef) 128.0) ;b
+  (set! (-> *part-id-table* 1968 init-specs 7 initial-valuef) 200.0) ;a
+  (set! (-> *part-id-table* 1969 init-specs 4 initial-valuef) 20.0) ;r
+  (set! (-> *part-id-table* 1969 init-specs 5 initial-valuef) 20.0) ;g
+  (set! (-> *part-id-table* 1969 init-specs 6 initial-valuef) 128.0) ;b
+  (set! (-> *part-id-table* 1969 init-specs 7 initial-valuef) 200.0) ;a
+  (set! (-> *part-id-table* 1970 init-specs 5 initial-valuef) 20.0) ;r
+  (set! (-> *part-id-table* 1970 init-specs 6 initial-valuef) 20.0) ;g
+  (set! (-> *part-id-table* 1970 init-specs 7 initial-valuef) 255.0) ;b
+  (set! (-> *part-id-table* 1970 init-specs 8 initial-valuef) 255.0) ;a
   (set! (-> this part) (create-launch-control (-> *part-group-id-table* 499) this))
   (set! (-> this trans-y) (-> this root trans y))
   (set! (-> this offset) (rand-vu-float-range 0.0 4.0))
@@ -811,10 +769,13 @@
     )
   )
 
+
+
 (defstate wait-more (task-manager-arena-training)
   :virtual #t
   :parent (task-manager-arena-training active)
   :enter (behavior ()
+    (activate-progress *dproc* 'icon-info)
     (dotimes (gp-0 (length (-> self actor-group 0)))
       (let ((v1-2 (-> self actor-group 0 data gp-0)))
         (when (logtest? (-> *arena-trainer-checkpoint-tokens* 0) (ash 1 gp-0))
@@ -1300,8 +1261,7 @@
      )
     (suspend)
     (ja-channel-set! 0)
-    (suspend-for (seconds 1)
-      )
+    (suspend-for (seconds 1))
     (send-event self 'death-end)
     (while (-> self child)
       (suspend)

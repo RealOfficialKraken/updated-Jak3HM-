@@ -327,14 +327,17 @@
           (t9-0)
           )
       )
-    (if (and (time-elapsed? (the-as int (-> self last-fire-time)) (seconds 3))
-             (and (< (vector-vector-distance (-> self focus-pos) (-> self root trans)) 245760.0)
-                  (get-focus! self)
-                  (enemy-method-104 self (-> self focus-pos) 910.2222)
-                  )
-             )
-        (go-virtual attack)
-        )
+      (let ((flit-level-start (- 1.0 (* enemy-noto 0.08)))
+            )
+            (if (and (time-elapsed? (the-as int (-> self last-fire-time)) (seconds flit-level-start))
+                (and (< (vector-vector-distance (-> self focus-pos) (-> self root trans)) 245760.0)
+                      (get-focus! self)
+                      (enemy-method-104 self (-> self focus-pos) 910.2222)
+                      )
+                )
+            (go-virtual attack)
+            )
+          )
     )
   )
 
@@ -372,7 +375,7 @@
                  (set! (-> v1-24 attack-id) a0-25)
                  (set! (-> a1-6 attack-id) a0-25)
                  )
-               (set! (-> a1-6 timeout) (seconds 4))
+               (set! (-> a1-6 timeout) (seconds 1.3))
                (spawn-projectile metalhead-grenade-shot a1-6 self *default-dead-pool*)
                )
              )
@@ -754,3 +757,37 @@
   0
   (none)
   )
+
+#|
+(defbehavior flamer-hover-init-by-other flamer-hover ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  (set! (-> self hit-points) (+ (-> self enemy-info default-hit-points) (* enemy-noto 2)))
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+    ;; verts for the path
+    (cverts (new 'static 'inline-array vector 3
+            (static-vectorm 1 0 0)
+            (static-vectorm 0 1 0)
+            (static-vectorm 0 0 1)
+            )
+      )
+    )
+;; if a nav mesh is close by, use that, otherwise use default
+(if nav
+  (change-to nav self)
+  (change-to *default-nav-mesh* self)
+  )
+;; allocate path
+(set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+(set! (-> self path curve cverts) cverts)
+(set! (-> self path curve num-cverts) 3)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(go (method-of-object self ambush))
+(none)
+)|#

@@ -5,6 +5,8 @@
 ;; name in dgo: wcar-marauder
 ;; dgos: LPATK, LFACCAR, WASALL
 
+(defun-extern vehicle-killed? float none)
+
 (deftype wcar-marauder-stack-var0 (structure)
   ((time0 uint32 :offset 0)
    (float0 float :offset 16)
@@ -441,6 +443,11 @@
    (the-as uint 5)
    (joint-mod-base-flags attached)
    )
+   ;(set! (-> this enemy-noto) (+ enemy-noto (rand-vu-int-range 0 3)))
+   (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
+          (set! (-> this hit-points) (+ 2.0 (/ (the float enemy-noto) 3)))
+          (set! (-> this hit-points) (+ 1.0 (/ (the float enemy-noto) 3)))
+        )
   (init (-> this jmod-axles 1) this (the-as uint 9) (joint-mod-base-flags attached))
   (init (-> this jmod-axles 2) this (the-as uint 4) (joint-mod-base-flags attached))
   (init (-> this jmod-axles 3) this (the-as uint 10) (joint-mod-base-flags attached))
@@ -488,6 +495,9 @@
   :virtual #t
   :enter (behavior ()
     (+! (-> *game-info* marauders-killed) 1.0)
+    (set! global-parent-mask (-> self mask))
+    (set! global-root-trans (-> self root trans))
+    (vehicle-killed? (rand-vu-float-range 2.0 7.0))
     (if (and *target* (focus-test? *target* pilot-riding))
         (turbo-pickup-spawn (-> self root trans))
         )

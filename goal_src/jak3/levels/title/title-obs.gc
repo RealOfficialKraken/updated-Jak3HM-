@@ -181,6 +181,7 @@
 (defbehavior title-menu title-control ()
   (local-vars (sv-112 font-context))
   (sound-play "dmenu-hit")
+  (set! in-main-menu? #t)
   (let ((gp-1 (new 'static 'boxed-array :type text-id (text-id progress-start-button)))
         (s5-1 (current-time))
         )
@@ -266,11 +267,12 @@
     )
   (set! (-> *game-info* blackout-time) 0)
   (set! (-> *setting-control* user-current bg-a-force) 0.0)
+  (set! in-main-menu? #f)
   (disable *screen-filter*)
   0
   )
 
-(defun title-progress ((arg0 symbol))
+  (defun title-progress ((arg0 symbol))
   (setup
     *screen-filter*
     (new 'static 'vector :w 128.0)
@@ -299,6 +301,8 @@
   0
   )
 
+
+
 (defstate startup (title-control)
   :virtual #t
   :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
@@ -323,6 +327,7 @@
       )
     )
   :code (behavior ()
+    (set! mainmenu-camera #f)
     (when (zero? (-> *game-info* demo-state))
       (let ((a1-0 (new 'stack-no-clear 'array 'symbol 10)))
         (set! (-> a1-0 9) #f)

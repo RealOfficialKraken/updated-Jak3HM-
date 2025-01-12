@@ -5,6 +5,27 @@
 ;; name in dgo: maker-projectile
 ;; dgos: WCB
 
+(define *maker-num-alive* 0)
+
+(define *maker-num-visible* 0)
+
+(define *maker-num-grenades* 0)
+
+(define *maker-last-shot-time* (the-as time-frame 0))
+
+(define *maker-first-hit* #f)
+
+(define *maker-first-kill* (the-as time-frame #f))
+
+(define *maker-first-missile* (the-as time-frame #f))
+
+(define *maker-last-vocalization* (the-as time-frame 0))
+
+(define *wascity-alarm-pos1* (new 'static 'vector :x 6582272.0 :y 36864.0 :z -4915200.0 :w 1.0))
+
+(define *wascity-alarm-pos2* (new 'static 'vector :x 6582272.0 :y 36864.0 :z 1638400.0 :w 1.0))
+
+
 (define-extern *curve-maker-linear-up-red* curve2d-piecewise)
 (define-extern *trail-color-curve-maker-grenade* curve-color-fast)
 (define-extern *curve-maker-grenade-linear-trail* curve2d-fast)

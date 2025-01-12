@@ -646,6 +646,7 @@
 (defstate active (task-manager-desert-course-race)
   :virtual #t
   :code (behavior ()
+    (set! in-desert-game-task? #t)
     (let ((t1-0 1))
       (set-setting! 'vehicles 'set (shr t1-0 32) t1-0)
       )

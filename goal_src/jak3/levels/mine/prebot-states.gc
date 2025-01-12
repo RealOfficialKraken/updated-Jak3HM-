@@ -123,6 +123,7 @@
     )
   )
 
+;; WARN: Return type mismatch none vs object.
 (defbehavior prebot-common prebot ()
   (dotimes (gp-0 20)
     (cond
@@ -215,9 +216,14 @@
      (set! (-> self stage) 0)
      0
      )
-    ((task-node-closed? (game-task-node mine-boss-resolution))
-     (set! (-> self stage) 4)
+    ((not (task-node-closed? (game-task-node mine-boss-extra)))
+     (set! (-> self stage) 0)
      )
+    ((and (= mine-boss-killed? #f) (= in-mine-level? #t) (= in-mine-boss? #f) (task-node-open? (game-task-node mine-boss-extra-resolution)))
+      (set! (-> self stage) 1)
+      (set! in-mine-boss? #t)
+      0
+    )
     ((begin
        (set! (-> self stage) 1)
        (set! sv-16 (new 'static 'res-tag))
@@ -301,6 +307,77 @@
 (defbehavior prebot-handler prebot ((arg0 process) (arg1 int) (arg2 symbol) (arg3 event-message-block))
   (local-vars (v0-0 object))
   (case arg2
+    (('attack)
+        (let ((s5-0 (the-as attack-info (-> arg3 param 1))))
+        (cond
+          ((!= (-> s5-0 id) (-> self incoming-attack-id))
+            (set! (-> self incoming-attack-id) (-> s5-0 id))
+            (cond
+              ((not (logtest? (-> self entity extra perm status) (entity-perm-status dead)))
+              (set! (-> self hit-points) (- (-> self hit-points) (-> s5-0 damage)))
+              )
+              (else
+                (return #t)
+                )
+              )
+            )
+          (else
+            (return #f)
+            )
+          )
+        )
+        (set! hpbar-max-hit-points (+ (+ 600.0 (* enemy-noto 10)) (/ (the float enemy-noto) 3)))
+        (set! hpbar-hit-points (-> self hit-points))
+        (set! draw-enemy-noto enemy-noto)
+        (set! enemy-hp #t)
+        (let ((enemy-name (remap-enemy-type-name (-> self type))))
+          (set! enemy-string "Precursor Minibot")
+        )
+        (when (<= (-> self hit-points) 0.0) 
+          (set! hpbar-hit-points 0.0)
+          (+! (-> self stage) 1)
+          (when (= (-> self stage) 4)
+            (when (task-node-closed? (game-task-node mine-boss-resolution))
+              (cond
+              ((logtest? (-> *part-group-id-table* 456 flags) (sp-group-flag sp13))
+                (set! (-> *launch-matrix* trans quad) (-> self root trans quad))
+                (part-tracker-spawn part-tracker-subsampler :to *entity-pool* :group (-> *part-group-id-table* 456))
+                )
+              (else
+                (set! (-> *launch-matrix* trans quad) (-> self root trans quad))
+                (part-tracker-spawn part-tracker :to *entity-pool* :group (-> *part-group-id-table* 456))
+                )
+              )
+              (set! in-mine-boss? #f)
+              (set! mine-boss-killed? #t)
+              (set! mine-boss-fireball? #f)
+              (boss-killed? 2500.0)
+              (let 
+                ((vec (new 'static 'vector
+                  :x (meters 313.1428)
+                  :y (meters 61.8098)
+                  :z (meters -221.4415)
+                  :w 1.0))
+                    )
+              (group-drop! vec 0.12 0.05)
+              )
+              (go-virtual beaten)
+            )
+            (when (task-node-open? (game-task-node mine-boss-resolution))
+              (process-spawn scene-player :init scene-player-init "mine-boss-res" #t "prebot-beaten" :name "scene-player")
+              (task-node-close! (game-task-node mine-boss-resolution) #t)
+              (set! in-mine-boss? #f)
+              (set! mine-boss-killed? #t)
+              (set! mine-boss-fireball? #f)
+              (go-virtual beaten)
+            )
+          )
+          (if (< (-> self stage) 4)
+            (set! (-> self hit-points) (+ 600.0 (* enemy-noto 10)))
+            (go-virtual beaten)
+          )
+        )
+       )
     (('touched-hot-pillar)
      (when (not (logtest? (-> self flags) (prebot-flag pf0)))
        (logior! (-> self flags) (prebot-flag pf0))
@@ -372,6 +449,9 @@
 (defstate beaten (prebot)
   :virtual #t
   :enter (behavior ()
+    (when (task-node-open? (game-task-node mine-boss-extra-resolution))
+      (task-node-close! (game-task-node mine-boss-extra-resolution) #t)
+    )
     (ja-channel-set! 0)
     (ja-post)
     (let ((a0-2 (handle->process (-> self blocker))))
@@ -583,6 +663,7 @@
                  (deactivate a0-14)
                  )
              )
+           (set! mine-boss-fireball? #f)
            (go-virtual slam)
            )
          )
@@ -607,7 +688,7 @@
            )
          (let ((gp-3 (handle->process (-> self pillars (-> self num-attacks)))))
            (when gp-3
-             (blend-on! (-> self shoulder-aim-jm) (seconds 0.25) 1.0 #f)
+             (blend-on! (-> self shoulder-aim-jm) (seconds 0.01) 1.0 #f)
              (let ((a1-10 (new 'stack-no-clear 'vector)))
                (set! (-> a1-10 quad) (-> (the-as process-drawable gp-3) root trans quad))
                (+! (-> a1-10 y) -14336.0)
@@ -615,7 +696,7 @@
                )
              )
            )
-         (when (time-elapsed? (-> self state-time) (seconds 1))
+         (when (time-elapsed? (-> self state-time) (seconds 0.07))
            (set-time! (-> self state-time))
            (blend-to-off! (-> self shoulder-aim-jm) (seconds 0.1) #f)
            (ja-channel-push! 1 (seconds 0.1))
@@ -694,10 +775,10 @@
        (set! (-> self num-attacks) (the-as uint 20))
        )
       ((2)
-       (set! (-> self num-attacks) (the-as uint 15))
+       (set! (-> self num-attacks) (the-as uint 20))
        )
       (else
-        (set! (-> self num-attacks) (the-as uint 10))
+        (set! (-> self num-attacks) (the-as uint 20))
         )
       )
     (prebot-setup-shot-offsets)
@@ -794,7 +875,7 @@
            )
          (ja :num! (loop!))
          (cond
-           ((time-elapsed? (-> self state-time) (seconds 1))
+           ((time-elapsed? (-> self state-time) (seconds 0.07))
             (send-event (handle->process (-> self gun)) 'fire)
             (prebot-light-flash 1.0 0.4 0.0)
             (+! (-> self num-attacks) -1)
@@ -804,7 +885,7 @@
             (ja :group! prebot-gun-fire-ja :num! min)
             )
            (else
-             (blend-on! (-> self shoulder-aim-jm) (seconds 0.25) 1.0 #f)
+             (blend-on! (-> self shoulder-aim-jm) (seconds 0.07) 1.0 #f)
              (let ((gp-10 (new 'stack-no-clear 'vector)))
                (set! (-> gp-10 quad) (-> (target-pos 0) quad))
                (let ((s5-6 (vector<-cspace! (new 'stack-no-clear 'vector) (joint-node prebot-lod0-jg shoulderL))))
@@ -989,10 +1070,10 @@
           (vector+! s5-0 (-> gp-0 s3-0 offset) (-> self original-position))
           (set! (-> s4-0 quad) (-> s5-0 quad))
           (+! (-> s4-0 x)
-              (* 4096.0 (cos (* 1747.6267 (the float (+ (* 30 s3-0) (- (current-time) (-> self state-time)))))))
+              (* 4096.0 (cos (* 47.6267 (the float (+ (* 30 s3-0) (- (current-time) (-> self state-time)))))))
               )
           (cond
-            ((not (time-elapsed? (-> self state-time) (+ (* 240 s3-0) 75)))
+            ((not (time-elapsed? (-> self state-time) (+ (* 78 s3-0) 75)))
              (send-event (handle->process (-> self tentacles s3-0)) 'look-at s5-0 #f)
              )
             ((not (handle->process (-> self pillars s3-0)))
@@ -1005,7 +1086,7 @@
              )
             (else
               (set! f30-0 (cond
-                            ((not (time-elapsed? (-> self state-time) (+ (* 240 s3-0) 1575)))
+                            ((not (time-elapsed? (-> self state-time) (+ (* 78 s3-0) 1575)))
                              (prebot-fire-tentacle (-> self tentacles s3-0) s4-0)
                              (+ 1.0 f30-0)
                              )
@@ -1027,7 +1108,7 @@
           )
         (if (= f30-0 0.0)
             (prebot-light-pulse-off)
-            (prebot-light-pulse-on (+ 0.2 (/ f30-0 10)) (+ 0.1 (/ f30-0 25)) 0.0)
+            (prebot-light-pulse-on (+ 0.2 (* 0.1 f30-0)) (+ 0.1 (* 0.04 f30-0)) 0.0)
             )
         )
       (when (>= (-> self num-attacks) (the-as uint (min 5 (-> gp-0 length))))
@@ -1052,6 +1133,7 @@
   :virtual #t
   :event prebot-handler
   :trans (behavior ()
+    (set! mine-boss-fireball? #t)
     (let ((v1-2 (ja-group)))
       (cond
         ((and v1-2 (= v1-2 prebot-tentacle-launch-ja))
@@ -2518,7 +2600,6 @@
   (none)
   )
 
-;; WARN: Return type mismatch connection vs none.
 (defmethod set-time-limit ((this task-manager-prebot))
   (let ((t9-0 (method-of-type task-manager set-time-limit)))
     (t9-0 this)

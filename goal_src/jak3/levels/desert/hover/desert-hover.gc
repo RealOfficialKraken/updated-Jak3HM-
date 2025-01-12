@@ -63,6 +63,7 @@
 (defstate active (task-manager-desert-hover)
   :virtual #t
   :enter (behavior ()
+    (set! in-desert-game-task? #t)
     (set-setting! 'extra-bank '((desert2 desbst1)) 0.0 0)
     (let ((t1-1 2))
       (set-setting! 'vehicles 'set (shr t1-1 32) t1-1)

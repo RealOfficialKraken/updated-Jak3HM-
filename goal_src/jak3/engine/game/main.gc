@@ -5,8 +5,15 @@
 ;; name in dgo: main
 ;; dgos: GAME
 
+(define weather-dark-mode #f)
 (define-extern menu-respond-to-pause (function symbol))
 (define-extern anim-tester-add-object (function string none))
+(defun-extern runs-jak3-every-frame (none))
+(defun-extern stat-tracker! (none))
+(defun-extern update-xp! (none))
+(defun-extern wasteland-spawn! (none))
+(defun-extern run-warp-room (none))
+(define-extern title-progress (function symbol int))
 
 ;; DECOMP BEGINS
 
@@ -1437,6 +1444,12 @@
         (load-continue (-> *level* loading-level))
         )
 
+        (runs-jak3-every-frame)
+        (stat-tracker!)
+        (update-xp!)
+        (wasteland-spawn!)
+        (run-warp-room)
+
     ; ;; modify vertices for merc face animation. I believe this is somewhat racing DMA of merc data to VU1.
     (with-profiler 'merc *profile-merc-color*
       (blerc-execute)
@@ -1642,7 +1655,7 @@
 (defbehavior display-loop process ()
   "Main loop for running the game."
 
-  (stack-size-set! (-> self main-thread) 512)
+  (stack-size-set! (-> self main-thread) 1024)
 
   ;; start process to run math (joints) engine.
   (process-spawn-function

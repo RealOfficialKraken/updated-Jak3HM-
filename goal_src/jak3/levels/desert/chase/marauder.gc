@@ -55,36 +55,7 @@
               :origin-joint-index 3
               )
 
-(deftype marauder (nav-enemy)
-  ((los                    los-control      :inline)
-   (target-pos             vector           :inline)
-   (jump-attack            symbol)
-   (jump-info              enemy-jump-info  :inline)
-   (save                   symbol)
-   (save-pos               vector           :inline)
-   (ambush?                symbol)
-   (knocked-back?          symbol)
-   (run-anim               int32)
-   (gun?                   symbol)
-   (target-last-attacker?  symbol)
-   (visible-last           time-frame)
-   (traj                   trajectory       :inline)
-   (skip-jump              symbol)
-   )
-  (:state-methods
-    attack-run
-    save
-    save-wait
-    lava-die
-    gun-shoot
-    jump-out
-    )
-  (:methods
-    (toggle-collide-spec (_type_ symbol int) none)
-    (fire-shot (_type_) none)
-    (set-multi-focus (_type_ symbol) none)
-    )
-  )
+
 
 
 (define *fact-info-marauder-defaults*

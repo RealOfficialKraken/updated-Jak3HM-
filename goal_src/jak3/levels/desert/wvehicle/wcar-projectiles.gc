@@ -206,6 +206,7 @@
     (set! (-> this damage) 4.0)
     (set! (-> this vehicle-impulse-factor) 0.5)
     (logior! (-> this options) (projectile-options po13))
+    (set! (-> this damage) (+ 4.0 (the float cars-level)))
     0
     (none)
     )
@@ -233,6 +234,7 @@
 
 (defmethod deal-damage! ((this v-snake-shot) (arg0 process) (arg1 event-message-block))
   (let ((gp-0 ((method-of-type v-scorp-shot deal-damage!) this arg0 arg1)))
+    (set! (-> this damage) (+ 4.0 (the float cars-level)))
     (when gp-0
       (if (logtest? (process-mask vehicle) (-> arg0 mask))
           (sound-play "snake-riccos")
@@ -366,6 +368,7 @@
 
 (defmethod deal-damage! ((this v-rhino-shot) (arg0 process) (arg1 event-message-block))
   (let ((gp-0 ((method-of-type v-scorp-shot deal-damage!) (the-as v-scorp-shot this) arg0 arg1)))
+  (set! (-> this damage) (+ 4.0 (the float cars-level)))
     (when gp-0
       (if (logtest? (process-mask vehicle) (-> arg0 mask))
           (sound-play "rhino-riccos")
@@ -380,7 +383,7 @@
   (let ((t9-0 (method-of-type guard-shot init-proj-settings!)))
     (t9-0 this)
     )
-  (set! (-> this damage) 6.0)
+  (set! (-> this damage) (+ 6.0 (the float cars-level)))
   (set! (-> this vehicle-damage-factor) 1.0)
   (set! (-> this vehicle-impulse-factor) 0.5)
   (set! (-> this timeout) (seconds 0.5))
@@ -490,7 +493,7 @@
   (set! (-> this max-speed) 90112.0)
   (set! (-> this timeout) (seconds 4))
   (set! (-> this update-velocity) (method-of-object this set-y-vel))
-  (set! (-> this damage) 0.0)
+  (set! (-> this damage) (+ 4.0 (the float cars-level)))
   (let ((v1-13 (new 'stack-no-clear 'vector)))
     (set! (-> v1-13 x) 2.0)
     (set! (-> v1-13 y) 2.0)
@@ -614,6 +617,7 @@
   (let ((t9-0 (method-of-type guard-shot init-proj-settings!)))
     (t9-0 this)
     )
+  (set! (-> this damage) (+ 1.0 (/ (the float cars-level) 2)))
   (set! (-> this vehicle-damage-factor) 0.333)
   (set! (-> this vehicle-impulse-factor) 0.25)
   (set! (-> this timeout) (seconds 1.25))
@@ -623,6 +627,7 @@
 
 (defmethod deal-damage! ((this v-marauder-shot) (arg0 process) (arg1 event-message-block))
   (when ((method-of-type guard-shot deal-damage!) this arg0 arg1)
+    (set! (-> this damage) (+ 1.0 (the float (/ enemy-noto 2))))
     (if (logtest? (process-mask vehicle) (-> arg0 mask))
         (sound-play "inter-riccos")
         )

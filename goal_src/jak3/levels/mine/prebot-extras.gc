@@ -61,10 +61,10 @@
     (the-as skeleton-group (art-group-get-by-name *level* "skel-cav-break-bridge" (the-as (pointer level) #f)))
     (the-as pair 0)
     )
-  (when (task-node-closed? (game-task-node mine-boss-introduction))
+  #|(when (task-node-closed? (game-task-node mine-boss-introduction))
     (cleanup-for-death this)
     (deactivate this)
-    )
+    )|#
   (go (method-of-object this idle))
   )
 
@@ -139,7 +139,7 @@
              (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
                  (set! f0-0 (* 0.6666667 f0-0))
                  )
-             (set! (-> self hit-points) (fmax 0.0 (- (-> self hit-points) f0-0)))
+             (set! (-> self hit-points) 9999.0)
              (cond
                ((= (-> self hit-points) 0.0)
                 (go-virtual fall)
