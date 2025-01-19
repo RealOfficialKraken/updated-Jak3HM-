@@ -1736,6 +1736,16 @@
        v0-4
        )
      )
+     (('death-start)
+        (when 
+          (and
+            (task-node-open? (game-task-node wascity-kleeverquest-mantaray))
+            (= (-> this albino?) #t)
+            (< (-> *game-info* side-enemies-killed?) 4)
+          )
+          (+! (-> *game-info* side-enemies-killed?) 1)
+         )
+     )
     (else
       ((method-of-type nav-enemy event-handler) this arg0 arg1 arg2 arg3)
       )
@@ -1877,14 +1887,6 @@
   (ja-channel-push! 1 (seconds 0.1))
      (when (= (-> this hit-points) 0.0)
          (logior! (-> this focus-status) (focus-status dead))
-         (when 
-          (and
-            (task-node-open? (game-task-node wascity-kleeverquest-mantaray))
-            (= (-> this albino?) #t)
-            (< (-> *game-info* side-enemies-killed?) 4)
-          )
-          (+! (-> *game-info* side-enemies-killed?) 1)
-         )
          )
       (when (and
               (>= (-> *game-info* side-enemies-killed?) 4)

@@ -1149,8 +1149,8 @@
                 (when (< notoriety-level 3)
                     (set! enemy-noto notoriety-level)
                 )
-                (set! cdr-satbattle #t)
-                (set! cdr-i (rand-vu-int-range 2400 14000))
+                ;(set! cdr-satbattle #t)
+                ;(set! cdr-i (rand-vu-int-range 2400 14000))
             )
             (when ;NESTA-B
                 (and
@@ -1167,9 +1167,9 @@
                     (task-node-closed? (game-task-node desert-oasis-defense-meeting))
                     (not (task-node-closed? (game-task-node desert-oasis-defense-resolution)))
                     (= (-> (level-get-target-inside *level*) name) 'desert)
-                    (!= enemy-noto 26)
+                    (!= enemy-noto 20)
                 )
-                    (set! enemy-noto 26)
+                    (set! enemy-noto 20)
                     )
             (when ;VOLCANO MISSION
                 (and

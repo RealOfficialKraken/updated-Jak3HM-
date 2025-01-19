@@ -1795,6 +1795,9 @@
     )
   :enter (behavior ()
     (set! mainmenu-camera #f)
+    (send-event (ppointer->process *time-of-day*) 'change 'ratio 1.0)
+    (set! (-> *time-of-day-context* overide-enable) #f)
+    (set! (-> *mood-control* overide-weather-flag) #f)
     (set! (-> self menu-transition) 1.0)
     )
   :trans progress-trans

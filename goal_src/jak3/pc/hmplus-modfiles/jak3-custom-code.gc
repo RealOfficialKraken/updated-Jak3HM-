@@ -5,7 +5,22 @@
 
 #|IDEAS TO IMPLEMENT
 
-
+----------------------------------------
+GUN MOD - RANDOM OBJECT
+----------------------------------------
+All projectiles from Jak fire manipys on top, and each
+time Jak collects ammunition, it switches the manipy to something else
+----------------------------------------
+GUN MOD - Alpha Hit
+Jak can crit from his projectiles. When this happens, blast a
+non-white-screen nuke with a huge radius, but the damage isnt that big
+----------------------------------------
+----------------------------------------
+GUN MOD - CHAIN REACTION
+----------------------------------------
+Jak's gun shooting has a chance to pop out a gyro burst, but it's different projectiles.
+For example, one roll may have it shoot out grenades, or dark blasts, or fireballs. On
+the other hand, it could also fire out all nukes in an off chance
 ----------------------------------------
 dark-world objectives
 ----------------------------------------
@@ -22,17 +37,11 @@ TODO:
 - (CRITICAL) Add the sounds to the rage-ghost, and the anchor event
 - (CRITICAL) Finish making the missions hard
 - (CRITICAL) Add more gun mods, it's unknown what variable they'll be attached to
-- (CRITICAL) Add a purpose for dark eco crystals, like using them to gamble on crate drops
-- Add more anchors in city, or in levels that are generally outside
-- Edit anchors to have varied enemies
 - (CRITICAL) Add a NG+ to continue levelling with your current stats, higher level enemies, and extremely hard story missions
-- (CRITICAL) Add questing Damos
-- (CRITICAL) Add questing for Ashelin
-- (CRITICAL) Add questing for Keira
-- (CRITICAL) Add questing for Samos
-- (CRITICAL) Add endgame fight with Vin and the Entity. Big revelation
+- (CRITICAL) Make TP-FB with the terraformer in dark-world
 - (optional) Add a secret code from those who know, to unlock a gun mod
 - (optional) Rewrite group-drop!
+- (optional) Maybe port the nest worms over to desert and add a worm boss, too
 
 After all of these, the mod will be at a v1.0 state. Mod releasing is determined by Jak 3's open release
 
@@ -40,12 +49,10 @@ BUGS:
 - dropped boss/group crates dont reset their vectors
 - Bipedal Boss' shield isnt strength 999
 - Crystal in hud has no texture
-- Vin mission saves infinitely upon close, only in dark-world though
 
 :CRASHES
-- Crash in certain levels caused by the process that sets up the light flickers
 - levelup explosion runs out of memory, or happens outside of goal code
-- Crash from neo-satellite dropping crates
+- terraformer in dark-world makes auto-saving fail, probably easy fix
 |#
 (defun-extern level-up! int none)
 (defun-extern level-up-guns! int none)
@@ -1833,7 +1840,7 @@ BUGS:
             (let ((ani-num 0))
                 (clear matt-str)
                 (clear *pc-encoded-matt-str*)
-                (format matt-str "(~s) <COLOR_WHITE>Quest Updated"
+                (format matt-str "~s) <COLOR_WHITE>Quest Updated"
                 hint-string
                 )
                 (when (< r3-hinti 0)
@@ -1849,11 +1856,11 @@ BUGS:
             (+! r3-hinti2 1)
             (when (>= r3-hinti2 35)
                 (case-str hint-string
-                    (("<COLOR_YELLOW>R3")
-                        (set! hint-string "<COLOR_ORANGE>R3")
+                    (("<COLOR_YELLOW>(R3")
+                        (set! hint-string "<COLOR_ORANGE>(R3")
                     )
                     (else
-                        (set! hint-string "<COLOR_YELLOW>R3")
+                        (set! hint-string "<COLOR_YELLOW>(R3")
                     )
                 )
                 (set! r3-hinti2 0)
@@ -3503,7 +3510,8 @@ BUGS:
                     )
         )
         )
-        (spawn-artifact pos)
+        (task-arrow-custom pos #t)
+        (spawn-gun-upgrade pos 1.0)
         ;(task-node-open! (game-task-node desert-fight-goto-artifact) #t)
         (set! desert-spawn-mission-brute #t)
         (task-node-close! (game-task-node desert-brute-killed-introduction) #t)

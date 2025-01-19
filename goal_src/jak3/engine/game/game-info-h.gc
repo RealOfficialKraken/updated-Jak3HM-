@@ -287,6 +287,9 @@
   (define pro-i 0)
   (define completed-tutorial? #f)
   (define spawned-vin-circle? #f)
+  
+  ;hack for the end of the arena3 mission
+  (define yellow-gun-picked-up? #f)
 
   (defun-extern give-random-weapon (none))
   (defun-extern mod-killed? float none)
