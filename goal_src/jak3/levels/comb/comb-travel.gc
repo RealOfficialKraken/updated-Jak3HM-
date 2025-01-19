@@ -171,7 +171,6 @@
       (* (-> self hp-scale) (+ 1.0 (-> self suck-factor)))
       )
     (send-event (handle->process (-> self player-vehicle)) 'ignore-impulse #f)
-    (send-event (handle->process (-> self player-vehicle)) 'ignore-damage #f)
     (when (-> self outro-sequence)
       (until #f
         (let* ((gp-1 (handle->process (-> self player-vehicle)))
@@ -213,6 +212,8 @@
       (label cfg-166)
       (send-event (handle->process (-> self player-vehicle)) 'in-tunnel #f)
       (send-event (handle->process (-> self player-vehicle)) 'ai-set-target-position (-> self outro-target2))
+      (send-event (handle->process (-> self player-vehicle)) 'ignore-damage #t)
+      (print "in-tunnel??????????????????????????")
       )
     (until #f
       (let* ((s5-1 (handle->process (-> self player-vehicle)))
