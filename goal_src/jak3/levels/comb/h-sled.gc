@@ -439,7 +439,7 @@
 (define *h-sled-constants*
   (new 'static 'rigid-body-vehicle-constants
     :info (new 'static 'rigid-body-info
-      :mass 8.0
+      :mass 18.0
       :inv-mass 0.125
       :linear-damping 1.0
       :angular-damping 1.0
@@ -450,7 +450,7 @@
       )
     :extra (new 'static 'rigid-body-object-extra-info
       :max-time-step 0.033333335
-      :gravity (meters 72)
+      :gravity (meters 142)
       :idle-distance (meters 50)
       :attack-force-scale 1.0
       )
@@ -461,7 +461,7 @@
     :vehicle-type (vehicle-type-u8 vt27)
     :transmission (new 'static 'vehicle-transmission-info :gear-count 1)
     :handling (new 'static 'vehicle-handling-info
-      :max-engine-thrust (meters 50)
+      :max-engine-thrust (meters 75)
       :inv-max-engine-thrust 0.0000048828124
       :engine-response-rate 20.0
       :engine-intake-factor 1.0

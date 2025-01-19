@@ -495,7 +495,10 @@
     )
   (alloc-rbody-control! this *v-toad-constants*)
   (set! (-> this rider-hand-joint-array 0) 14)
-  (set! (-> this shoot-delay) (the-as uint 300))
+  (set! (-> this shoot-delay) (- (the-as uint 300) (* (the-as uint cars-level) 9)))
+  (when (< (-> this shoot-delay) 0)
+    (set! (-> this shoot-delay) 0)
+  )
   ((method-of-type joint-mod-rotate-local init)
    (the-as joint-mod-rotate-local (-> this jmod-axles))
    this
