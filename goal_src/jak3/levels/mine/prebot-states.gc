@@ -216,6 +216,10 @@
      (set! (-> self stage) 0)
      0
      )
+     ((task-node-open? (game-task-node mine-boss-resolution))
+     (set! (-> self stage) 1)
+     0
+     )
     ((not (task-node-closed? (game-task-node mine-boss-extra)))
      (set! (-> self stage) 0)
      )
