@@ -1443,6 +1443,53 @@
     )
   )
 
+  ;; WARN: Return type mismatch int vs (pointer process).
+(defun someone-fire-dark-3 ((arg0 vector) (arg1 vector))
+  (let ((gp-0 (-> *target* gun))
+        (s5-0 (new 'stack-no-clear 'projectile-init-by-other-params))
+        )
+    (let ((s4-0 (new 'stack-no-clear 'vector)))
+      (set! (-> s4-0 quad) (-> arg1 quad))
+      (set-last-fire-time 37)
+      (sound-play "purple-3-shot" :position arg0)
+      (set! (-> s5-0 ent) (the-as entity #f))
+      (set! (-> s5-0 charge) 1.0)
+      (set! (-> s5-0 options) (projectile-options))
+      (logclear! (-> s5-0 options) (projectile-options po14 po15 po16))
+      (set! (-> s5-0 pos quad) (-> arg0 quad))
+      (set! (-> s5-0 vel quad) (-> (vector-float*! (new 'stack-no-clear 'vector) s4-0 81920.0) quad))
+      )
+    (set! (-> s5-0 notify-handle) (the-as handle #f))
+    (set! (-> s5-0 owner-handle) (the-as handle #f))
+    (set! (-> s5-0 target-handle) (the-as handle #f))
+    (set! (-> s5-0 target-pos quad) (the-as uint128 0))
+    (+! (-> *game-info* buzzer-total) 150.0)
+    (set! (-> s5-0 ignore-handle) (the-as handle #f))
+    (let* ((v1-17 *game-info*)
+           (a0-17 (+ (-> v1-17 attack-id) 1))
+           )
+      (set! (-> v1-17 attack-id) a0-17)
+      (set! (-> s5-0 attack-id) a0-17)
+      )
+    (set! (-> s5-0 timeout) (seconds 4))
+    (let ((v0-7 (ppointer->handle (process-spawn
+                                    gun-dark-3-nuke
+                                    :init projectile-init-by-other
+                                    s5-0
+                                    :name "projectile"
+                                    :to (ppointer->process (-> gp-0 gun))
+                                    :stack *kernel-dram-stack*
+                                    )
+                                  )
+                )
+          )
+      (set! (-> gp-0 gun 0 extra) (the-as handle v0-7))
+      (the-as (pointer process) v0-7)
+      )
+    )
+    (none)
+  )
+
 (defmethod init-proj-settings! ((this gun-dark-shot))
   (+! (-> *game-info* shots-fired 3) 1.0)
   (set! (-> this attack-mode) 'eco-dark)

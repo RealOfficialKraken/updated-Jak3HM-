@@ -9,6 +9,9 @@
 
 (defun-extern enemy-killed? float none)
 
+(defun-extern send-enemy-death none)
+(defun-extern send-ally-death none)
+
 (defmethod copy-enemy-info! ((this enemy-info) (arg0 enemy-info))
   (mem-copy! (&-> this type) (&-> arg0 type) 420)
   0
@@ -1799,7 +1802,7 @@
                       (set! enemy-string "Spiderling")
                     )
                     ((= enemy-name 'crimson-guard)
-                      (set! enemy-string "Rebel Guard")
+                      (set! enemy-string "Freedom Guard")
                     )
                     ((= enemy-name 'egg-spider)
                       (set! enemy-string "Eco Leech")
@@ -2157,6 +2160,25 @@
          )
      )
     ((= msg 'death-start)
+     (when (<= (-> this hit-points) 0.0)
+      (when *target-battle!*
+          (let ((enemy-name (remap-enemy-type-name (-> this type))))
+            ;(format #t "DEATH TO ALL SUCC-HEADS! via ~s" enemy-name)
+            (cond ((and
+                  (= enemy-name 'crimson-guard)
+                  (> flr-ally 0)
+                  )
+                  (-! flr-ally 1)
+                  (send-ally-death)
+              )
+              (else
+                  (-! flr-enemy 1)
+                  (send-enemy-death)
+              )
+            )
+          )
+        )
+     )
      (set! global-parent-mask (-> this mask))
      (set! global-root-trans (-> this root trans))
      (enemy-killed? (rand-vu-float-range 15.0 50.0))

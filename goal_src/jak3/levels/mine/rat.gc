@@ -727,6 +727,9 @@
   )
 
 (defbehavior rat-falling-post rat ()
+  (when (= gunmod-ratshooter #t)
+        (send-event self 'hit #t)
+      )
   (nav-enemy-falling-post)
   (none)
   )
@@ -2030,4 +2033,53 @@
       (go (method-of-object this die))
       (go (method-of-object this idle))
       )
+  )
+
+  (define rat-tracker 0)
+
+  (defbehavior rat-init-by-other rat ((vec vector))
+    (init-enemy-collision! self)
+    (logior! (-> self mask) (process-mask actor-pause))
+    (vector-copy! (-> self root trans) vec)
+    (quaternion-identity! (-> self root quat))
+    (vector-identity! (-> self root scale))
+    (init-enemy! self)
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+          ;; verts for the path
+          (cverts (new 'static 'inline-array vector 3
+                  (static-vectorm 1 0 0)
+                  (static-vectorm 0 1 0)
+                  (static-vectorm 0 0 1)
+                  )
+            )
+          )
+      ;; if a nav mesh is close by, use that, otherwise use default
+      (if nav
+        (change-to nav self)
+        (change-to *default-nav-mesh* self)
+        )
+      ;; allocate path
+      (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+      (set! (-> self path curve cverts) cverts)
+      (set! (-> self path curve num-cverts) 3)
+      )
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;(set! (-> self hit-points) (+ (-> self enemy-info default-hit-points) 35.0))
+    (go-hostile self)
+  )
+
+  (defun quick-rat! ((vec vector))
+    (+! rat-tracker 1)
+    (let ((rat-max 30))
+      (when (< rat-tracker rat-max)
+        (+! (-> vec y) (meters 3))
+        (process-spawn rat vec :name "rat")
+      )
+      (when (>= rat-tracker rat-max)
+        (kill-by-name "rat" *default-pool*)
+        (set! rat-tracker 0)
+      )
+    )
+    (none)
   )

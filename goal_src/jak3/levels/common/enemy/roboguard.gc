@@ -1,9 +1,7 @@
 ;;-*-Lisp-*-
 (in-package goal)
 
-;; name: roboguard.gc
-;; name in dgo: roboguard
-;; dgos: SEA, FACC, FACD
+;; name: roboguard-giant.gc
 
 ;; +++roboguard-flag
 (defenum roboguard-flag
@@ -1418,6 +1416,25 @@
        ((or (= (-> this hit-points) 0.0)
             (and (>= 1.0 (-> this hit-points)) (= (-> this incoming knocked-type) (knocked-type blue-shot)))
             )
+        (when (<= (-> this hit-points) 0.0)
+          (when *target-battle!*
+              (let ((enemy-name (remap-enemy-type-name (-> this type))))
+                ;(format #t "DEATH TO ALL SUCC-HEADS! via ~s" enemy-name)
+                (cond ((and
+                      (= enemy-name 'crimson-guard)
+                      (> flr-ally 0)
+                      )
+                      (-! flr-ally 1)
+                      (send-ally-death)
+                  )
+                  (else
+                      (-! flr-enemy 1)
+                      (send-enemy-death)
+                  )
+                )
+              )
+            )
+        )
         (on-dying this)
         (go (method-of-object this explode))
         )

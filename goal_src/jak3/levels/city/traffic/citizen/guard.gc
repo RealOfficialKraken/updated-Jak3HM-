@@ -2253,3 +2253,36 @@
 (defmethod crimson-guard-method-271 ((this crimson-guard))
   #f
   )
+
+(defbehavior crimson-guard-init-by-other crimson-guard ((vec vector))
+    (init-enemy-collision! self)
+    (logior! (-> self mask) (process-mask actor-pause))
+    (vector-copy! (-> self root trans) vec)
+    (quaternion-identity! (-> self root quat))
+    (vector-identity! (-> self root scale))
+    (init-enemy! self)
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+          ;; verts for the path
+          (cverts (new 'static 'inline-array vector 3
+                  (static-vectorm 1 0 0)
+                  (static-vectorm 0 1 0)
+                  (static-vectorm 0 0 1)
+                  )
+            )
+          )
+      ;; if a nav mesh is close by, use that, otherwise use default
+      (if nav
+        (change-to nav self)
+        (change-to *default-nav-mesh* self)
+        )
+      ;; allocate path
+      (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+      (set! (-> self path curve cverts) cverts)
+      (set! (-> self path curve num-cverts) 3)
+      )
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (set! (-> self hit-points) (+ (-> self enemy-info default-hit-points) 35.0))
+    (go (method-of-object self idle))
+    (none)
+  )

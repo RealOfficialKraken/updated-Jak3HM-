@@ -1,0 +1,69 @@
+(in-package goal)
+
+;name: someone-fire.gc
+
+#|
+This file defines the procs for custom projectiles/processes and generally all gun mods.
+It's structured this way so changes can be made all in one place.
+|#
+
+
+#|(define gun-yellow-shot type)
+(define gun-yellow-shot-2 type)
+(define gun-yellow-shot-3 type)
+(define gun-red-shot type)
+(define gun-red-shot-2 type)
+(define gun-red-shot-3 type)
+(define gun-blue-shot type)
+(define gun-blue-shot-2 type)
+(define gun-blue-shot-3 type)
+(define gun-dark-shot type)
+(define gun-dark-shot-2 type)
+(define gun-dark-shot-3 type)|#
+
+(defun someone-fire-projectile ((proj-type type) (s1-0 projectile-init-by-other-params) (proc process-tree))
+    (cond
+        #|((= gunmod-saucers #t) ;deprecated because it's a meme (and it eventually crashes the game), it's funny though.
+            (someone-fire-yellow-3 (-> s1-0 pos) (-> s1-0 vel) (-> proc root trans))
+          )|#
+          (
+            (and 
+            (= gunmod-fireball #t) ;fireball
+            (rand-vu-percent? 
+                (+ 0.16 
+                    (/ notoriety-level 100)
+                )
+            )
+            )
+            (spawn-target-fireball proj-type (-> s1-0 pos) (-> s1-0 vel) 827000.0)
+          )
+          ((= gunmod-ratshooter #t) ;rats
+            (quick-rat! (-> s1-0 pos))
+          )
+          ((= gunmod-nukeonly #t) ;nukes
+            (someone-fire-dark-3 (-> s1-0 pos) (-> s1-0 vel))
+          )
+          ((= gunmod-freeze #t) ;freeze
+            (spawn-projectile proj-type s1-0 proc *default-dead-pool*)
+          )
+          (else
+            (spawn-projectile proj-type s1-0 proc *default-dead-pool*)
+          )
+    )
+    (none)
+)
+
+(defun someone-fire-red ((proj-type type) (arg0 vector) (arg1 vector))
+    (cond
+        ((= gunmod-bigshot #t)
+            (process-spawn
+            gun-red-shot
+            (-> *target* gun fire-point)
+            (-> *target* gun fire-dir-out)
+            :name "gun-red-shot"
+            :to (ppointer->process (-> *target* gun gun))
+            )
+        )
+    )
+    (none)
+)

@@ -29,6 +29,23 @@ Like encounter bosses, fight satellites, and to farm
 in wascity. Some quests go here, that entail to accessing
 areas like the palace or the arena with process-platforms spawned
 
+(GUN MODS TOTAL)
+|YELLOW|
+gunmod-fireball - IMPLEMENTED
+gunmod-nukeonly - IMPLEMENTED
+gunmod-freeze
+|RED|
+gunmod-bigshot - IMPLEMENTED
+gunmod-sheild
+gunmod-missles (chance to fire missles that explode on impact)
+|BLUE|
+gunmod-ammo (some shots save ammo)
+gunmod-disperser (chance to spawn gun-blue-3 around jak per shot)
+|DARK|
+gunmod-morpher (spawns a random NPC-init-by-other list)
+gunmod-randomshot (spawns a random projectile)
+gunmod-reaper (chance to spawn a mini dark maker ship that fires dark-grenades everywhere)
+
 TODO:
 - (optional) add to title screen, like a dark ship or enemies in the background, or the rage ghost
 - (CRITICAL) Add vin-hints at the wascity-doors, also provide a shop and an extra hidden option for TP-FB, once you take out all of it's legs. Try to make it an actual process that summons a menu

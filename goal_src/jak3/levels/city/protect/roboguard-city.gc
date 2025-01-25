@@ -1684,6 +1684,25 @@
 (defstate explode (roboguard-city)
   :virtual #t
   :enter (behavior ()
+    (when (<= (-> self hit-points) 0.0)
+      (when *target-battle!*
+          (let ((enemy-name (remap-enemy-type-name (-> self type))))
+            ;(format #t "DEATH TO ALL SUCC-HEADS! via ~s" enemy-name)
+            (cond ((and
+                  (= enemy-name 'crimson-guard)
+                  (> flr-ally 0)
+                  )
+                  (-! flr-ally 1)
+                  (send-ally-death)
+              )
+              (else
+                  (-! flr-enemy 1)
+                  (send-enemy-death)
+              )
+            )
+          )
+        )
+     )
     (sound-play "robo-explode")
     (let ((v1-2 (-> self root root-prim)))
       (set! (-> v1-2 prim-core collide-as) (collide-spec))

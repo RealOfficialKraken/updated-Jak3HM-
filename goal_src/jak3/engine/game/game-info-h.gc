@@ -280,6 +280,11 @@
   (define autosave-delayed #f)
   (define auto-i 0)
 
+  ;firefight stuff
+  (define-extern *target-battle!* symbol)
+  (define-extern flr-ally int)
+  (define-extern flr-enemy int)
+
   (define *spawn-vec* (new-stack-vector0))
   (defun-extern boss-brute! vector none)
   (define in-pre-tutorial? #f)
@@ -337,10 +342,18 @@
 
 
   ;gunmods (this section has not yet been implemented)
-  (defun-extern spawn-target-fireball vector vector float none)
+  (define-extern spawn-target-fireball (function type vector vector float none))
+  (defun-extern quick-rat! vector none)
+  (defun-extern someone-fire-dark-3 vector vector none)
+  (defun-extern someone-fire-yellow-3 vector vector vector none)
 
+  (define gunmod-bigshot #f)
+  (define gunmod-attached? #f)
+  (define gunmod-nukeonly #f)
   (define gunmod-freeze #f)
   (define gunmod-fireball #f)
+  (define gunmod-ratshooter #f)
+  (define gunmod-saucers #f)
 
   (defun-extern drop-loot-crate! vector float float none)
   (defun-extern group-drop! vector float float none)
