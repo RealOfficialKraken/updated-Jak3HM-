@@ -340,6 +340,7 @@
   (define skill-cars-string3 "")
   (define skill-cars-string4 "")
 
+  (defun-extern toggle-freeze none)
 
   ;gunmods (this section has not yet been implemented)
   (define-extern spawn-target-fireball (function type vector vector float none))
@@ -347,13 +348,40 @@
   (defun-extern someone-fire-dark-3 vector vector none)
   (defun-extern someone-fire-yellow-3 vector vector vector none)
 
-  (define gunmod-bigshot #f)
   (define gunmod-attached? #f)
+  ;red
+  (define gunmod-bigshot #f)
+  (define gunmod-sheild #f)
+  (define gunmod-missles #f)
+  ;yellow
   (define gunmod-nukeonly #f)
   (define gunmod-freeze #f)
   (define gunmod-fireball #f)
+  ;blue
+  (define gunmod-ammo #f)
+  (define gunmod-disperser #f)
+  (define gunmod-airstrike #f)
+  ;dark
+  (define gunmod-morpher #f)
+  (define gunmod-randomshot #f)
+  (define gunmod-reaper #f)
+
+  ;extra
   (define gunmod-ratshooter #f)
   (define gunmod-saucers #f)
+
+  (define red-1s "???")
+  (define red-2s "???")
+  (define red-3s "???")
+  (define yellow-1s "???")
+  (define yellow-2s "???")
+  (define yellow-3s "???")
+  (define blue-1s "???")
+  (define blue-2s "???")
+  (define blue-3s "???")
+  (define dark-1s "???")
+  (define dark-2s "???")
+  (define dark-3s "???")
 
   (defun-extern drop-loot-crate! vector float float none)
   (defun-extern group-drop! vector float float none)

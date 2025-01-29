@@ -34,6 +34,7 @@
 (defstate active (task-manager-city-vehicle-training-hover-zone-1)
   :virtual #t
   :code (behavior ()
+    (set! in-desert-game-task? #t)
     (until #f
       (if (and *target* (focus-test? *target* pilot))
           (goto cfg-7)
@@ -119,6 +120,7 @@
 (defstate active (task-manager-city-vehicle-training-hover-zone-2)
   :virtual #t
   :code (behavior ()
+    (set! in-desert-game-task? #t)
     (set-time! (-> self state-time))
     (until #f
       (cond
@@ -179,6 +181,7 @@
     ((-> (method-of-object self wait) trans))
     )
   :code (behavior ()
+    (set! in-desert-game-task? #t)
     (suspend-for (seconds 5))
     (until (< 327680.0
               (vector-vector-xz-distance (target-pos 0) (new 'static 'vector :x -285696.0 :y 36044.8 :z 5443625.0 :w 1.0))
@@ -215,6 +218,7 @@
     '()
     )
   :code (behavior ()
+    (set! in-desert-game-task? #t)
     (local-vars (v1-22 symbol))
     (send-event (ppointer->process *time-of-day*) 'change 'hour 8)
     (send-event (ppointer->process *time-of-day*) 'change 'ratio 0.0)
@@ -244,6 +248,7 @@
 (defstate active (task-manager-blackout)
   :virtual #t
   :code (behavior ()
+    (set! in-desert-game-task? #t)
     (persist-with-delay *setting-control* 'task-manager-blackout (seconds 10) 'music 'portattk 0.0 0)
     (persist-with-delay
       *setting-control*

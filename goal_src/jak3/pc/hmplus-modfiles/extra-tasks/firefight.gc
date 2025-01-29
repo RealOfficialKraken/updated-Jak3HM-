@@ -75,7 +75,8 @@ Add the symbol in both of the side's push states
     "firefight start params, or check to see if battle is already occuring since death/load resets the task. ALSO set the vectors for enemy and ally"
     :virtual #t
     :code (behavior ()
-    (when (or
+    (suspend)
+    #|(when (or
             (= flr-ally 0)
             (= flr-enemy 0)
           )
@@ -151,7 +152,7 @@ Add the symbol in both of the side's push states
             (format *stdcon* "firefight active at ~s, but player is outside of the level" (-> self level-string))
         )
         (suspend)
-    )
+    )|#
     )
 )
 

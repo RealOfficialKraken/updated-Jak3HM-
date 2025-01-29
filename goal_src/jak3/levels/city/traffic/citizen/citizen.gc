@@ -93,7 +93,7 @@
   (logior! (-> this enemy-flags) (enemy-flag attackable attackable-backup))
   ;(set! (-> this hit-points) (-> this enemy-info default-hit-points))
   (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
-      (set! (-> this hit-points) (+ (* 2.0 (-> this enemy-info default-hit-points)) (* (the float enemy-noto) 3)))
+      (set! (-> this hit-points) (+ (* 6.0 (-> this enemy-info default-hit-points)) (* (the float enemy-noto) 3)))
       (set! (-> this hit-points) (+ (-> this enemy-info default-hit-points) (* (the float enemy-noto) 3)))
     )
   (set! (-> this fated-time) 0)

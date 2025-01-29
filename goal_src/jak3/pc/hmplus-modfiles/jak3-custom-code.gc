@@ -30,17 +30,21 @@ in wascity. Some quests go here, that entail to accessing
 areas like the palace or the arena with process-platforms spawned
 
 (GUN MODS TOTAL)
+Gun mods can be accessed in the mod-menu, and selected via dpad for the color.
+Then, you can choose the gun mods for that specific color, and each of them are different.
+Saving the gunmods to the save file might require different fanagling with tasks somehow
 |YELLOW|
 gunmod-fireball - IMPLEMENTED
 gunmod-nukeonly - IMPLEMENTED
-gunmod-freeze
+gunmod-freeze (afflicts targets with the gun-dark-2 effect)
 |RED|
 gunmod-bigshot - IMPLEMENTED
-gunmod-sheild
+gunmod-sheild (fires the projectile 3 times all around jak by 90 degrees)
 gunmod-missles (chance to fire missles that explode on impact)
 |BLUE|
 gunmod-ammo (some shots save ammo)
 gunmod-disperser (chance to spawn gun-blue-3 around jak per shot)
+gunmod-airstrike (chance to spawn a fireball above the target projectile hit)
 |DARK|
 gunmod-morpher (spawns a random NPC-init-by-other list)
 gunmod-randomshot (spawns a random projectile)
@@ -663,7 +667,7 @@ BUGS:
         (cpad-pressed? 0 down)
         )
     (+! menu-slot 1)
-    (when (> menu-slot 1)
+    (when (> menu-slot 11)
         (set! menu-slot 0)
     )
     )
@@ -675,7 +679,7 @@ BUGS:
         )
     (-! menu-slot 1)
     (when (< menu-slot 0)
-        (set! menu-slot 1)
+        (set! menu-slot 11)
     )
     )
 )
@@ -1164,7 +1168,7 @@ BUGS:
 )
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit~%<COLOR_ORANGE>(<COLOR_PINK>SQUARE<COLOR_ORANGE>) <COLOR_GREEN>~s"
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit~%<COLOR_ORANGE>(<COLOR_PINK>SQUARE<COLOR_ORANGE>) <COLOR_GREEN>Attach Gun Mod"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1342,31 +1346,632 @@ BUGS:
                                         )
 (draw-sprite2d-xy s2-0 0 5 730 108 (new 'static 'rgba :a #x40) #x3fffff)
 )
-    (when
-    (= menu-slot 0)
-        (clear matt-str)
-        (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_BLUE>Gun Mods:~%~%<COLOR_ORANGE>??? <COLOR_GREEN>(<)~%<COLOR_ORANGE>??? <COLOR_WHITE>(<)"
-        )
-        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
-        (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    (when (task-node-closed? (game-task-node mody-fireball))
+        (set! yellow-1s "Chanced Fireball")
     )
-    (when
-    (= menu-slot 1)
+    (when (task-node-closed? (game-task-node mody-nukeonly))
+        (set! yellow-2s "Mini Nuke")
+    )
+    (when (task-node-closed? (game-task-node mody-freeze))
+        (set! yellow-3s "Silver Freeze")
+    )
+    (when (task-node-closed? (game-task-node modr-bigshot))
+        (set! red-1s "Big Shot")
+    )
+    (when (task-node-closed? (game-task-node modr-shield))
+        (set! red-2s "Quad Shot")
+    )
+    (when (task-node-closed? (game-task-node modr-missles))
+        (set! red-3s "Commando Shot")
+    )
+    (when (task-node-closed? (game-task-node modb-ammo))
+        (set! blue-1s "S.D.M.G.")
+    )
+    (when (task-node-closed? (game-task-node modb-disperser))
+        (set! blue-2s "Disperser")
+    )
+    (when (task-node-closed? (game-task-node modb-airstrike))
+        (set! blue-3s "Star Strike")
+    )
+    (when (task-node-closed? (game-task-node modd-morpher))
+        (set! dark-1s "Morpher")
+    )
+    (when (task-node-closed? (game-task-node modd-random))
+        (set! dark-2s "Random Shot")
+    )
+    (when (task-node-closed? (game-task-node modd-reaper))
+        (set! dark-3s "Reaper")
+    )
+    (cond
+    ((= menu-slot 0)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_BLUE>Gun Mods:~%~%<COLOR_ORANGE>??? <COLOR_WHITE>(<)~%<COLOR_ORANGE>??? <COLOR_GREEN>(<)"
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_GREEN>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
         (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (cond
+        ((and
+        (task-node-closed? (game-task-node modr-bigshot))
+        (cpad-pressed? 0 square)
+        )
+            (set! gunmod-bigshot #t)
+        )
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modr-bigshot))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-bigshot #f)
+        )
+    )
+    ((= menu-slot 1)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node modr-shield))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-sheild #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modr-shield))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-sheild #f)
+        )
+        )
+    ((= menu-slot 2)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node modr-missles))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-missles #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modr-missles))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-missles #t)
+        )
+        )
+    ((= menu-slot 3)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_GREEN>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node mody-fireball))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-fireball #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node mody-fireball))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-fireball #f)
+        )
+        )
+    ((= menu-slot 4)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_GREEN>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node mody-nukeonly))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-nukeonly #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node mody-nukeonly))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-nukeonly #f)
+        )
+        )
+    ((= menu-slot 5)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node mody-freeze))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-freeze #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node mody-freeze))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-freeze #f)
+        )
+        )
+    ((= menu-slot 6)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node modb-ammo))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-ammo #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modb-ammo))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-ammo #f)
+        )
+        )
+    ((= menu-slot 7)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node modb-disperser))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-disperser #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modb-disperser))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-disperser #f)
+        )
+        )
+    ((= menu-slot 8)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node modb-airstrike))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-airstrike #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modb-airstrike))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-airstrike #f)
+        )
+        )
+    ((= menu-slot 9)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node modd-morpher))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-morpher #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modd-morpher))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-morpher #f)
+        )
+        )
+    ((= menu-slot 10)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node modd-random))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-randomshot #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modd-random))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-randomshot #f)
+        )
+        )
+    ((= menu-slot 11)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        red-1s
+        red-2s
+        red-3s
+        yellow-1s
+        yellow-2s
+        yellow-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_CYAN>BLUE:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_PINK>DARK:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)"
+        blue-1s
+        blue-2s
+        blue-3s
+        dark-1s
+        dark-2s
+        dark-3s
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 120 170 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (when
+        (and
+        (task-node-closed? (game-task-node modd-reaper))
+        (cpad-pressed? 0 square)
+        )
+        (set! gunmod-reaper #t)
+        )
+        (when
+        (and
+        (task-node-closed? (game-task-node modd-reaper))
+        (cpad-pressed? 0 circle)
+        )
+        (set! gunmod-reaper #f)
+        )
+        )
     )
 )
 
@@ -1464,7 +2069,7 @@ BUGS:
     )
     (cond
         ((>= notoriety-level 40)
-            (set! skill-noto-string3 "<COLOR_GREEN>300 percent increased melee damage")
+            (set! skill-noto-string3 "<COLOR_GREEN>10x increased melee damage")
         )
         (else
             (set! skill-noto-string3 "<COLOR_RED>LOCKED")
@@ -1514,16 +2119,16 @@ BUGS:
             )
     )
     (cond
-        ((>= guns-level 5)
-            (set! skill-guns-string1 "<COLOR_GREEN>Fire rate increased per level on semi auto weapons")
+        ((>= guns-level 4)
+            (set! skill-guns-string1 "<COLOR_GREEN>Pickups give more ammunition")
         )
         (else
             (set! skill-guns-string1 "<COLOR_RED>LOCKED")
         )
     )
     (cond
-        ((>= guns-level 8)
-            (set! skill-guns-string2 "<COLOR_GREEN>Gun ammo regenerates very slowly")
+        ((>= guns-level 9)
+            (set! skill-guns-string2 "<COLOR_GREEN>Fire rate increased per level on semi auto weapons")
         )
         (else
             (set! skill-guns-string2 "<COLOR_RED>LOCKED")
@@ -1531,14 +2136,14 @@ BUGS:
     )
     (cond
         ((>= guns-level 16)
-            (set! skill-guns-string3 "<COLOR_GREEN>Projectiles have a 6 percent chance to explode on impact")
+            (set! skill-guns-string3 "<COLOR_GREEN>Projectiles have a 6 percent chance to spawn another projectile")
         )
         (else
             (set! skill-guns-string3 "<COLOR_RED>LOCKED")
         )
     )
     (cond
-        ((>= guns-level 24)
+        ((>= guns-level 20)
             (set! skill-guns-string4 "<COLOR_GREEN>Huge ammo bags")
         )
         (else
@@ -1549,7 +2154,7 @@ BUGS:
     (= menu-slot 1)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_RED>Guns:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Jak's guns can be upgraded to fire faster, bigger, and stronger.~%~%<COLOR_YELLOW>Deplete ammo to earn XP~%~%~%<COLOR_ORANGE>At Level 4~%~s~%<COLOR_ORANGE>At Level 8~%~s~%<COLOR_ORANGE>At Level 16~%~s~%<COLOR_ORANGE>At Level 24~%~S"
+        (format matt-str "<COLOR_RED>Guns:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Jak's guns can be upgraded to fire faster, bigger, and stronger.~%~%<COLOR_YELLOW>Deplete ammo to earn XP~%~%~%<COLOR_ORANGE>At Level 4~%~s~%<COLOR_ORANGE>At Level 9~%~s~%<COLOR_ORANGE>At Level 16~%~s~%<COLOR_ORANGE>At Level 20~%~S"
         guns-level
         skill-guns-string1
         skill-guns-string2
@@ -1597,7 +2202,7 @@ BUGS:
         )
     )
     (cond
-        ((>= cars-level 12)
+        ((>= cars-level 14)
             (set! skill-cars-string3 "<COLOR_GREEN>Flat 12 percent increased vehicle boost strength")
         )
         (else
@@ -1608,7 +2213,7 @@ BUGS:
     (= menu-slot 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_PINK>Vehicles:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Wasteland cars can have better output damage on guns~%~%<COLOR_YELLOW>Destroy other Marauder Cars to earn XP~%~%~%<COLOR_ORANGE>At Level 2~%~s~%<COLOR_ORANGE>At Level 6~%~s~%<COLOR_ORANGE>At Level 12~%~s"
+        (format matt-str "<COLOR_PINK>Vehicles:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Wasteland cars can have better output damage on guns~%~%<COLOR_YELLOW>Destroy other Marauder Cars to earn XP~%~%~%<COLOR_ORANGE>At Level 2~%~s~%<COLOR_ORANGE>At Level 6~%~s~%<COLOR_ORANGE>At Level 14~%~s"
         cars-level
         skill-cars-string1
         skill-cars-string2
@@ -1857,7 +2462,7 @@ BUGS:
             (let ((ani-num 0))
                 (clear matt-str)
                 (clear *pc-encoded-matt-str*)
-                (format matt-str "~s) <COLOR_WHITE>Quest Updated"
+                (format matt-str "~s) <COLOR_WHITE>New Skills Unlocked!"
                 hint-string
                 )
                 (when (< r3-hinti 0)

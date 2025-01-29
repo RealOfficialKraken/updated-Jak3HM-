@@ -4684,6 +4684,7 @@
   :virtual #t
   :parent (task-manager-blow-barricade active)
   :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
+    (set! in-desert-game-task? #t)
     (case message
       (('checkpoint)
        #f
@@ -4987,6 +4988,7 @@
 (defstate active (task-manager-port-fight)
   :virtual #t
   :enter (behavior ()
+    (set! in-desert-game-task? #t)
     (let ((t9-0 (-> (method-of-type task-manager active) enter)))
       (if t9-0
           (t9-0)

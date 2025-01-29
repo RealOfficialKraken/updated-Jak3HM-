@@ -16,6 +16,10 @@
     (define draw-levelup-int 0)
     (define xp-bar-spawned? #f)
 
+    (define levelup-color #f)
+    (define lui 0)
+    (define levelup-string "")
+
 (defun levelup-reset-color ()
     (set! (-> *part-id-table* 1701 init-specs 4 initial-valuef) 160.0) ;r 1
     (set! (-> *part-id-table* 1701 init-specs 5 initial-valuef) 0.0) ;g 1
@@ -55,8 +59,8 @@
     (none)
 )
 
-(defpartgroup group-level-explode
-  :id 999999
+(defpartgroup group-level-explode-1
+  :id 1777
   :flags (sp0 sp4)
   :bounds (static-bspherem 0 0 0 20)
   :parts ((sp-item 1701 :flags (sp3) :period (seconds 30) :length (seconds 0.017))
@@ -70,103 +74,16 @@
   )
 
 (defun levelup-glow-yellow ()
-    (set! (-> *part-id-table* 1701 init-specs 5 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1701 init-specs 6 initial-valuef) 255.0) ;g
-    (set! (-> *part-id-table* 1701 init-specs 7 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1701 init-specs 8 initial-valuef) (the float notoriety-level)) ;a
-;
-    (set! (-> *part-id-table* 1702 init-specs 5 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1702 init-specs 6 initial-valuef) 255.0) ;g
-    (set! (-> *part-id-table* 1702 init-specs 7 initial-valuef) 0.0) ;b
-    (set! (-> *part-id-table* 1702 init-specs 8 initial-valuef) (the float (+ notoriety-level 1))) ;a ;(the float (+ notoriety-level 1))
-;
-    (set! (-> *part-id-table* 1703 init-specs 5 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1703 init-specs 6 initial-valuef) 255.0) ;g
-    (set! (-> *part-id-table* 1703 init-specs 7 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1703 init-specs 8 initial-valuef) (the float notoriety-level)) ;a
-;
-    (set! (-> *part-id-table* 1704 init-specs 5 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1704 init-specs 6 initial-valuef) 255.0) ;g
-    (set! (-> *part-id-table* 1704 init-specs 7 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1704 init-specs 8 initial-valuef) (the float notoriety-level)) ;a
-;
-    (set! (-> *part-id-table* 1705 init-specs 8 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1705 init-specs 9 initial-valuef) 255.0) ;g
-    (set! (-> *part-id-table* 1705 init-specs 10 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1705 init-specs 11 initial-valuef) (the float notoriety-level)) ;a
-;
-    (set! (-> *part-id-table* 1706 init-specs 7 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1706 init-specs 8 initial-valuef) 255.0) ;g
-    (set! (-> *part-id-table* 1706 init-specs 9 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1706 init-specs 10 initial-valuef) (the float notoriety-level)) ;a
-;
-    (set! (-> *part-id-table* 1707 init-specs 6 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1707 init-specs 7 initial-valuef) 255.0) ;g
-    (set! (-> *part-id-table* 1707 init-specs 8 initial-valuef) 0.0) ;b
-    
-;
-    (cond
-      ((logtest? (-> *part-group-id-table* 999999 flags) (sp-group-flag sp13))
-       (set! (-> *launch-matrix* trans quad) (-> (target-pos 0) quad))
-       (part-tracker-spawn part-tracker-subsampler :to *active-pool* :group (-> *part-group-id-table* 999999))
-       )
-      (else
-        (set! (-> *launch-matrix* trans quad) (-> (target-pos 0) quad))
-        (part-tracker-spawn part-tracker :to *active-pool* :group (-> *part-group-id-table* 999999))
-        )
-      )
-    (set! kill-eco-delay #t)
-    (set! killeci 0)
+    (set! levelup-string "noto")
+    (set! lui 0)
+    (set! levelup-color #t)
     (none)
 )
 
 (defun levelup-glow-red ()
-    (set! (-> *part-id-table* 1701 init-specs 5 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1701 init-specs 6 initial-valuef) 0.0) ;g
-    (set! (-> *part-id-table* 1701 init-specs 7 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1701 init-specs 8 initial-valuef) (* (the float guns-level) 8.0)) ;a
-;
-    (set! (-> *part-id-table* 1702 init-specs 5 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1702 init-specs 6 initial-valuef) 0.0) ;g
-    (set! (-> *part-id-table* 1702 init-specs 7 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1702 init-specs 8 initial-valuef) (* (the float guns-level) 8.0)) ;a
-;
-    (set! (-> *part-id-table* 1703 init-specs 5 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1703 init-specs 6 initial-valuef) 0.0) ;g
-    (set! (-> *part-id-table* 1703 init-specs 7 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1703 init-specs 8 initial-valuef) (* (the float guns-level) 8.0)) ;a
-;
-    (set! (-> *part-id-table* 1704 init-specs 5 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1704 init-specs 6 initial-valuef) 0.0) ;g
-    (set! (-> *part-id-table* 1704 init-specs 7 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1704 init-specs 8 initial-valuef) (* (the float guns-level) 8.0)) ;a
-;
-    (set! (-> *part-id-table* 1705 init-specs 8 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1705 init-specs 9 initial-valuef) 0.0) ;g
-    (set! (-> *part-id-table* 1705 init-specs 10 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1705 init-specs 11 initial-valuef) (* (the float guns-level) 8.0)) ;a
-;
-    (set! (-> *part-id-table* 1706 init-specs 7 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1706 init-specs 8 initial-valuef) 0.0) ;g
-    (set! (-> *part-id-table* 1706 init-specs 9 initial-valuef) 0.0) ;b
-;    (set! (-> *part-id-table* 1706 init-specs 10 initial-valuef) (* (the float guns-level) 8.0)) ;a
-;
-    (set! (-> *part-id-table* 1707 init-specs 6 initial-valuef) 255.0) ;r
-    (set! (-> *part-id-table* 1707 init-specs 7 initial-valuef) 0.0) ;g
-    (set! (-> *part-id-table* 1707 init-specs 8 initial-valuef) 0.0) ;b    
-;
-    (cond
-      ((logtest? (-> *part-group-id-table* 999999 flags) (sp-group-flag sp13))
-       (set! (-> *launch-matrix* trans quad) (-> (target-pos 0) quad))
-       (part-tracker-spawn part-tracker-subsampler :to *active-pool* :group (-> *part-group-id-table* 999999))
-       )
-      (else
-        (set! (-> *launch-matrix* trans quad) (-> (target-pos 0) quad))
-        (part-tracker-spawn part-tracker :to *active-pool* :group (-> *part-group-id-table* 999999))
-        )
-      )    
-    (set! kill-eco-delay #t)
-    (set! killeci 0)
+    (set! levelup-string "guns")
+    (set! lui 0)
+    (set! levelup-color #t)
     (none)
 )
 
@@ -174,16 +91,6 @@
 
 (defun levelup-glow-dark ()
     (levelup-reset-color)
-    (cond
-      ((logtest? (-> *part-group-id-table* 999999 flags) (sp-group-flag sp13))
-       (set! (-> *launch-matrix* trans quad) (-> (target-pos 0) quad))
-       (part-tracker-spawn part-tracker-subsampler :to *active-pool* :group (-> *part-group-id-table* 999999))
-       )
-      (else
-        (set! (-> *launch-matrix* trans quad) (-> (target-pos 0) quad))
-        (part-tracker-spawn part-tracker :to *active-pool* :group (-> *part-group-id-table* 999999))
-        )
-      )
     (none)
 )
 
@@ -432,6 +339,15 @@
         )
     )
     (set! (-> *target* fact health) (-> *target* fact health-max))
+    (when
+        (or
+            (= notoriety-level 9)
+            (= notoriety-level 24)
+            (= notoriety-level 39)
+            (= notoriety-level 59)
+        )
+        (r3-hint)
+    )
     (auto-save-user)
     (levelup-glow-yellow)
     (none)
@@ -444,6 +360,15 @@
     (set! draw-levelup-noto #t)
     (set! noto-string "<COLOR_RED>Guns<COLOR_YELLOW>")
     (set! draw-levelup-int (-> *game-info* auto-save-count))
+    (when
+        (or
+            (= guns-level 3)
+            (= guns-level 8)
+            (= guns-level 15)
+            (= guns-level 19)
+        )
+        (r3-hint)
+    )
     (auto-save-user)
     (levelup-glow-red)
     (none)
@@ -458,6 +383,15 @@
     (set! draw-levelup-noto #t)
     (set! noto-string "<COLOR_PINK>Vehicle<COLOR_YELLOW>")
     (set! draw-levelup-int (-> *game-info* total-deaths))
+    (when
+        (or
+            (= cars-level 1)
+            (= cars-level 5)
+            (= cars-level 13)
+            (= cars-level 19)
+        )
+        (r3-hint)
+    )
     (auto-save-user)
     (levelup-glow-dark)
     (none)
@@ -812,6 +746,166 @@
   )
 
 (defun update-xp! ()
+
+    (when ;the level-up recolored particle setup, since it crashes when done all at once, I want to make sure the game takes it's time on setting up these big particles
+        (and 
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (= levelup-color #t)
+        )
+        (+! lui 1)
+        (when (= lui 1)
+            (cond
+                ((string= levelup-string "reset")
+                    (set! (-> *part-id-table* 1701 init-specs 4 initial-valuef) 160.0) ;r 1
+                    (set! (-> *part-id-table* 1701 init-specs 5 initial-valuef) 0.0) ;g 1
+                    (set! (-> *part-id-table* 1701 init-specs 6 initial-valuef) 255.0) ;b 1
+                )
+                ((string= levelup-string "noto")
+                    (set! (-> *part-id-table* 1701 init-specs 5 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1701 init-specs 6 initial-valuef) 255.0) ;g
+                    (set! (-> *part-id-table* 1701 init-specs 7 initial-valuef) 0.0) ;b
+                )
+                ((string= levelup-string "guns")
+                    (set! (-> *part-id-table* 1701 init-specs 5 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1701 init-specs 6 initial-valuef) 0.0) ;g
+                    (set! (-> *part-id-table* 1701 init-specs 7 initial-valuef) 0.0) ;b
+                )
+            )
+        )
+        (when (= lui 3)
+            (cond
+                ((string= levelup-string "reset")
+                    (set! (-> *part-id-table* 1702 init-specs 5 initial-valuef) 160.0) ;r 2
+                    (set! (-> *part-id-table* 1702 init-specs 6 initial-valuef) 30.0) ;g 2
+                    (set! (-> *part-id-table* 1702 init-specs 7 initial-valuef) 255.0) ;b 2
+                    (set! (-> *part-id-table* 1702 init-specs 8 initial-valuef) 128.0) ;a
+                )
+                ((string= levelup-string "noto")
+                    (set! (-> *part-id-table* 1702 init-specs 5 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1702 init-specs 6 initial-valuef) 255.0) ;g
+                    (set! (-> *part-id-table* 1702 init-specs 7 initial-valuef) 0.0) ;b
+                    (set! (-> *part-id-table* 1702 init-specs 8 initial-valuef) (the float (+ notoriety-level 1))) ;a ;(the float (+ notoriety-level 1))
+                )
+                ((string= levelup-string "guns")
+                    (set! (-> *part-id-table* 1702 init-specs 5 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1702 init-specs 6 initial-valuef) 0.0) ;g
+                    (set! (-> *part-id-table* 1702 init-specs 7 initial-valuef) 0.0) ;b
+                )
+            )
+        )
+        (when (= lui 5)
+            (cond
+                ((string= levelup-string "reset")
+                    (set! (-> *part-id-table* 1703 init-specs 5 initial-valuef) 20.0) ;r 3
+                    (set! (-> *part-id-table* 1703 init-specs 6 initial-valuef) 40.0) ;g 3
+                    (set! (-> *part-id-table* 1703 init-specs 7 initial-valuef) 128.0) ;b 3
+                )
+                ((string= levelup-string "noto")
+                    (set! (-> *part-id-table* 1703 init-specs 5 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1703 init-specs 6 initial-valuef) 255.0) ;g
+                    (set! (-> *part-id-table* 1703 init-specs 7 initial-valuef) 0.0) ;b
+                )
+                ((string= levelup-string "guns")
+                    (set! (-> *part-id-table* 1703 init-specs 5 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1703 init-specs 6 initial-valuef) 0.0) ;g
+                    (set! (-> *part-id-table* 1703 init-specs 7 initial-valuef) 0.0) ;b
+                )
+            )
+        )
+        (when (= lui 7)
+            (cond
+                ((string= levelup-string "reset")
+                    (set! (-> *part-id-table* 1704 init-specs 5 initial-valuef) 160.0) ;r 4
+                    (set! (-> *part-id-table* 1704 init-specs 6 initial-valuef) 30.0) ;g 4 
+                    (set! (-> *part-id-table* 1704 init-specs 7 initial-valuef) 128.0) ;b 4
+                )
+                ((string= levelup-string "noto")
+                    (set! (-> *part-id-table* 1704 init-specs 5 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1704 init-specs 6 initial-valuef) 255.0) ;g
+                    (set! (-> *part-id-table* 1704 init-specs 7 initial-valuef) 0.0) ;b
+                )
+                ((string= levelup-string "guns")
+                    (set! (-> *part-id-table* 1704 init-specs 5 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1704 init-specs 6 initial-valuef) 0.0) ;g
+                    (set! (-> *part-id-table* 1704 init-specs 7 initial-valuef) 0.0) ;b
+                )
+            )
+        )
+        (when (= lui 9)
+            (cond
+                ((string= levelup-string "reset")
+                    (set! (-> *part-id-table* 1705 init-specs 8 initial-valuef) 128.0) ;r 5
+                    (set! (-> *part-id-table* 1705 init-specs 9 initial-valuef) 128.0) ;g 5
+                    (set! (-> *part-id-table* 1705 init-specs 10 initial-valuef) 128.0) ;b 5
+                )
+                ((string= levelup-string "noto")
+                    (set! (-> *part-id-table* 1705 init-specs 8 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1705 init-specs 9 initial-valuef) 255.0) ;g
+                    (set! (-> *part-id-table* 1705 init-specs 10 initial-valuef) 0.0) ;b
+                )
+                ((string= levelup-string "guns")
+                    (set! (-> *part-id-table* 1705 init-specs 8 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1705 init-specs 9 initial-valuef) 0.0) ;g
+                    (set! (-> *part-id-table* 1705 init-specs 10 initial-valuef) 0.0) ;b
+                )
+            )
+        )
+        (when (= lui 11)
+            (cond
+                ((string= levelup-string "reset")
+                    (set! (-> *part-id-table* 1706 init-specs 7 initial-valuef) 128.0) ;r 6
+                    (set! (-> *part-id-table* 1706 init-specs 8 initial-valuef) 32.0) ;g 6
+                    (set! (-> *part-id-table* 1706 init-specs 9 initial-valuef) 255.0) ;b 6
+                )
+                ((string= levelup-string "noto")
+                    (set! (-> *part-id-table* 1706 init-specs 7 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1706 init-specs 8 initial-valuef) 255.0) ;g
+                    (set! (-> *part-id-table* 1706 init-specs 9 initial-valuef) 0.0) ;b
+                )
+                ((string= levelup-string "guns")
+                    (set! (-> *part-id-table* 1706 init-specs 7 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1706 init-specs 8 initial-valuef) 0.0) ;g
+                    (set! (-> *part-id-table* 1706 init-specs 9 initial-valuef) 0.0) ;b
+                )
+            )
+        )
+        (when (= lui 13)
+            (cond
+                ((string= levelup-string "reset")
+                    (set! (-> *part-id-table* 1707 init-specs 6 initial-valuef) 255.0) ;r 7
+                    (set! (-> *part-id-table* 1707 init-specs 7 initial-valuef) 255.0) ;g 7
+                    (set! (-> *part-id-table* 1707 init-specs 8 initial-valuef) 255.0) ;b 7 
+                )
+                ((string= levelup-string "noto")
+                    (set! (-> *part-id-table* 1707 init-specs 6 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1707 init-specs 7 initial-valuef) 255.0) ;g
+                    (set! (-> *part-id-table* 1707 init-specs 8 initial-valuef) 0.0) ;b
+                )
+                ((string= levelup-string "guns")
+                    (set! (-> *part-id-table* 1707 init-specs 6 initial-valuef) 255.0) ;r
+                    (set! (-> *part-id-table* 1707 init-specs 7 initial-valuef) 0.0) ;g
+                    (set! (-> *part-id-table* 1707 init-specs 8 initial-valuef) 0.0) ;b    
+                )
+            )
+        )
+        (when (= lui 15)
+            (cond
+                ((logtest? (-> *part-group-id-table* 1777 flags) (sp-group-flag sp13))
+                    (set! (-> *launch-matrix* trans quad) (-> (target-pos 0) quad))
+                    (part-tracker-spawn part-tracker-subsampler :to *active-pool* :group (-> *part-group-id-table* 1777))
+                    )
+                (else
+                    (set! (-> *launch-matrix* trans quad) (-> (target-pos 0) quad))
+                    (part-tracker-spawn part-tracker :to *active-pool* :group (-> *part-group-id-table* 1777))
+                    )
+                )
+                (set! kill-eco-delay #t)
+                (set! killeci 0)
+        )
+    )
 
     (when (= kill-eco-delay #t)
         (+! killeci 1)
@@ -1290,13 +1384,27 @@
                 )
                 (set! enemy-noto (rand-vu-int-range 18 19))
             )
-            (when ;ctyport
+            (when ;SEW2
                 (and
+                    (= (-> (level-get-target-inside *level*) name) 'sewb)
+                    (= (-> (level-get-target-inside *level*) name) 'sewc)
+                    (= (-> (level-get-target-inside *level*) name) 'sewd)
+                    (!= enemy-noto 60)
+                )
+                (set! enemy-noto 60)
+            )
+            (cond ;ctyport
+                ((and
+                    (not (task-node-open? (game-task-node city-port-assault-resolution)))
                     (= (-> (level-get-target-inside *level*) name) 'ctyport)
                     (!= enemy-noto 19)
                     (!= enemy-noto 20)
                 )
                 (set! enemy-noto (rand-vu-int-range 19 20))
+            )
+            ((task-node-open? (game-task-node city-port-assault-resolution))
+                (set! enemy-noto 64)
+            )
             )
             (when ;ctyinda
                 (and
@@ -1323,9 +1431,11 @@
             )
             (when ;ctysluma
                 (and
-                    (= (-> (level-get-target-inside *level*) name) 'ctysluma)
-                    (= (-> (level-get-target-inside *level*) name) 'ctyslumb)
-                    (= (-> (level-get-target-inside *level*) name) 'ctyslumc)
+                    (or
+                        (= (-> (level-get-target-inside *level*) name) 'ctysluma)
+                        (= (-> (level-get-target-inside *level*) name) 'ctyslumb)
+                        (= (-> (level-get-target-inside *level*) name) 'ctyslumc)
+                    )
                     (!= enemy-noto 29)
                     (!= enemy-noto 30)
                     (!= enemy-noto 31)

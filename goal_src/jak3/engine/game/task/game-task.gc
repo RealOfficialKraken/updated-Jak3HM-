@@ -1798,12 +1798,33 @@
           (new 'static 'game-task-node-info
             :level 'city
             :task (game-task desert-interceptors)
-            :name "cty-firefight"
+            :name "cty-firefight-introduction"
+            :when-open #f
+            :flags (game-task-node-flag no-percent act1)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "cty-firefight-resolution"
             :when-open #f
             :flags (game-task-node-flag act1 no-percent)
             :parent-node (new 'static 'array game-task-node 4
-              (game-task-node city-start-resolution)
-              
+              (game-task-node cty-firefight-introduction)
               (game-task-node none)
               (game-task-node none)
               (game-task-node none)
@@ -1815,7 +1836,7 @@
               :intro-scene #f
               :resolution-scene #f
               :resolution-scene-continue #f
-              :final-node (game-task-node cty-firefight)
+              :final-node (game-task-node cty-firefight-resolution)
               :vehicle-type #x1b
               :on-complete #f
               :on-fail #f
@@ -1827,6 +1848,270 @@
               ;(ctywide-ff-mh alias ctywide copy ctypesa auto ctypesb auto dummy auto)
               ;(ctywide-mh alias ctywide copy ctypesb special dummy auto dummy auto ctypepb special)
               )
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "mody-fireball"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "mody-nukeonly"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "mody-freeze"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modr-bigshot"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modr-shield"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modr-missles"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modb-ammo"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modb-disperser"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modb-airstrike"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modd-morpher"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modd-random"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "modd-reaper"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
             :open? #f
             :on-close #f
             :reset #f

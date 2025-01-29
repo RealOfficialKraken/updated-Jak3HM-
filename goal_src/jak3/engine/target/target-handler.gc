@@ -352,12 +352,25 @@
                  )
            (s2-1 (and s5-0 (focus-test? s5-0 dead hit)))
            )
+      (when (focus-test? self dark)
+        (set! f30-0 (+ 3.0 (the float notoriety-level)))
+      )
       (set! sv-96
             (the-as symbol (send-event
                              arg0
                              'attack
                              arg2
-                             (static-attack-info :mask (vehicle-impulse-factor) ((id (the-as uint sv-144))
+                             (if (>= notoriety-level 40)
+                              (static-attack-info :mask (vehicle-impulse-factor) ((id (the-as uint sv-144))
+                                                                                 (damage (* f30-0 10))
+                                                                                 (vehicle-damage-factor 1.0)
+                                                                                 (vehicle-impulse-factor 1.0)
+                                                                                 (mode arg1)
+                                                                                 (count (the-as uint s1-0))
+                                                                                 (penetrate-using s0-0)
+                                                                                 )
+                                                 )
+                              (static-attack-info :mask (vehicle-impulse-factor) ((id (the-as uint sv-144))
                                                                                  (damage f30-0)
                                                                                  (vehicle-damage-factor 1.0)
                                                                                  (vehicle-impulse-factor 1.0)
@@ -366,6 +379,7 @@
                                                                                  (penetrate-using s0-0)
                                                                                  )
                                                  )
+                             )
                              )
                     )
             )
