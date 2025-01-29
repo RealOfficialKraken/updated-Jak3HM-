@@ -292,6 +292,7 @@ BUGS:
 )
 
 (defun runs-jak3-every-frame () ;;START RUNNING EVERY FRAME
+
 (when ;autosave-delayed
     (and
         *target*
@@ -2560,14 +2561,15 @@ BUGS:
             )
             (+! r3-hinti2 1)
             (when (>= r3-hinti2 35)
-            (cond
-                ((string= hint-string "<COLOR_YELLOW>(R3")
-                    (set! hint-string "<COLOR_ORANGE>(R3")
-                    (set! r3-hinti2 0)
-                )
-                (else
-                    (set! hint-string "<COLOR_YELLOW>(R3")
-                    (set! r3-hinti2 0)
+                (case-str hint-string
+                    (("<COLOR_YELLOW>(R3")
+                        (set! hint-string "<COLOR_ORANGE>(R3")
+                        (set! r3-hinti2 0)
+                    )
+                    (else
+                        (set! hint-string "<COLOR_YELLOW>(R3")
+                        (set! r3-hinti2 0)
+                    )
                 )
             )
             (when (>= r3-hinti 800)
@@ -2577,7 +2579,8 @@ BUGS:
                 (set! r3-hints #f)
             )
         )
-    )
+    
+    
 
     (when
         (and
