@@ -1064,6 +1064,7 @@ BUGS:
                                         (bucket-id particles)
                                         )
 (draw-sprite2d-xy s2-0 0 5 730 88 (new 'static 'rgba :a #x40) #x3fffff)
+(draw-sprite2d-xy s2-0 0 315 730 27 (new 'static 'rgba :a #x40) #x3fffff)
 )
 )
 (when 
@@ -1343,7 +1344,9 @@ BUGS:
     (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
                                         (bucket-id particles)
                                         )
-(draw-sprite2d-xy s2-0 0 5 730 108 (new 'static 'rgba :a #x40) #x3fffff)
+(draw-sprite2d-xy s2-0 0 5 730 20 (new 'static 'rgba :a #x40) #x3fffff)
+(draw-sprite2d-xy s2-0 70 25 100 290 (new 'static 'rgba :a #x40) #x3fffff)
+(draw-sprite2d-xy s2-0 0 315 730 27 (new 'static 'rgba :a #x40) #x3fffff)
 )
     (when (task-node-closed? (game-task-node mody-fireball))
         (cond
@@ -2070,6 +2073,7 @@ BUGS:
                                         (bucket-id particles)
                                         )
 (draw-sprite2d-xy s2-0 0 5 730 108 (new 'static 'rgba :a #x40) #x3fffff)
+(draw-sprite2d-xy s2-0 0 315 730 27 (new 'static 'rgba :a #x40) #x3fffff)
 )
     (when
     (= menu-slot 0)
@@ -4138,7 +4142,7 @@ BUGS:
 
     (when (= anchor-cooldown #t)
         (+! anchor-cdr 1)
-        (when (>= anchor-cdr 12200)
+        (when (>= anchor-cdr 48200)
             (set! anchor-cdr 0)
             (set! anchor-cooldown #f)
         )
@@ -4733,7 +4737,7 @@ BUGS:
     (let ((fact (new 'static 'fact-info))
           (rnd (rand-vu-int-range 1 2))
           (rnd-crystal (rand-vu-int-range 3 20))
-          (rnd-count-gem (rand-vu-int-range 12 24))
+          (rnd-count-gem (rand-vu-int-range 8 15))
           )
         (when (rand-vu-percent? 0.022)
             (set! rnd 3)

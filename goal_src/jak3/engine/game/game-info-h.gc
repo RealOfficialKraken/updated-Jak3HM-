@@ -247,7 +247,7 @@
 
   (define menu-slot 0)
   (define menu-type 0)
-  (define menu-select 0)
+  (define menu-select 1)
 
   (define in-menu? #f)
   (define in-dialogue? #f)
