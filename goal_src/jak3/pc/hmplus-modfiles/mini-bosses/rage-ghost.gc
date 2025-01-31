@@ -341,8 +341,6 @@
   )|#
 
   ;;-*-Lisp-*-
-(in-package goal)
-
 ;; name: rage-ghost.gc
 ;; name in dgo: rage-ghost
 ;; dgos: MIC
@@ -1223,7 +1221,7 @@
           (set! (-> gp-0 spawn-point quad) (-> self root trans quad))
           (quaternion-identity! (-> gp-0 spawn-quat))
           (set! (-> gp-0 radius) 42200.0)
-          ;(set! (-> gp-0 scale) 1.0)
+          (set! (-> gp-0 scale) 1.0)
           (set! (-> gp-0 group) (-> *part-group-id-table* 1777)) ;(-> *part-group-id-table* 499)
           (set! (-> gp-0 collide-with)
                   (collide-spec backgnd jak crate civilian obstacle vehicle-sphere hit-by-others-list player-list pusher)
@@ -1256,7 +1254,7 @@
      (logclear! (-> this enemy-flags) (enemy-flag use-notice-distance))
      (logior! (-> this enemy-flags) (enemy-flag alert))
      (logior! (-> this focus-status) (focus-status hit))
-     (if (= (-> this hit-points) 0.0)
+     (if (<= (-> this hit-points) 0.0)
          (logior! (-> this focus-status) (focus-status dead))
          )
      (logclear! (-> this enemy-flags) (enemy-flag lock-focus))
@@ -1266,10 +1264,11 @@
      (send-event arg0 'get-attack-count 1)
      (freeze-hit-begin)
      (when (<= (-> this hit-points) 0.0)
-      (go (method-of-object this knocked))
+      (drop-rage-crate (-> this root trans))
+      (kill-by-name "rage-ghost" *default-pool*)
      )
      (cond
-       ((= (-> this hit-points) 0.0)
+       ((<= (-> this hit-points) 0.0)
         (let ((s5-1 (-> this incoming knocked-type)))
           (cond
             ((and (= s5-1 (knocked-type yellow-shot))

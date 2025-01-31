@@ -417,10 +417,16 @@
   (define-extern global-root-trans vector)
 
   (defun-extern drop-crate vector int none)
+  (defun-extern drop-rage-crate vector none)
+
+  (defun-extern give-weapon! string int none)
+
+  (define rage-drop? #f)
 
   (defun-extern birth-drop1 vector none)
   (defun-extern birth-drop2 vector none)
   (defun-extern birth-drop3 vector none)
+  (defun-extern birth-drop-rage vector none)
 
   (defun-extern runs-on-blackout (none))
   (define desert-spawn-mission-oasis #f)

@@ -473,7 +473,14 @@
       )
      )
      (when (= (-> this fact pickup-type) (pickup-type gun-yellow-1))
-      (give-random-weapon)
+      (cond
+        ((= rage-drop? #t)
+          (give-weapon! "dark-3" 1)
+        )
+        (else
+          (give-random-weapon)
+        )
+      )
       (when (task-node-open? (game-task-node arena-fight-3-fight))
         (set! yellow-gun-picked-up? #t)
       )
