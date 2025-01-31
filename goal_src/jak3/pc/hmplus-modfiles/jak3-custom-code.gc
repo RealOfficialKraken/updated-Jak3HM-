@@ -2581,6 +2581,21 @@ BUGS:
 
     (when
         (and
+            (task-node-open? (game-task-node desert-interceptors-attack-exclude))
+            (= weather-dark-mode #f)
+        )
+        (task-node-close! (game-task-node desert-interceptors-attack-exclude) #t)
+    )
+    (when
+        (and
+            (not (task-node-open? (game-task-node desert-interceptors-attack-exclude)))
+            (= weather-dark-mode #t)
+        )
+        (task-node-open! (game-task-node desert-interceptors-attack-exclude) #t)
+    )
+
+    (when
+        (and
             (task-node-open? (game-task-node wascity-gungame-introduction))
             (<= (vector-vector-distance 
                     (new 'static 'vector
@@ -3552,7 +3567,8 @@ BUGS:
                 (= (paused?) #f)
                 (= (pause-allowed?) #t)
             )
-            (let ((camera-loc (new 'static 'vector
+            (when (= globalrandi 1)
+                (let ((camera-loc (new 'static 'vector
                         :x (meters 2717.8078)
                         :y (meters 32.5143)
                         :z (meters 436.8793)
@@ -3565,15 +3581,99 @@ BUGS:
                         :w 1.0
                         ))
                 )
-            (turn-to-scene-camera camera-loc tpos #t)
-            (task-node-close! (game-task-node desert-logo-title1) #t)
-            (disable-hudmap)
-            (when (= spawned-logo? #f)
-                (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
-                    (spawn-jak3logo vec 0.9 0.9 0.9)
-                    (set! spawned-logo? #t)
-                ) ;^ hack for bypassing the weird crash bug
+                (set! globalpos camera-loc)
+                (set! globaltpos tpos)
+                (turn-to-scene-camera camera-loc tpos #t)
+                (task-node-close! (game-task-node desert-logo-title1) #t)
+                (disable-hudmap)
+                (when (= spawned-logo? #f)
+                    (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
+                        (spawn-jak3logo vec 0.9 0.9 0.9 -180)
+                        (set! spawned-logo? #t)
+                    ) ;^ hack for bypassing the weird crash bug
+                )
+                )
             )
+            (when (= globalrandi 2)
+                (let ((camera-loc (new 'static 'vector
+                        :x (meters 2503.6831)
+                        :y (meters 45.3098)
+                        :z (meters 608.9631)
+                        :w 1.0
+                        ))
+                    (tpos (new 'static 'vector
+                        :x (meters 2460.8649)
+                        :y (meters 45.5855)
+                        :z (meters 529.7640)
+                        :w 1.0
+                        ))
+                )
+                (set! globalpos camera-loc)
+                (set! globaltpos tpos)
+                (turn-to-scene-camera camera-loc tpos #t)
+                (task-node-close! (game-task-node desert-logo-title1) #t)
+                (disable-hudmap)
+                (when (= spawned-logo? #f)
+                    (let ((vec (new 'static 'vector :x (meters 2476.1499) :y (meters 30.5583) :z (meters 509.0850) :w 1.0)))
+                        (spawn-jak3logo vec 0.9 0.9 0.9 40)
+                        (set! spawned-logo? #t)
+                    ) ;^ hack for bypassing the weird crash bug
+                )
+                )
+            )
+            (when (= globalrandi 3)
+                (let ((camera-loc (new 'static 'vector
+                        :x (meters 2717.8078)
+                        :y (meters 32.5143)
+                        :z (meters 436.8793)
+                        :w 1.0
+                        ))
+                    (tpos (new 'static 'vector
+                        :x (meters 2817.4040)
+                        :y (meters 47.1295)
+                        :z (meters 508.9389)
+                        :w 1.0
+                        ))
+                )
+                (set! globalpos camera-loc)
+                (set! globaltpos tpos)
+                (turn-to-scene-camera camera-loc tpos #t)
+                (task-node-close! (game-task-node desert-logo-title1) #t)
+                (disable-hudmap)
+                (when (= spawned-logo? #f)
+                    (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
+                        (spawn-jak3logo vec 0.9 0.9 0.9 -180)
+                        (set! spawned-logo? #t)
+                    ) ;^ hack for bypassing the weird crash bug
+                )
+                )
+            )
+            (when (= globalrandi 4)
+                (let ((camera-loc (new 'static 'vector
+                        :x (meters 2717.8078)
+                        :y (meters 32.5143)
+                        :z (meters 436.8793)
+                        :w 1.0
+                        ))
+                    (tpos (new 'static 'vector
+                        :x (meters 2817.4040)
+                        :y (meters 47.1295)
+                        :z (meters 508.9389)
+                        :w 1.0
+                        ))
+                )
+                (set! globalpos camera-loc)
+                (set! globaltpos tpos)
+                (turn-to-scene-camera camera-loc tpos #t)
+                (task-node-close! (game-task-node desert-logo-title1) #t)
+                (disable-hudmap)
+                (when (= spawned-logo? #f)
+                    (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
+                        (spawn-jak3logo vec 0.9 0.9 0.9 -180)
+                        (set! spawned-logo? #t)
+                    ) ;^ hack for bypassing the weird crash bug
+                )
+                )
             )
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
@@ -3678,7 +3778,7 @@ BUGS:
                         (task-node-close! (game-task-node desert-logo-title1) #t)
                         (task-node-close! (game-task-node desert-logo-title2) #t)
                         (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
-                            (spawn-jak3logo vec 1.0 1.0 1.0)
+                            (spawn-jak3logo vec 1.0 1.0 1.0 -180)
                         )
                     )
             (when (and (>= pro-i 1) (< pro-i 600))
@@ -3695,7 +3795,7 @@ BUGS:
                             :w 1.0
                            ))
                     )
-                (turn-to-scene-camera camera-loc tpos #t)
+                (turn-to-scene-camera globalpos globaltpos #t)
                 (when (cpad-pressed? 0 triangle)
                     (set! pro-i 595)
                 )
@@ -4808,6 +4908,7 @@ BUGS:
 
 (defun launch-mmenu ()
     (initialize! *game-info* 'game (the-as game-save #f) "desert-bd-start" (the-as resetter-spec #f))
+    (set! globalrandi (rand-vu-int-range 1 2))
     (set! (-> *game-info* mode) 'play)
     (send-event (ppointer->process *time-of-day*) 'change 'hour 19)
     (set! (-> *time-of-day-context* mode) (the-as time-of-day-palette-id 5))

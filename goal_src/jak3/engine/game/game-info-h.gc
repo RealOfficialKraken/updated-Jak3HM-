@@ -267,12 +267,17 @@
   (define test-level-loaded-factory-outside? #f)
 
   ;mainmenu stuff
+  (define globalrandi 0)
+  (define globaltpos (new 'static 'vector))
+  (define globalpos (new 'static 'vector))
   (defun-extern launch-mmenu (none))
   (defun-extern disable-hudmap (none))
-  (defun-extern spawn-jak3logo vector float float float none)
+  (defun-extern spawn-jak3logo vector float float float int none)
   (define mainmenu-camera #f)
   (define spawned-logo? #f)
   (define torch-flicker #f)
+
+  (define meme-count 0)
 
   (define warp-room-spawned? #f)
   (define warp-room-tutorial? #f)

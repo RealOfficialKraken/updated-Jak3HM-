@@ -419,8 +419,8 @@
                                    (new 'static 'nest-hunt-speech-instance :speech #x1c :probability 1.0)
                                    (new 'static 'nest-hunt-speech-instance :speech #x19 :probability 1.0)
                                    )
-                                 :minimum-interval (seconds 10)
-                                 :random-interval (seconds 3)
+                                 :minimum-interval (seconds 0.1)
+                                 :random-interval (seconds 0.1)
                                  :flags (nest-hunt-speech-info-flag nhs0 nhs1)
                                  )
                                (new 'static 'nest-hunt-speech-info
@@ -444,8 +444,8 @@
                                      :flags (nest-hunt-speech-instance-flag nhs3)
                                      )
                                    )
-                                 :minimum-interval (seconds 20)
-                                 :random-interval (seconds 3)
+                                 :minimum-interval (seconds 1)
+                                 :random-interval (seconds 1)
                                  :flags (nest-hunt-speech-info-flag nhs0)
                                  )
                                (new 'static 'nest-hunt-speech-info
@@ -456,8 +456,8 @@
                                    (new 'static 'nest-hunt-speech-instance :speech #x23 :probability 1.0)
                                    (new 'static 'nest-hunt-speech-instance :speech #x20 :probability 1.0)
                                    )
-                                 :minimum-interval (seconds 15)
-                                 :random-interval (seconds 2)
+                                 :minimum-interval (seconds 1)
+                                 :random-interval (seconds 1)
                                  :flags (nest-hunt-speech-info-flag nhs0)
                                  )
                                (new 'static 'nest-hunt-speech-info
@@ -465,8 +465,8 @@
                                    (new 'static 'nest-hunt-speech-instance :speech #xa :probability 1.0)
                                    (new 'static 'nest-hunt-speech-instance :speech #xf :probability 1.0)
                                    )
-                                 :minimum-interval (seconds 10)
-                                 :random-interval (seconds 2)
+                                 :minimum-interval (seconds 1)
+                                 :random-interval (seconds 1)
                                  :flags (nest-hunt-speech-info-flag nhs0)
                                  )
                                (new 'static 'nest-hunt-speech-info
@@ -493,8 +493,8 @@
                                    (new 'static 'nest-hunt-speech-instance :speech #x17 :probability 1.0)
                                    (new 'static 'nest-hunt-speech-instance :speech #x18 :probability 1.0)
                                    )
-                                 :minimum-interval (seconds 15)
-                                 :random-interval (seconds 5)
+                                 :minimum-interval (seconds 1)
+                                 :random-interval (seconds 1)
                                  :flags (nest-hunt-speech-info-flag nhs0)
                                  )
                                )
@@ -1863,7 +1863,7 @@
            (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
                (set! f0-14 (* 0.6666667 f0-14))
                )
-           (set! (-> self hit-points) (fmax 0.0 (- (-> self hit-points) f0-14)))
+           (set! (-> self hit-points) (fmax 0.0 (- (-> self hit-points) (/ f0-14 8))))
            (set! (-> *game-info* health-bar) (-> self hit-points))
            (cond
              ((= (-> self hit-points) 0.0)
@@ -2104,6 +2104,8 @@
     )
   :trans (behavior ()
     (mh-centipede-method-36 self)
+    (set! (-> *game-info* health-bar-owner) (process->handle self))
+    (set! (-> *game-info* health-bar) (-> self hit-points))
     (cond
       ((not (time-elapsed? (-> self state-time) (-> self pre-breach-time)))
        )
@@ -3089,7 +3091,7 @@
   (set! (-> this prev-target-position quad) (-> (target-pos 0) quad))
   (set! (-> this current-target-position quad) (-> (target-pos 0) quad))
   (set! (-> this effect-sphere) #f)
-  (go (method-of-object this hidden))
+  (go (method-of-object this pre-breach))
   0
   )
 

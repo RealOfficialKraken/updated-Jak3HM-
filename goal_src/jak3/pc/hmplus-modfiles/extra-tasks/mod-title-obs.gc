@@ -6,7 +6,7 @@
 
 
 ;spawn the jak3 sign as a manipy
-(defun spawn-jak3logo ((vec vector) (arg0 float) (arg1 float) (arg2 float))
+(defun spawn-jak3logo ((vec vector) (arg0 float) (arg1 float) (arg2 float) (arg3 int))
     (let ((logo (the manipy 
                 (ppointer->process
                     (process-spawn manipy
@@ -27,7 +27,7 @@
             (set! (-> color y) arg1)
             (set! (-> color z) arg2)
             (set-vector! (-> logo draw color-mult) (-> color x) (-> color y) (-> color z) 1.0)
-            (quaternion-rotate-y! (-> logo root quat) (-> logo root quat) (degrees -180))
+            (quaternion-rotate-y! (-> logo root quat) (-> logo root quat) (degrees arg3))
             (quaternion-rotate-x! (-> logo root quat) (-> logo root quat) (degrees -15))
             (quaternion-rotate-z! (-> logo root quat) (-> logo root quat) (degrees 20))
       )
@@ -72,7 +72,7 @@
       (set! (-> self wait-max) (rand-vu-int-range 12 60))
       (set! (-> self wait-timer) 0)
       (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
-        (spawn-jak3logo vec 1.0 1.0 1.0)
+        (spawn-jak3logo vec 1.0 1.0 1.0 -180)
       )
       (loop
         (+! (-> self wait-timer) 1)
@@ -99,7 +99,7 @@
     :virtual #t
     :code (behavior ()
       (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
-        (spawn-jak3logo vec 2.7 2.7 2.7)
+        (spawn-jak3logo vec 2.7 2.7 2.7 -180)
       )
       (when (= torch-flicker #f)
         (set! torch-flicker #t)
@@ -130,7 +130,7 @@
         )
         (when (= (-> self wait-timer) (- (-> self wait-max) 3))
           (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
-            (spawn-jak3logo vec 2.7 2.7 2.7)
+            (spawn-jak3logo vec 2.7 2.7 2.7 -180)
           )
         )
         (when (>= (-> self wait-timer) (-> self wait-max))
