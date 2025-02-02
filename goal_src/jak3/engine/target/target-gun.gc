@@ -2910,7 +2910,19 @@
                (pickup-type gun-dark-2)
                (pickup-type gun-dark-3)
                )
-              (pickup-collectable! (-> self fact) s5-0 (- (-> self gun ammo-required)) (the-as handle #f))
+              (cond 
+                ((and
+                  (or (= gunmod-ammo #f) (rand-vu-percent? 0.33))
+                  (= (-> gp-0 gun-type) (pickup-type gun-blue-1))
+                )
+                (pickup-collectable! (-> self fact) s5-0 (- (-> self gun ammo-required)) (the-as handle #f))
+              )
+              (else
+                (when (!= (-> gp-0 gun-type) (pickup-type gun-blue-1))
+                  (pickup-collectable! (-> self fact) s5-0 (- (-> self gun ammo-required)) (the-as handle #f))
+                )
+              )
+             )
               (if (and (and (focus-test? self light) (nonzero? (-> self lightjak)))
                        (not (logtest? (-> self lightjak stage) (lightjak-stage ls1)))
                        )

@@ -261,7 +261,7 @@
             (= guns-level 3)
             (= guns-level 8)
             (= guns-level 15)
-            (= guns-level 19)
+            (= guns-level 24)
         )
         (r3-hint)
     )
@@ -1062,10 +1062,12 @@
 
         ;level based enemy-levels in HERO MODE
 
-        (when (not level-override)
+        (when (and
+                (not level-override)
+                (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
+              )
             (when
             (and 
-                (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
                 (task-node-closed? (game-task-node arena-training-1-introduction))
                 (= weather-dark-mode #t)
             )
@@ -1079,7 +1081,7 @@
 
         (when 
             (and 
-                (not (logtest? (-> *game-info* secrets) (game-secrets hero-mode)))
+                (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
                 (= weather-dark-mode #f)
             )
             (when ;WASDOORS
@@ -1405,7 +1407,10 @@
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;level based enemy-levels in NORMALS
 
-        (when (not level-override)
+        (when (and
+                (not (logtest? (-> *game-info* secrets) (game-secrets hero-mode)))
+                (not level-override)
+              )
             (when
             (and 
                 (not (logtest? (-> *game-info* secrets) (game-secrets hero-mode)))

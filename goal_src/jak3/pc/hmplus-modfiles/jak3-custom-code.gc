@@ -43,7 +43,7 @@ gunmod-sheild - IMPLEMENTED
 gunmod-missles - IMPLEMENTED
 |BLUE|
 gunmod-ammo (some shots save ammo)
-gunmod-disperser (chance to spawn gun-blue-3 around jak per shot)
+gunmod-disperser (chance to spawn a random shot)
 gunmod-airstrike (chance to spawn a fireball above the target projectile hit)
 |DARK|
 gunmod-morpher (spawns a random NPC-init-by-other list)
@@ -2236,7 +2236,7 @@ BUGS:
         )
     )
     (cond
-        ((>= guns-level 20)
+        ((>= guns-level 25)
             (set! skill-guns-string4 "<COLOR_GREEN>Huge ammo bags")
         )
         (else
@@ -2247,7 +2247,7 @@ BUGS:
     (= menu-slot 1)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_RED>Guns:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Jak's guns can be upgraded to fire faster, bigger, and stronger.~%~%<COLOR_YELLOW>Deplete ammo to earn XP~%~%~%<COLOR_ORANGE>At Level 4~%~s~%<COLOR_ORANGE>At Level 9~%~s~%<COLOR_ORANGE>At Level 16~%~s~%<COLOR_ORANGE>At Level 20~%~S"
+        (format matt-str "<COLOR_RED>Guns:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Jak's guns can be upgraded to fire faster, bigger, and stronger.~%~%<COLOR_YELLOW>Deplete ammo to earn XP~%~%~%<COLOR_ORANGE>At Level 4~%~s~%<COLOR_ORANGE>At Level 9~%~s~%<COLOR_ORANGE>At Level 16~%~s~%<COLOR_ORANGE>At Level 25~%~S"
         guns-level
         skill-guns-string1
         skill-guns-string2
