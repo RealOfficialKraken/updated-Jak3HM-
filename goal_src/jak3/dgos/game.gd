@@ -541,5 +541,6 @@
   "tm-vin-intro.o"
   "warp-room.o"
   "credits-h.o"
+  "vin-shop.o"
   "title-obs.o"
  ))

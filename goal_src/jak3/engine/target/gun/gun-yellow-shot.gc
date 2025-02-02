@@ -1307,6 +1307,11 @@
         (vector+! a1-5 a1-5 v1-14)
         (move-to-point! (-> arg0 root) a1-5)
         )
+      (cond
+        ((and (= gunmod-freeze #t) (= freeze-happening? #f))
+          (gun-freeze (-> s5-0 trans) (-> arg0 tail-pos))
+        )
+      )
       (go (method-of-object arg0 impact))
       )
     )

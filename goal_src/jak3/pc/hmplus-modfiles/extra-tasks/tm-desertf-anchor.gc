@@ -98,6 +98,7 @@ Finally, the tasks get opened again after dying, or the process goes dead
    (waiting?                    symbol) ;check if waiting in between enemy spawns
    (wait-i                         int) ;time-frame in between enemy spawns
    (wave-sp      (inline-array vector)) ;enemy spawn point vectors
+   (interceptors?               symbol) ;set interceptors back if disabled before
   )
  (:state-methods
  active ;set all the prerequisites
@@ -303,6 +304,10 @@ Finally, the tasks get opened again after dying, or the process goes dead
                     (<= (vector-vector-distance (-> self spawn-pos) (target-pos 0)) 3600000.0)
                     (= in-desert-game-task? #f)
                   )
+                    (when (task-node-open? (game-task-node desert-interceptors-attack))
+                        (task-node-close! (game-task-node desert-interceptors-attack) #t)
+                        (set! (-> self interceptors?) #t)
+                    )
                     (print "~%~%|||||||||||||BATTLE STARTED|||||||||||||~%~%")
                     (set! onfoot-battle? #t)
                     (set! anchor-float-time (-> *time-of-day-context* time))
@@ -653,6 +658,9 @@ Finally, the tasks get opened again after dying, or the process goes dead
     :code
     (behavior ()
         (set! *force-stop-pilot* #f)
+        (when (= (-> self interceptors?) #t)
+            (task-node-open! (game-task-node desert-interceptors-attack) #t)
+        )
         (kill-by-name "dp-bipedal-c" *default-pool*)
         (kill-by-name "Bipedal Boss" *default-pool*)
         (kill-by-name "v-catapult-shot" *active-pool*)

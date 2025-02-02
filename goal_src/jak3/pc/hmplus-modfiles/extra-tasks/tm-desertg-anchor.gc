@@ -25,6 +25,7 @@
    (waiting?                    symbol)
    (wait-i                         int)
    (wave-sp      (inline-array vector))
+   (interceptors?               symbol)
   )
  (:state-methods
  active
@@ -233,6 +234,10 @@
                     (<= (vector-vector-distance (-> self spawn-pos) (target-pos 0)) 3600000.0)
                     (= in-desert-game-task? #f)
                   )
+                    (when (task-node-open? (game-task-node desert-interceptors-attack))
+                        (task-node-close! (game-task-node desert-interceptors-attack) #t)
+                        (set! (-> self interceptors?) #t)
+                    )
                     (print "~%~%|||||||||||||BATTLE STARTED|||||||||||||~%~%")
                     (set! onfoot-battle? #t)
                     (set! anchor-float-time (-> *time-of-day-context* time))
@@ -575,6 +580,9 @@
     :virtual #t
     :code
     (behavior ()
+        (when (= (-> self interceptors?) #t)
+            (task-node-open! (game-task-node desert-interceptors-attack) #t)
+        )
         (set! *force-stop-pilot* #f)
         (kill-by-name "dp-bipedal-c" *default-pool*)
         (kill-by-name "Bipedal Boss" *default-pool*)

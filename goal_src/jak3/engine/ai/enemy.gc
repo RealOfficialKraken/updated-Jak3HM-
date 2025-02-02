@@ -2075,6 +2075,8 @@
           (not (string= (-> this name) "goredrinker"))
           (not (string= (-> this name) "Black Harbinger"))
           (not (string= (-> this name) "roboguard-giant"))
+          (not (logtest? (-> *game-info* secrets) (game-secrets hero-mode)))
+          (<= (-> this hit-points) 0.0)
           (!= (remap-enemy-type-name (-> this type)) 'bipedal-boss)
          )
      (go (method-of-object this knocked))

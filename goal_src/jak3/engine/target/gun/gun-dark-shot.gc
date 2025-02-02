@@ -3480,6 +3480,7 @@
     (gun-gravity-method-21 (_type_) none)
     (gun-gravity-method-22 (_type_ symbol) none)
     (spawn-gravity-spinner (_type_ process) (pointer gravity-spinner))
+    (spawn-gravity-quick (_type_ process) (pointer gravity-spinner))
     (gun-gravity-method-24 (_type_) none)
     )
   )
@@ -3516,8 +3517,17 @@
     (set! (-> a0-12 y) 0.0)
     (s4-1 s3-0 (vector-normalize! a0-12 1.0) *up-vector*)
     )
-  (set! (-> self max-radius) 122880.0)
-  (set! (-> self total-time) 1.0)
+  (cond
+    ((= gunmod-freeze #t)
+      (set! (-> self max-radius) 10000000.0)
+      (set! (-> self total-time) 0.3)
+      (set! freeze-happening? #t)
+    )
+    (else
+      (set! (-> self max-radius) 122880.0)
+      (set! (-> self total-time) 1.0)
+    )
+  )
   (if (logtest? (game-secrets gun-upgrade-dark-2) (-> *game-info* secrets))
       (set! (-> self total-time) (* 1.5 (-> self total-time)))
       )
@@ -3598,7 +3608,14 @@
              (set! (-> s4-2 move-dist quad) (the-as uint128 0))
              (set! (-> s4-2 move-dist y) -81920.0)
              (let ((v1-40 s4-2))
-               (set! (-> v1-40 radius) 40.96)
+               (cond
+                ((= gunmod-freeze #t)
+                  (set! (-> v1-40 radius) 1.0)
+                )
+                (else
+                  (set! (-> v1-40 radius) 40.96)
+                )
+               )
                (set! (-> v1-40 collide-with) (collide-spec backgnd pusher))
                (set! (-> v1-40 ignore-process0) #f)
                (set! (-> v1-40 ignore-process1) #f)
@@ -3631,7 +3648,35 @@
           )
       (until #f
         (dotimes (s5-0 5)
-          (let ((v1-7 (ppointer->handle (process-spawn
+          (cond
+            ((= gunmod-freeze #t)
+              (let ((v1-7 (ppointer->handle (process-spawn
+                          gravity-ring
+                          (-> self root trans)
+                          #f
+                          0
+                          (seconds 0.1)
+                          f30-0
+                          gp-0
+                          :name "gravity-ring"
+                          :to self
+                          )
+                        )
+                      )
+                (a0-6 s5-0)
+                )
+            (cond
+              ((zero? a0-6)
+               (set! (-> self ring-furthest) (the-as handle v1-7))
+               )
+              ((= a0-6 4)
+               (set! (-> self ring-closest) (the-as handle v1-7))
+               )
+              )
+            )
+            )
+            (else
+              (let ((v1-7 (ppointer->handle (process-spawn
                                           gravity-ring
                                           (-> self root trans)
                                           #f
@@ -3655,6 +3700,8 @@
                )
               )
             )
+            )
+          )
           (set! f30-0 (+ -0.6 f30-0))
           (suspend-for (seconds 0.15)
             )
@@ -3676,6 +3723,18 @@
     (process->handle arg0)
     (-> this root trans)
     (- (current-time) (-> this state-time))
+    :name "gravity-spinner"
+    :to arg0
+    )
+  )
+
+  ;; WARN: Return type mismatch (pointer process) vs (pointer gravity-spinner).
+(defmethod spawn-gravity-quick ((this gun-gravity) (arg0 process))
+  (process-spawn
+    gravity-spinner
+    (process->handle arg0)
+    (-> this root trans)
+    (seconds 0.1)
     :name "gravity-spinner"
     :to arg0
     )
@@ -3831,4 +3890,15 @@
      (gun-fire-dark-3)
      )
     )
+  )
+
+  (defun gun-freeze ((vec1 vector) (vec2 vector))
+    (process-spawn
+    gun-gravity
+    vec1
+    vec2
+    :name "gun-gravity"
+    :to (ppointer->process (-> *target* gun gun))
+    )
+    (none)
   )

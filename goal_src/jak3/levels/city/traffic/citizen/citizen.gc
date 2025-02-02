@@ -329,7 +329,13 @@
          )
        )
      (freeze-hit-begin)
-     (go (method-of-object this knocked))
+     (when
+      (or
+        (not (logtest? (-> *game-info* secrets) (game-secrets hero-mode)))
+        (<= (-> this hit-points) 0.0)
+      )
+      (go (method-of-object this knocked))
+     )
      )
     (('traffic-off)
      (if (not (logtest? (-> this flags) (citizen-flag persistent)))

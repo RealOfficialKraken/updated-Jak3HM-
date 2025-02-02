@@ -33,7 +33,7 @@
                                              :barrel-count 1
                                              :shot-speed 819200.0
                                              :attack-range 819200.0
-                                             :damage 2.0
+                                             :damage 10.0
                                              :vehicle-damage-factor 1.0
                                              :vehicle-impulse-factor 1.0
                                              :rot-min (new 'static 'array float 2 -1820.4445 -32768.0)
@@ -76,7 +76,7 @@
   (the-as pointer (-> *v-marauder-b-constants* damage))
   (the-as pointer (new 'static 'vehicle-damage-info
                     :inv-toughness-factor 1.0
-                    :hit-points 30.0
+                    :hit-points 300.0
                     :inv-hit-points 0.033333335
                     :hit-threshold 8192.0
                     :hit-small 102400.0

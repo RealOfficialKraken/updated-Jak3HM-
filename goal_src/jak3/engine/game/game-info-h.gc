@@ -347,11 +347,37 @@
 
   (defun-extern toggle-freeze none)
 
+  ;black market stuff with Vin
+  (define in-vin-shop? #f)
+  (define vin-select 0)
+  (define vinw1 "<COLOR_WHITE>")
+  (define vinw2 "<COLOR_WHITE>")
+  (define vinw3 "<COLOR_WHITE>")
+  (define vinw4 "<COLOR_WHITE>")
+  (define vinw5 "<COLOR_WHITE>")
+  (define vinhs1 "")
+  (define vinhs2 "")
+  (define vinhs3 "")
+  (define vinhs4 "")
+  (define vin-hinti 0)
+  (define vin-crystals 0)
+  (define tp-fb? #f)
+
   ;gunmods (this section has not yet been implemented)
   (define-extern spawn-target-fireball (function type vector vector float none))
   (defun-extern quick-rat! vector none)
   (defun-extern someone-fire-dark-3 vector vector none)
   (defun-extern someone-fire-yellow-3 vector vector vector none)
+  (defun-extern someone-fire-red-1 vector vector none)
+  (defun-extern someone-fire-red-2 vector vector none)
+  (defun-extern someone-fire-red-3 vector vector none)
+  (defun-extern shield-shot string vector vector none)
+  (defun-extern commando-shot! vector vector none)
+
+  (defun-extern gun-freeze vector vector none)
+
+  (define freeze-happening? #f)
+  (define freezi 0)
 
   (define gunmod-attached? #f)
   ;red

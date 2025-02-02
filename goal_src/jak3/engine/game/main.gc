@@ -14,6 +14,7 @@
 (defun-extern wasteland-spawn! (none))
 (defun-extern run-warp-room (none))
 (define-extern title-progress (function symbol int))
+(defun-extern runs-shop! (none))
 
 ;; DECOMP BEGINS
 
@@ -1449,6 +1450,9 @@
         (update-xp!)
         (wasteland-spawn!)
         (run-warp-room)
+        (when (= weather-dark-mode #t)
+          (runs-shop!)
+        )
 
     ; ;; modify vertices for merc face animation. I believe this is somewhat racing DMA of merc data to VU1.
     (with-profiler 'merc *profile-merc-color*

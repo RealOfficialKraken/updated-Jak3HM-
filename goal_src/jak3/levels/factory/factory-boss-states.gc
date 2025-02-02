@@ -247,6 +247,7 @@
   )
 
 (defbehavior factory-boss-move-to-dest-angle factory-boss ((arg0 float) (arg1 float))
+  (print "factory-boss-move-to-dest-angle")
   (if (= (-> self catwalk-angle) arg0)
       (return #t)
       )
@@ -308,6 +309,7 @@
   )
 
 (defbehavior factory-boss-drop-bomb factory-boss ((arg0 int))
+  (print "factory-boss-drop-bomb")
   (let ((gp-0 (new 'stack-no-clear 'projectile-init-by-other-params)))
     (let ((s3-0 (new 'stack-no-clear 'vector))
           (s4-0 (new 'stack-no-clear 'vector))
@@ -361,7 +363,8 @@
   )
 
 (defbehavior factory-boss-check-bomb-timer factory-boss ((arg0 int))
-  (let ((s5-0 (>= (- (current-time) (+ (-> self shot-timer) (seconds -0.75))) 0)))
+  (print "factory-boss-check-bomb-timer")
+  (let ((s5-0 #t))
     (let ((v1-5 (ja-group)))
       (cond
         ((and v1-5 (or (= v1-5 errol-lowres-run-cw-ja)
@@ -382,7 +385,7 @@
          (when (ja-done? 0)
            (ja-channel-push! 1 (seconds 0.1))
            (ja :group! errol-lowres-idle30-ja :num! min)
-           (set! (-> self shot-timer) (+ (current-time) (the int (* 300.0 (rand-vu-float-range 2.0 4.0)))))
+           (set! (-> self shot-timer) (+ (current-time) (the int (* 0.0 (rand-vu-float-range 2.0 4.0)))))
            )
          )
         ((let ((v1-39 (ja-group)))
@@ -1716,22 +1719,23 @@
   :virtual #t
   :event factory-boss-handler
   :enter (behavior ()
+    (print "drop-bombs, ENTER")
     (let ((v1-0 (-> self hits-taken)))
       (cond
         ((zero? v1-0)
-         (set! (-> self shot-timer) (+ (current-time) (seconds 3)))
-         (set! (-> self bombs-to-drop) 4)
+         (set! (-> self shot-timer) 0)
+         (set! (-> self bombs-to-drop) 23)
          (set! (-> self bomb-type) (facboss-bomb-type bomb0))
          0
          )
         ((= v1-0 1)
          (set! (-> self shot-timer) 0)
-         (set! (-> self bombs-to-drop) 3)
+         (set! (-> self bombs-to-drop) 44)
          (set! (-> self bomb-type) (facboss-bomb-type bomb2))
          )
         (else
           (set! (-> self shot-timer) 0)
-          (set! (-> self bombs-to-drop) 4)
+          (set! (-> self bombs-to-drop) 100)
           (set! (-> self bomb-type) (facboss-bomb-type bomb2))
           )
         )
@@ -1739,10 +1743,12 @@
     (factory-boss-pick-camera)
     )
   :exit (behavior ()
+    (print "drop-bombs, EXIT")
     (factory-boss-end-cutscene)
     (factory-boss-method-30 self)
     )
   :trans (behavior ()
+    (print "drop-bombs, TRANS")
     (when (and (<= (-> self bombs-to-drop) 0) (let ((v1-4 (ja-group)))
                                                 (not (and v1-4 (= v1-4 errol-lowres-idle-throw-ja)))
                                                 )
@@ -1782,7 +1788,7 @@
               0
               )
              (else
-               (set! (-> self shot-timer) (+ (current-time) (the int (* 300.0 (rand-vu-float-range 1.0 2.0)))))
+               (set! (-> self shot-timer) 0)
                )
              )
            )

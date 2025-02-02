@@ -287,6 +287,22 @@
 
 (when 
 (and 
+(= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1) ;TP-FB
+(= tp-fb? #f)
+)
+(set! tp-fb? #t)
+)
+
+(when 
+(and 
+(!= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
+(= tp-fb? #t)
+)
+(set! tp-fb? #f)
+)
+
+(when 
+(and 
 (= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1) ;gun-blue-2
 (not (logtest? (-> *game-info* features) (game-feature gun-blue-2)))
 )

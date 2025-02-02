@@ -36,11 +36,11 @@ Saving the gunmods to the save file might require different fanagling with tasks
 |YELLOW|
 gunmod-fireball - IMPLEMENTED
 gunmod-nukeonly - IMPLEMENTED
-gunmod-freeze (afflicts targets with the gun-dark-2 effect)
+gunmod-freeze IMPLEMENTED
 |RED|
 gunmod-bigshot - IMPLEMENTED
-gunmod-sheild (fires the projectile 3 times all around jak by 90 degrees)
-gunmod-missles (chance to fire missles that explode on impact)
+gunmod-sheild - IMPLEMENTED
+gunmod-missles - IMPLEMENTED
 |BLUE|
 gunmod-ammo (some shots save ammo)
 gunmod-disperser (chance to spawn gun-blue-3 around jak per shot)
@@ -184,6 +184,11 @@ BUGS:
 
 (defun disable-hudmap ()
   (kill-by-type hud-map *active-pool*)
+  (none)
+  )
+
+(defun enable-hudmap ()
+  (process-spawn hud-map :init hud-init-by-other :name "hud-map" :to *target*)
   (none)
   )
 
@@ -352,6 +357,7 @@ BUGS:
 (= (pause-allowed?) #t)
 (not *scene-player*)
 (= in-menu? #f)
+(= in-vin-shop? #f)
 (= menu-unlocked? #t)
 (= in-modifiers? #f)
 (= in-gunmods? #f)
@@ -1522,7 +1528,7 @@ BUGS:
     ((= menu-slot 1)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_GREEN>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
         red-1s
         red-2s
         red-3s
@@ -1571,7 +1577,7 @@ BUGS:
     ((= menu-slot 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_GREEN>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%"
         red-1s
         red-2s
         red-3s
@@ -1718,7 +1724,7 @@ BUGS:
     ((= menu-slot 5)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_RED>(<)~%~%"
+        (format matt-str "<COLOR_RED>RED:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%~%<COLOR_YELLOW>YELLOW:~%~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_WHITE>(<)~%<COLOR_ORANGE>~s <COLOR_GREEN>(<)~%~%"
         red-1s
         red-2s
         red-3s
@@ -2174,7 +2180,7 @@ BUGS:
     (= menu-slot 0)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Notoriety Level:<COLOR_CYAN> ~d ~%~%<COLOR_GREEN>Your Notoriety Level controls your gun damage, vehicle damage,~%and how much eco Jak can hold of light and dark~%~%Enemies will also have a level for themselves, all tied to the areas they're in~%~%<COLOR_YELLOW>Complete Main-Line/Side Missions, and level other skills to earn XP~%~%~%<COLOR_ORANGE>At Level 10~%~s~%<COLOR_ORANGE>At Level 25~%~s~%<COLOR_ORANGE>At Level 40~%~s~%<COLOR_ORANGE>At Level 60~%~S"
+        (format matt-str "<COLOR_ORANGE>Notoriety Level:<COLOR_CYAN> ~d ~%~%<COLOR_GREEN>Your Notoriety Level unlocks more things the higher it gets.~%Fighting enemies will become easier, and crates will drop with better chances.~%~%Enemies will also have a level for themselves, all tied to the areas they're in~%~%<COLOR_YELLOW>Complete Main-Line/Side Missions, and level other skills to earn XP~%~%~%<COLOR_ORANGE>At Level 10~%~s~%<COLOR_ORANGE>At Level 25~%~s~%<COLOR_ORANGE>At Level 40~%~s~%<COLOR_ORANGE>At Level 60~%~S"
         notoriety-level
         skill-noto-string1
         skill-noto-string2
@@ -3627,15 +3633,15 @@ BUGS:
             )
             (when (= globalrandi 3)
                 (let ((camera-loc (new 'static 'vector
-                        :x (meters 2717.8078)
-                        :y (meters 32.5143)
-                        :z (meters 436.8793)
+                        :x (meters 3446.8127)
+                        :y (meters 53.8592)
+                        :z (meters 613.0977)
                         :w 1.0
                         ))
                     (tpos (new 'static 'vector
-                        :x (meters 2817.4040)
-                        :y (meters 47.1295)
-                        :z (meters 508.9389)
+                        :x (meters 3474.0461)
+                        :y (meters 50.3759)
+                        :z (meters 679.3817)
                         :w 1.0
                         ))
                 )
@@ -3645,8 +3651,8 @@ BUGS:
                 (task-node-close! (game-task-node desert-logo-title1) #t)
                 (disable-hudmap)
                 (when (= spawned-logo? #f)
-                    (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
-                        (spawn-jak3logo vec 0.9 0.9 0.9 -180)
+                    (let ((vec (new 'static 'vector :x (meters 3465.6748) :y (meters 34.2783) :z (meters 676.6569) :w 1.0)))
+                        (spawn-jak3logo vec 1.1 1.1 1.1 -180)
                         (set! spawned-logo? #t)
                     ) ;^ hack for bypassing the weird crash bug
                 )
@@ -3654,15 +3660,15 @@ BUGS:
             )
             (when (= globalrandi 4)
                 (let ((camera-loc (new 'static 'vector
-                        :x (meters 2717.8078)
-                        :y (meters 32.5143)
-                        :z (meters 436.8793)
+                        :x (meters 2515.0419)
+                        :y (meters 72.9568)
+                        :z (meters 907.3563)
                         :w 1.0
                         ))
                     (tpos (new 'static 'vector
-                        :x (meters 2817.4040)
-                        :y (meters 47.1295)
-                        :z (meters 508.9389)
+                        :x (meters 2507.9384)
+                        :y (meters 67.8069)
+                        :z (meters 917.6448)
                         :w 1.0
                         ))
                 )
@@ -3672,8 +3678,8 @@ BUGS:
                 (task-node-close! (game-task-node desert-logo-title1) #t)
                 (disable-hudmap)
                 (when (= spawned-logo? #f)
-                    (let ((vec (new 'static 'vector :x (meters 2767.4487) :y (meters 27.7348) :z (meters 485.2892) :w 1.0)))
-                        (spawn-jak3logo vec 0.9 0.9 0.9 -180)
+                    (let ((vec (new 'static 'vector :x (meters 2475.4711) :y (meters 64.8535) :z (meters 943.0177) :w 1.0)))
+                        (spawn-jak3logo vec 0.9 0.9 0.9 -260)
                         (set! spawned-logo? #t)
                     ) ;^ hack for bypassing the weird crash bug
                 )
@@ -3960,14 +3966,9 @@ BUGS:
                 (= spawned-vin-circle? #f)
                 (task-node-closed? (game-task-node desert-vin-quest-resolution))
             )
-                (let ((vec 
-                        (new 'static 'vector 
-                        :x (meters 2239.8217) 
-                        :y (meters 25.3490) 
-                        :z (meters 68.1253) 
-                        :w 1.0)
-                            )
+                (let ((vec (new-stack-vector0))
                         )
+                    (set-vector! vec (meters 2263.7312) (meters -8.7659) (meters 184.4911) 1.0)
                     (spawn-vin-circle vec)
                     )
                 )
@@ -4177,6 +4178,21 @@ BUGS:
             (pick-random-anchor)
             (format #t "~%~%~%Picked random anchor~%~%~%")
         )
+
+    (when
+        (and
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            *target*
+            (= freeze-happening? #t)
+        )
+        (+! freezi 1)
+        (when (>= freezi 1200)
+            (set! freezi 0)
+            (set! freeze-happening? #f)
+        )
+    )
 
 (none)
 )
@@ -4936,7 +4952,18 @@ BUGS:
 
 (defun launch-mmenu ()
     (initialize! *game-info* 'game (the-as game-save #f) "desert-bd-start" (the-as resetter-spec #f))
-    (set! globalrandi (rand-vu-int-range 1 2))
+    (when (rand-vu-percent? 0.5)
+        (set! globalrandi (rand-vu-int-range 1 4))
+    )
+    (when (rand-vu-percent? 0.5)
+        (set! globalrandi (rand-vu-int-range 1 4))
+    )
+    (when (rand-vu-percent? 0.5)
+        (set! globalrandi (rand-vu-int-range 1 4))
+    )
+    (when (rand-vu-percent? 0.5)
+        (set! globalrandi (rand-vu-int-range 1 4))
+    )
     (set! (-> *game-info* mode) 'play)
     (send-event (ppointer->process *time-of-day*) 'change 'hour 19)
     (set! (-> *time-of-day-context* mode) (the-as time-of-day-palette-id 5))
