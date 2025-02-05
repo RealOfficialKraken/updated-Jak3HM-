@@ -64,6 +64,7 @@
 (define-extern bombbot type)
 (define-extern roboguard-giant type)
 (define-extern wland-passenger type)
+(define-extern entity-boss type)
 (declare-type rage-ghost process-focusable)
 (define *rage-ghost* (the (pointer rage-ghost) #f))
 (declare-type leaper-boss process-focusable)
@@ -78,6 +79,7 @@
     ((= en-type crimson-guard-hover) 'crimson-guard)
     ((= en-type roboguard-level) 'roboguard)
 
+    ((type-type? en-type entity-boss) 'entity-boss)
     ((type-type? en-type civilian) 'civilian)
     ((type-type? en-type sig) 'sig)
     ((type-type? en-type ashelin) 'ashelin)

@@ -5078,6 +5078,8 @@ BUGS:
     (kill-by-name "flut-racer" *default-pool*)
     (kill-by-name "rage-ghost" *default-pool*)
     (kill-by-name "roboguard-giant" *default-pool*)
+    (kill-by-name "entity-boss" *default-pool*)
+    (kill-by-name "man-eb" *default-pool*)
     (set! *rage-ghost* #f)
     (set! spawned-logo? #f)
     (set! mine-boss-fireball? #f)

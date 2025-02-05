@@ -1643,11 +1643,11 @@
   (set-setting! 'minimap 'clear 0.0 (minimap-flag minimap))
   (cond
     ((task-node-open? (game-task-node desert-rescue-satellite-fight))
-      (set! enemy-string "Damaged Satellite")
+      (set! enemy-string "Damaged Alien Satellite")
       (-! (-> this hit-points) 1400.0)
     )
     (else
-      (set! enemy-string "Satellite Probe")
+      (set! enemy-string "Alien Satellite Probe")
     )
   )
   (set! hpbar-hit-points (-> this hit-points))
