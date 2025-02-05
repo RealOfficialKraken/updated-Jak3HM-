@@ -921,3 +921,9 @@
 (defpart 4265
   :init-specs ((:scalevel-x (meters -0.0033333334)) (:scalevel-y (meters -0.02)) (:fade-a -1.7))
   )
+
+(defskelgroup skel-precursor-boss precursor precursor-lod0-jg precursor-idle-ja
+              ((precursor-lod0-mg (meters 999999)))
+              :bounds (static-spherem 0 0 0 8)
+              :origin-joint-index 6
+              )

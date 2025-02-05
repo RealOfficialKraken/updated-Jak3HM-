@@ -489,6 +489,7 @@
   "squad-control.o"
   "was-squad-control.o"
   "forest-part.o"
+  "comb-scenes.o"
   "actor-def.o" ;;vvv hmplus-modfiles vvv
   "desertspawn-oasis.o"
   "desertspawn-deserta.o"
@@ -516,6 +517,7 @@
   "rope-prim-system-h.o"
   "rope-prim-system.o"
   "neo-satellite.o"
+  "entity-boss.o"
   "dp-bipedal-part.o"
   "dp-bipedal-shot.o"
   "dp-bipedal.o"

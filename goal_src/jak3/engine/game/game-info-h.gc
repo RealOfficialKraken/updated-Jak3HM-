@@ -363,6 +363,15 @@
   (define vin-crystals 0)
   (define tp-fb? #f)
 
+
+  (deftype vehicle-info (structure)
+  ((handle-by-vehicle-type  handle  44)
+   )
+  )
+
+  (define *vehicle-manager* (the-as vehicle-manager #f))
+  (define *vehicle-info* (new 'static 'vehicle-info))
+
   ;gunmods (this section has not yet been implemented)
   (define-extern spawn-target-fireball (function type vector vector float none))
   (defun-extern quick-rat! vector none)
