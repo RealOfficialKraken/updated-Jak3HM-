@@ -804,11 +804,13 @@
         (set! (-> self pillar-hint-timer) 0)
         (cond
           ((not (logtest? (-> self flags) (prebot-flag pf1)))
-           (talker-spawn-func (-> *talker-speech* 328) *entity-pool* (target-pos 0) (the-as region #f))
+           ;(talker-spawn-func (-> *talker-speech* 328) *entity-pool* (target-pos 0) (the-as region #f))
+           ;Jump Up on the Pillars.
            (logior! (-> self flags) (prebot-flag pf1))
            )
           ((not (logtest? (-> self flags) (prebot-flag pf2)))
-           (talker-spawn-func (-> *talker-speech* 330) *entity-pool* (target-pos 0) (the-as region #f))
+           ;(talker-spawn-func (-> *talker-speech* 330) *entity-pool* (target-pos 0) (the-as region #f))
+          ; Get on the pillars, Jak!
            (logior! (-> self flags) (prebot-flag pf2))
            )
           )
@@ -823,20 +825,28 @@
       (cond
         ((< 1 (-> self stage))
          (when (not (logtest? (-> self flags) (prebot-flag pf6)))
-           (talker-spawn-func (-> *talker-speech* 333) *entity-pool* (target-pos 0) (the-as region #f))
+           ;(talker-spawn-func (-> *talker-speech* 333) *entity-pool* (target-pos 0) (the-as region #f))
+           ;Shoot another mine car!
+           (talker-spawn-func (-> *talker-speech* 178) *entity-pool* (target-pos 0) (the-as region #f))
            (logior! (-> self flags) (prebot-flag pf6))
            )
          )
         ((not (logtest? (-> self flags) (prebot-flag pf3)))
-         (talker-spawn-func (-> *talker-speech* 327) *entity-pool* (target-pos 0) (the-as region #f))
+         ;(talker-spawn-func (-> *talker-speech* 327) *entity-pool* (target-pos 0) (the-as region #f))
+         ;We need to do something with those mine cars.
+         (talker-spawn-func (-> *talker-speech* 180) *entity-pool* (target-pos 0) (the-as region #f))
          (logior! (-> self flags) (prebot-flag pf3))
          )
         ((not (logtest? (-> self flags) (prebot-flag pf4)))
-         (talker-spawn-func (-> *talker-speech* 329) *entity-pool* (target-pos 0) (the-as region #f))
+         ;(talker-spawn-func (-> *talker-speech* 329) *entity-pool* (target-pos 0) (the-as region #f))
+         ;Shoot the minecar, Jak! 1
+         (talker-spawn-func (-> *talker-speech* 178) *entity-pool* (target-pos 0) (the-as region #f))
          (logior! (-> self flags) (prebot-flag pf4))
          )
         ((not (logtest? (-> self flags) (prebot-flag pf5)))
-         (talker-spawn-func (-> *talker-speech* 332) *entity-pool* (target-pos 0) (the-as region #f))
+         ;(talker-spawn-func (-> *talker-speech* 332) *entity-pool* (target-pos 0) (the-as region #f))
+         ;Shoot the minecar, Jak! 2
+         (talker-spawn-func (-> *talker-speech* 181) *entity-pool* (target-pos 0) (the-as region #f))
          (logior! (-> self flags) (prebot-flag pf5))
          )
         )

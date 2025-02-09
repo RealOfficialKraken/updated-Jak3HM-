@@ -545,6 +545,7 @@ Finally, the tasks get opened again after dying, or the process goes dead
                     (set! (-> gp-0 vehicle-impulse-factor) 1.0)
                     (set! (-> gp-0 ignore-proc) (process->handle #f))
                     (explosion-spawn gp-0 (the-as process-drawable *default-pool*))
+                    (activate! *camera-smush-control* 8192.0 15 150 1.0 0.8 (-> *display* camera-clock))
                 )
                 (go-virtual general-handler)
             )

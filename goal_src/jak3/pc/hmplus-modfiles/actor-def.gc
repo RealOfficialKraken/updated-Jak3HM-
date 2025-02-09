@@ -676,7 +676,6 @@
      v0-1
      )
     (('die)
-     (activate! *camera-smush-control* 2048.0 30 150 1.0 0.8 (-> *display* camera-clock))
      (cond
        ((logtest? (-> *part-group-id-table* 456 flags) (sp-group-flag sp13))
         (set! (-> *launch-matrix* trans quad) (-> self root trans quad))
@@ -1493,6 +1492,9 @@
           (t9-0)
           )
       )
+    (when (<= (vector-vector-distance (target-pos 0) (-> self root trans)) 240000.0)
+      (activate! *camera-smush-control* 2048.0 30 150 1.0 0.8 (-> *display* camera-clock))
+     )
     (send-event (handle->process (-> self desired-target)) 'die)
     )
   )
