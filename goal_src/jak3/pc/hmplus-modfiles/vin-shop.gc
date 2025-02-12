@@ -65,7 +65,7 @@
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "~S(x25) Receive Peacemaker~%~%~S(x35) Receive Mass Inverter~%~%~S(x50) Unlock TP-FB~%~%~S(x40) Give Random Weapon~%~%~S(x15) Level Up Notoriety~%~%~%<COLOR_ORANGE>(<COLOR_BLUE>X <COLOR_ORANGE>Confirm)~%(<COLOR_RED>O <COLOR_ORANGE>Back)"
+    (format matt-str "~S(x25) Receive Peacemaker~%~%~S(x35) Receive Mass Inverter~%~%~S(x50) Research in finding The Entity~%~%~S(x40) Give Random Weapon~%~%~S(x15) Level Up Notoriety~%~%~%<COLOR_ORANGE>(<COLOR_BLUE>X <COLOR_ORANGE>Confirm)~%(<COLOR_RED>O <COLOR_ORANGE>Back)"
     vinw1
     vinw2
     vinw3

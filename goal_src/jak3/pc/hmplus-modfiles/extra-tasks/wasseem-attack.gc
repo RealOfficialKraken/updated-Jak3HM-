@@ -14,9 +14,31 @@
   check-active
   win
   dead
+  wait-for-grab
   )
   )
 
+(defstate wait-for-grab (task-manager-wasseem-attack)
+  :virtual #t
+  :code
+  (behavior ()
+    ;(process-spawn leaper-boss2 (target-pos 0) :name "Skull Snapper")
+    (let ((vec (new 'static 'vector :x (meters 1476.0166) :y (meters 26.9137) :z (meters -362.2517) :w 1.0))
+          )
+    (spawn-gun-upgrade vec 1.0)
+    (task-arrow-custom vec #t)      
+    )
+    (loop 
+      (when (= yellow-gun-picked-up? #t)
+        (kill-by-name "task-arrow-custom" *default-pool*)
+        (suspend-for (seconds 4)
+          )
+        (go-virtual win)
+      )
+      (suspend)
+    )
+  )
+)
 
 (defstate win (task-manager-wasseem-attack) ;ripped from was-pre-game.gc's win state
   :virtual #t
@@ -123,8 +145,11 @@
                     (set! (-> self wave) 0)
                     (+! enemy-noto 4)
                   )
-                  (when (>= (-> self increment) 72)
-                    (go-virtual win)
+                  (when (or
+                          (>= (-> self increment) 72)
+                          (= in-debug? #t)
+                        )
+                    (go-virtual wait-for-grab)
                   )
               )
           )

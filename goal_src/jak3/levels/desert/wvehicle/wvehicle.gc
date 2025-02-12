@@ -1056,7 +1056,7 @@
            (f1-0 (-> this hit-points))
            )
        (if (< 0.0 f1-0)
-           (+! (-> this hit-points) 0.1)
+           (+! (-> this hit-points) (+ 0.1 (/ cars-level 12)))
            )
        )
        (set! turbo-supply-float (-> this turbo-supply))

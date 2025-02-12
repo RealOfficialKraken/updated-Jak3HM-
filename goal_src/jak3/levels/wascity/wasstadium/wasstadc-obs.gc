@@ -3300,6 +3300,7 @@
   :enter (behavior ()
     (send-event (handle->process (-> self platform 0)) 'end)
     (remove-setting! 'music)
+    (set! yellow-gun-picked-up? #f)
     (task-node-close! (game-task-node arena-fight-3-fight) 'event)
     )
   :exit #f

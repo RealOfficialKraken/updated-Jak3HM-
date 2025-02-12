@@ -1,7 +1,7 @@
 ;;-*-Lisp-*-
 (in-package goal)
 
-;; name: neo-satellite.gc
+;; name: entity-boss.gc
 ;; name in dgo: neo-satellite
 ;; dgos: DESRESC
 

@@ -996,7 +996,7 @@
     :notice-distance (meters 20)
     :notice-distance-delta (meters 10)
     :proximity-notice-distance (meters 20)
-    :default-hit-points 2500.0
+    :default-hit-points 1300.0
     :gnd-collide-with (collide-spec backgnd obstacle hit-by-others-list)
     :movement-gravity (meters -100)
     :friction 0.8

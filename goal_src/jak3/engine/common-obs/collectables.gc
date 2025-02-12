@@ -483,7 +483,10 @@
           (give-random-weapon)
         )
       )
-      (when (task-node-open? (game-task-node arena-fight-3-fight))
+      (when (or
+              (task-node-open? (game-task-node arena-fight-3-fight))
+              (task-node-open? (game-task-node wascity-pre-game-battle))
+            )
         (set! yellow-gun-picked-up? #t)
       )
       (kill-by-name "task-arrow-upgrade" *default-pool*)

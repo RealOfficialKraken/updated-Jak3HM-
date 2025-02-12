@@ -1246,7 +1246,7 @@
     :neck-joint -1
     :notice-distance (meters 30)
     :notice-distance-delta (meters 10)
-    :default-hit-points 1900.0
+    :default-hit-points 900.0
     :gnd-collide-with (collide-spec backgnd obstacle hit-by-others-list)
     :overlaps-others-collide-with-filter (collide-spec jak bot player-list)
     :movement-gravity (meters -100)
@@ -1644,7 +1644,7 @@
   (cond
     ((task-node-open? (game-task-node desert-rescue-satellite-fight))
       (set! enemy-string "Damaged Alien Satellite")
-      (-! (-> this hit-points) 1400.0)
+      (-! (-> this hit-points) 600.0)
     )
     (else
       (set! enemy-string "Alien Satellite Probe")

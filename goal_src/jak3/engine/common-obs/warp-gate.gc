@@ -1351,6 +1351,37 @@
   (set! (-> this part-dust) (create-launch-control (-> *part-group-id-table* 204) this))
   (set! (-> this root pause-adjust-distance) 368640.0)
   (set! (-> this hover-sound) (sound-play "air-train"))
+  (cond
+    ((string= (-> this name) "air-train-1")
+      (set! (-> this on-notice) 
+      '(cond
+        ((task-closed? "city-port-fight-resolution")
+          '("desert-warp" (scene-play 
+          '("city-air-train-in-desert" "desert-air-train-out"))
+          #f
+          (want-anim "city-air-train-in-desert")
+          )
+        )
+       )
+    )
+    )
+    ((string= (-> this name) "air-train-5")
+      (set! (-> this on-notice) 
+      '(cond
+        ((task-closed? "city-port-fight-resolution")
+          '("ctyport-warp" (scene-play 
+          '("desert-air-train-in" "city-air-train-out"))
+          #f
+          (want-anim "desert-air-train-in")
+          )
+        )
+       )
+    )
+    )
+    (else
+      (set! (-> this on-notice) (res-lump-struct (-> this entity) 'on-notice pair))
+    )
+  )
   (none)
   )
 

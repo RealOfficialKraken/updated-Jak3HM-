@@ -1068,7 +1068,7 @@
   (set! (-> this rider-hand-joint-array 0) 3)
   (set! (-> this rider-hand-joint-array 1) 3)
   (set! (-> this path-pos quad) (-> this root trans quad))
-  (set! (-> this shoot-delay) (the-as uint 30))
+  (set! (-> this shoot-delay) (the-as uint 0))
   (set! (-> this in-tunnel) #f)
   (dotimes (s5-1 4)
     (set! (-> this parts s5-1) (create-launch-control (-> *part-group-id-table* 1234) this))
@@ -1118,7 +1118,7 @@
   (set! (-> arg0 lean-z) (analog-input (the-as int (-> *cpad-list* cpads 0 lefty)) 128.0 48.0 110.0 -1.0))
   (set! (-> arg0 throttle) (fmin 1.0 (* 0.023529412 (the float (-> *cpad-list* cpads 0 abutton (abutton-idx x)))))) ;; og:preserve-this abutton indexing
   (set! (-> arg0 brake) (fmin 1.0 (* 0.023529412 (the float (-> *cpad-list* cpads 0 abutton (abutton-idx square)))))) ;; og:preserve-this abutton indexing
-  (if (cpad-pressed? 0 r1)
+  (if (cpad-hold? 0 r1)
       (logior! (-> arg0 flags) (vehicle-controls-flag vcf1))
       )
   0
