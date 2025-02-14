@@ -84,11 +84,37 @@ BUGS:
 (defun-extern spawn-rage-ghost none)
 (defun-extern boss-leaper! vector none)
 
+(define warp-s1 "???")
+(define warp-s2 "???")
+(define warp-s3 "???")
+(define warp-s4 "???")
+(define warp-s5 "???")
+
 
 
 (defun auto-save-delayed ()
     (set! auto-i 0)
     (set! autosave-delayed #t)
+    (none)
+)
+
+(define short-delay #f)
+(define stored-string "")
+(define delay-i 0)
+
+(defun delayed-play-continue ((arg0 string))
+    (cond
+        ((= short-delay #f)
+            (set! stored-string arg0)
+            (set! short-delay #t)
+            (set! delay-i 0)
+        )
+        (else
+            (send-event *target* 'continue (get-continue-by-name *game-info* arg0))
+            (set! short-delay #f)
+            (set! delay-i 0)
+        )
+    )
     (none)
 )
 
@@ -475,63 +501,13 @@ BUGS:
 (= in-gunmods? #f)
 (= in-superpowers? #f)
 (= in-skill? #f)
-(= menu-select 0)
+(= menu-select 3)
 )
-#|
 (set! in-modifiers? #t)
 (set! menu-slot 0)
-(set! sq-string "Roll the modifier!")
-|#
+(set! sq-string "Warp to location!")
 )
-(when 
-(and 
-(cpad-pressed? 0 square) ;modifiers select good
-*target*
-(= (paused?) #f)
-(= (pause-allowed?) #t)
-(not *scene-player*)
-(= in-menu? #t)
-(= in-modifiers? #t)
-(= in-gunmods? #f)
-(= in-superpowers? #f)
-(= in-skill? #f)
-(= menu-slot 0)
-)
-(roll-modifierg)
-)
-(when 
-(and 
-(cpad-pressed? 0 square) ;modifiers select bad
-*target*
-(= (paused?) #f)
-(= (pause-allowed?) #t)
-(not *scene-player*)
-(= in-menu? #t)
-(= in-modifiers? #t)
-(= in-gunmods? #f)
-(= in-superpowers? #f)
-(= in-skill? #f)
-(= menu-slot 1)
-)
-(roll-modifierb)
-)
-(when 
-(and 
-(cpad-pressed? 0 square) ;modifiers select both
-*target*
-(= (paused?) #f)
-(= (pause-allowed?) #t)
-(not *scene-player*)
-(= in-menu? #t)
-(= in-modifiers? #t)
-(= in-gunmods? #f)
-(= in-superpowers? #f)
-(= in-skill? #f)
-(= menu-slot 2)
-)
-(roll-modifierb)
-(roll-modifierg)
-)
+
 
 (when 
 (and 
@@ -612,7 +588,7 @@ BUGS:
         (cpad-pressed? 0 down)
         )
     (+! menu-select 1)
-    (when (> menu-select 2)
+    (when (> menu-select 3)
         (set! menu-select 1)
     )
     )
@@ -624,7 +600,7 @@ BUGS:
         )
     (-! menu-select 1)
     (when (< menu-select 1)
-        (set! menu-select 2)
+        (set! menu-select 3)
     )
     )
 )
@@ -642,7 +618,7 @@ BUGS:
         (cpad-pressed? 0 down)
         )
     (+! menu-slot 1)
-    (when (> menu-slot 2)
+    (when (> menu-slot 4)
         (set! menu-slot 0)
     )
     )
@@ -654,8 +630,100 @@ BUGS:
         )
     (-! menu-slot 1)
     (when (< menu-slot 0)
-        (set! menu-slot 2)
+        (set! menu-slot 4)
     )
+    )
+)
+
+(when 
+(and
+*target*
+(not *scene-player*)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= short-delay #t)
+)
+    (+! delay-i 1)
+    (when (= delay-i 30)
+        (delayed-play-continue stored-string)
+    )
+)
+
+(when ;modifiers selection square
+(and 
+(= in-modifiers? #t)
+(= in-gunmods? #f)
+(= in-superpowers? #f)
+(= in-skill? #f)
+)
+    (cond
+        ((and (not (string= warp-s1 "Desert Warp Room")) (task-node-closed? (game-task-node desert-course-race-resolution)))
+            (set! warp-s1 "Desert Warp Room")
+        )
+        ((and (not (string= warp-s2 "Desert Temple")) (task-node-closed? (game-task-node temple-oracle-resolution)))
+            (set! warp-s2 "Desert Temple")
+        )
+        ((and (not (string= warp-s3 "The Naughty Ottsel")) (task-node-closed? (game-task-node city-port-fight-resolution)))
+            (set! warp-s3 "The Naughty Ottsel")
+        )
+        ((and (not (string= warp-s4 "Freedom HQ")) (task-node-closed? (game-task-node city-protect-hq-resolution)))
+            (set! warp-s4 "Freedom HQ")
+        )
+        ((and (not (string= warp-s5 "Infested Tower")) (task-node-closed? (game-task-node city-protect-hq-resolution)))
+            (set! warp-s5 "Infested Tower")
+        )
+    )
+    (when (cpad-pressed? 0 square)
+        (cond
+            ((and (= menu-slot 0) (task-node-closed? (game-task-node desert-course-race-resolution)))
+                (delayed-play-continue "wasdoors-city")
+                (set! in-menu? #f)
+                (set! in-modifiers? #f)
+                (camera-unlocked)
+                (when (= (-> *game-info* total-deaths) 0)
+                    (level-up-cars! 1)
+                )
+            )
+            ((and (= menu-slot 1) (task-node-closed? (game-task-node temple-oracle-resolution)))
+                (delayed-play-continue "templex-start")
+                (set! in-menu? #f)
+                (set! in-modifiers? #f)
+                (camera-unlocked)
+                (when (= (-> *game-info* total-deaths) 0)
+                    (level-up-cars! 1)
+                )
+            )
+            ((and (= menu-slot 2) (task-node-closed? (game-task-node city-port-fight-resolution)))
+                (delayed-play-continue "ctyport-hiphog-no-hiphog")
+                (set! in-menu? #f)
+                (set! in-modifiers? #f)
+                (camera-unlocked)
+                (when (= (-> *game-info* total-deaths) 0)
+                    (level-up-cars! 1)
+                )
+            )
+            ((and (= menu-slot 3) (task-node-closed? (game-task-node city-protect-hq-resolution)))
+                (delayed-play-continue "ctyslumc-freehq-exit")
+                (set! in-menu? #f)
+                (set! in-modifiers? #f)
+                (camera-unlocked)
+                (when (= (-> *game-info* total-deaths) 0)
+                    (level-up-cars! 1)
+                )
+            )
+            ((and (= menu-slot 4) (task-node-closed? (game-task-node city-blow-tower-resolution)))
+                (delayed-play-continue "mhcityb-near-final-towers")
+                (set! in-menu? #f)
+                (set! in-modifiers? #f)
+                (camera-unlocked)
+                (when (= (-> *game-info* total-deaths) 0)
+                    (level-up-cars! 1)
+                )
+            )
+            (else
+                (format #t "ERROR AT MODIFIER MENU SLOT ~D, PLEASE CONTACT DEV" menu-slot)
+            )
+        )
     )
 )
 
@@ -1069,7 +1137,7 @@ BUGS:
     (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
                                         (bucket-id particles)
                                         )
-(draw-sprite2d-xy s2-0 0 5 730 88 (new 'static 'rgba :a #x40) #x3fffff)
+(draw-sprite2d-xy s2-0 0 5 730 108 (new 'static 'rgba :a #x40) #x3fffff)
 (draw-sprite2d-xy s2-0 0 315 730 27 (new 'static 'rgba :a #x40) #x3fffff)
 )
 )
@@ -1174,7 +1242,7 @@ BUGS:
 )
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit~%<COLOR_ORANGE>(<COLOR_PINK>SQUARE<COLOR_ORANGE>) <COLOR_GREEN>Attach Gun Mod"
+    (format matt-str "<COLOR_RED>Hero<COLOR_BLUE>Mode<COLOR_ORANGE>+ <COLOR_YELLOW>Mod Menu~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit~%<COLOR_ORANGE>(<COLOR_PINK>SQUARE<COLOR_ORANGE>) <COLOR_GREEN>Warp to location!"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1253,7 +1321,7 @@ BUGS:
     (= menu-select 0)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)~%<COLOR_RED>Fast-Travel Warps <COLOR_WHITE>(<)"
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1266,7 +1334,7 @@ BUGS:
     (= menu-select 1)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_BLUE>Gun Mods <COLOR_GREEN>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_BLUE>Gun Mods <COLOR_GREEN>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)~%<COLOR_RED>Fast-Travel Warps <COLOR_WHITE>(<)"
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1279,7 +1347,20 @@ BUGS:
     (= menu-select 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_GREEN>(<)"
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_GREEN>(<)~%<COLOR_RED>Fast-Travel Warps <COLOR_WHITE>(<)"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-select 3)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>Select Menu:~%~%<COLOR_BLUE>Gun Mods <COLOR_WHITE>(<)~%<COLOR_PINK>Skills <COLOR_WHITE>(<)~%<COLOR_RED>Fast-Travel Warps <COLOR_GREEN>(<)"
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1298,11 +1379,23 @@ BUGS:
 (= in-superpowers? #f)
 (= in-skill? #f)
 )
+(with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                        (bucket-id particles)
+                                        )
+(draw-sprite2d-xy s2-0 0 5 730 108 (new 'static 'rgba :a #x40) #x3fffff)
+(draw-sprite2d-xy s2-0 0 315 730 27 (new 'static 'rgba :a #x40) #x3fffff)
+)
     (when
     (= menu-slot 0)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Re-Roll <COLOR_GREEN>Good<COLOR_ORANGE> Modifier <COLOR_GREEN>(<)~%<COLOR_ORANGE>Re-Roll <COLOR_RED>Bad<COLOR_ORANGE> Modifier <COLOR_WHITE>(<)~%<COLOR_ORANGE>Re-Roll Both Modifiers! <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_ORANGE>~S<COLOR_GREEN>(<)~%<COLOR_ORANGE>~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>"
+        warp-s1
+        warp-s2
+        warp-s3
+        warp-s4
+        warp-s5
+        warp-s6
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1315,7 +1408,13 @@ BUGS:
     (= menu-slot 1)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Re-Roll <COLOR_GREEN>Good<COLOR_ORANGE> Modifier <COLOR_WHITE>(<)~%<COLOR_ORANGE>Re-Roll <COLOR_RED>Bad<COLOR_ORANGE> Modifier <COLOR_GREEN>(<)~%<COLOR_ORANGE>Re-Roll Both Modifiers! <COLOR_WHITE>(<)"
+        (format matt-str "<COLOR_ORANGE>~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_GREEN>(<)~%<COLOR_ORANGE>~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>"
+        warp-s1
+        warp-s2
+        warp-s3
+        warp-s4
+        warp-s5
+        warp-s6
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1324,10 +1423,55 @@ BUGS:
         (set! (-> font-ctx scale) 0.325)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     )
-    (when (= menu-slot 2)
+    (when
+    (= menu-slot 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_ORANGE>Re-Roll <COLOR_GREEN>Good<COLOR_ORANGE> Modifier <COLOR_WHITE>(<)~%<COLOR_ORANGE>Re-Roll <COLOR_RED>Bad<COLOR_ORANGE> Modifier <COLOR_WHITE>(<)~%<COLOR_ORANGE>Re-Roll Both Modifiers! <COLOR_GREEN>(<)"
+        (format matt-str "<COLOR_ORANGE>~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_GREEN>(<)~%<COLOR_ORANGE>~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>"
+        warp-s1
+        warp-s2
+        warp-s3
+        warp-s4
+        warp-s5
+        warp-s6
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 3)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_GREEN>(<)~%<COLOR_ORANGE>~S<COLOR_WHITE>(<)<COLOR_ORANGE>"
+        warp-s1
+        warp-s2
+        warp-s3
+        warp-s4
+        warp-s5
+        warp-s6
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 50 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+    (= menu-slot 4)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_ORANGE>~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_WHITE>(<)<COLOR_ORANGE>~%~S<COLOR_GREEN>(<)~%<COLOR_ORANGE>"
+        warp-s1
+        warp-s2
+        warp-s3
+        warp-s4
+        warp-s5
+        warp-s6
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4358,12 +4502,15 @@ BUGS:
     (none)
 )
 
+(define global-float-time 0.0)
+
 (defun toggle-dark-mode ()
     (cond 
       ((= weather-dark-mode #t)
         (kill-by-name "dust-storm-randomizer" *default-pool*)
         (reset-actors 'life)
         (set-continue! *game-info* "wasdoors-city" #t)
+        (send-event (ppointer->process *time-of-day*) 'change 'hour (the int global-float-time))
         (set! *force-stop-pilot* #f)
         (when (or
                 (= in-desertf-anchor? #t)
@@ -4377,6 +4524,7 @@ BUGS:
       ((= weather-dark-mode #f)
         (reset-actors 'life)
         (spawn-dust-storm)
+        (set! global-float-time (-> *time-of-day-context* time))
         (set! weather-dark-mode #t)
         (set! (-> *mood-control* overide-weather-flag) #f)
         (set! (-> *time-of-day-context* overide-enable) #f)

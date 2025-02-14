@@ -1355,7 +1355,7 @@
     ((string= (-> this name) "air-train-1")
       (set! (-> this on-notice) 
       '(cond
-        ((task-closed? "city-port-fight-resolution")
+        ((task-closed? "sewer-met-hum-resolution")
           '("desert-warp" (scene-play 
           '("city-air-train-in-desert" "desert-air-train-out"))
           #f
@@ -1368,7 +1368,7 @@
     ((string= (-> this name) "air-train-5")
       (set! (-> this on-notice) 
       '(cond
-        ((task-closed? "city-port-fight-resolution")
+        ((task-closed? "sewer-met-hum-resolution")
           '("ctyport-warp" (scene-play 
           '("desert-air-train-in" "city-air-train-out"))
           #f

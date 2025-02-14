@@ -9271,7 +9271,7 @@
             :flags (game-task-node-flag save-on-life act2)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node city-sniper-fight-resolution)
-              (game-task-node city-gun-course-1-resolution)
+              (game-task-node none)
               (game-task-node none)
               (game-task-node none)
               )
