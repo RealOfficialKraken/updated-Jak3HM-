@@ -525,6 +525,21 @@
                       :desired-alive-count #x10
                       :spawner-collide-with (collide-spec enemy hit-by-others-list)
                       )
+                    (new 'static 'battle-info ;; added - new battle-info for custom battle
+                      :id 25
+                      :notice-spec #x2
+                      :notice-distance 122880.0
+                      :dont-spawn-initial-until-notice? #f
+                      :play-battle-music #f
+                      :min-battle-spawn-delay #x96
+                      :max-battle-spawn-delay #x12c
+                      :max-spawner-notice-attack-delay #x78
+                      :spawner-blocked-by-player-xz 24576.0
+                      :pick-spawner-max-dist 163840.0
+                      :max-count #x20000000
+                      :desired-alive-count #x8
+                      :spawner-collide-with (collide-spec enemy hit-by-others-list)
+                      )
                     )
                     
         )
@@ -1654,7 +1669,7 @@
   (init-go this)
   )
 
-  
+
 (defmethod handle-custom-level-entities ((this battle))
   (local-vars (v0-4 battle-ally-array) (sv-16 res-tag) (sv-32 entity-actor))
   (set! sv-16 (new 'static 'res-tag))

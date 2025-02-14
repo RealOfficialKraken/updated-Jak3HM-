@@ -1365,6 +1365,7 @@
               (desert-game alias desert copy desinter special)
               (deserte 0 #f #f)
               (foresta 0 #f #f)
+              (foresta 1 #f #f)
               (outrocst 0 #f #f)
               (factorya 0 lfactory special)
               (factorya 1 lfacrm1 copy)
@@ -1848,6 +1849,50 @@
               ;(ctywide-ff-mh alias ctywide copy ctypesa auto ctypesb auto dummy auto)
               ;(ctywide-mh alias ctywide copy ctypesb special dummy auto dummy auto ctypepb special)
               )
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "battle-foresta-off"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+          (new 'static 'game-task-node-info
+            :level 'city
+            :task (game-task desert-interceptors)
+            :name "battle-foresta-on"
+            :when-open #f
+            :flags (game-task-node-flag act1 no-percent close-task)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node battle-foresta-off)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '((foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset #f

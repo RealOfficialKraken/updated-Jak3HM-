@@ -1395,7 +1395,6 @@ BUGS:
         warp-s3
         warp-s4
         warp-s5
-        warp-s6
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1414,7 +1413,6 @@ BUGS:
         warp-s3
         warp-s4
         warp-s5
-        warp-s6
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1433,7 +1431,6 @@ BUGS:
         warp-s3
         warp-s4
         warp-s5
-        warp-s6
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1452,7 +1449,6 @@ BUGS:
         warp-s3
         warp-s4
         warp-s5
-        warp-s6
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -1471,7 +1467,6 @@ BUGS:
         warp-s3
         warp-s4
         warp-s5
-        warp-s6
         )
         (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
