@@ -158,7 +158,10 @@
 
 ;; DECOMP BEGINS
 
-
+(deftype vehicle-info (structure)
+  ((handle-by-vehicle-type  handle  44)
+   )
+  )
 
 
 (deftype vehicle-lookup-info (structure)

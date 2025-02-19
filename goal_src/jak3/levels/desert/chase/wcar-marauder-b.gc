@@ -33,7 +33,7 @@
                                              :barrel-count 1
                                              :shot-speed 819200.0
                                              :attack-range 819200.0
-                                             :damage 10.0
+                                             :damage 2.0
                                              :vehicle-damage-factor 1.0
                                              :vehicle-impulse-factor 1.0
                                              :rot-min (new 'static 'array float 2 -1820.4445 -32768.0)
@@ -76,7 +76,7 @@
   (the-as pointer (-> *v-marauder-b-constants* damage))
   (the-as pointer (new 'static 'vehicle-damage-info
                     :inv-toughness-factor 1.0
-                    :hit-points 300.0
+                    :hit-points 30.0
                     :inv-hit-points 0.033333335
                     :hit-threshold 8192.0
                     :hit-small 102400.0
@@ -309,7 +309,7 @@
   (set! (-> this draw lod-set lod 0 dist) 1105920.0)
   (set! (-> this rider-hand-joint-array 0) 3)
   ((method-of-type joint-mod-rotate-local init)
-   (the-as joint-mod-rotate-local (-> this jmod-axles))
+   (-> this jmod-axles 0)
    this
    (the-as uint 5)
    (joint-mod-base-flags attached)

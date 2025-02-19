@@ -277,10 +277,6 @@
   ()
   )
 
-(deftype hud-crystal (hud)
-  ()
-  )
-
 
 (deftype hud-skullgem (hud)
   ()

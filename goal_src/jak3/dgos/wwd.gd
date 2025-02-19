@@ -3,6 +3,7 @@
   "ladder.o"
   "jak-ladder+0-ag.go"
   "flut-part.o"
+  "flut.o"
   "target-flut.o"
   "jak-flut+0-ag.go"
   "nav-graph-h.o"

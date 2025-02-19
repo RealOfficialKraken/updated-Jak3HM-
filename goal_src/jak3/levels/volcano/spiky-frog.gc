@@ -134,34 +134,34 @@
     :jump-height-min (meters 2.87)
     :jump-height-factor 0.1
     :knocked-seek-ry-clamp 4551.1113
-    :knocked-soft-vxz-lo 75776.0
-    :knocked-soft-vxz-hi 75776.0
-    :knocked-soft-vy-lo 81920.0
-    :knocked-soft-vy-hi 81920.0
-    :knocked-medium-vxz-lo 147456.0
-    :knocked-medium-vxz-hi 196608.0
-    :knocked-medium-vy-lo 135168.0
-    :knocked-medium-vy-hi 151552.0
-    :knocked-hard-vxz-lo 79872.0
-    :knocked-hard-vxz-hi 79872.0
-    :knocked-hard-vy-lo 183500.8
-    :knocked-hard-vy-hi 209715.2
-    :knocked-huge-vxz-lo 164659.2
-    :knocked-huge-vxz-hi 249036.8
-    :knocked-huge-vy-lo 183500.8
-    :knocked-huge-vy-hi 217907.2
-    :knocked-yellow-vxz-lo 75776.0
-    :knocked-yellow-vxz-hi 75776.0
-    :knocked-yellow-vy-lo 81920.0
-    :knocked-yellow-vy-hi 81920.0
-    :knocked-red-vxz-lo 73728.0
-    :knocked-red-vxz-hi 73728.0
-    :knocked-red-vy-lo 96256.0
-    :knocked-red-vy-hi 96256.0
-    :knocked-blue-vxz-lo 40960.0
-    :knocked-blue-vxz-hi 49152.0
-    :knocked-blue-vy-lo 24576.0
-    :knocked-blue-vy-hi 81920.0
+    :knocked-soft-vxz-lo (meters 18.5)
+    :knocked-soft-vxz-hi (meters 18.5)
+    :knocked-soft-vy-lo (meters 20)
+    :knocked-soft-vy-hi (meters 20)
+    :knocked-medium-vxz-lo (meters 36)
+    :knocked-medium-vxz-hi (meters 48)
+    :knocked-medium-vy-lo (meters 33)
+    :knocked-medium-vy-hi (meters 37)
+    :knocked-hard-vxz-lo (meters 19.5)
+    :knocked-hard-vxz-hi (meters 19.5)
+    :knocked-hard-vy-lo (meters 44.8)
+    :knocked-hard-vy-hi (meters 51.2)
+    :knocked-huge-vxz-lo (meters 40.2)
+    :knocked-huge-vxz-hi (meters 60.8)
+    :knocked-huge-vy-lo (meters 44.8)
+    :knocked-huge-vy-hi (meters 53.2)
+    :knocked-yellow-vxz-lo (meters 18.5)
+    :knocked-yellow-vxz-hi (meters 18.5)
+    :knocked-yellow-vy-lo (meters 20)
+    :knocked-yellow-vy-hi (meters 20)
+    :knocked-red-vxz-lo (meters 18)
+    :knocked-red-vxz-hi (meters 18)
+    :knocked-red-vy-lo (meters 23.5)
+    :knocked-red-vy-hi (meters 23.5)
+    :knocked-blue-vxz-lo (meters 10)
+    :knocked-blue-vxz-hi (meters 12)
+    :knocked-blue-vy-lo (meters 6)
+    :knocked-blue-vy-hi (meters 20)
     :ragdoll-info (new 'static 'ragdoll-setup
       :scale (new 'static 'vector :x 0.8 :y 0.8 :z 0.8)
       :bg-collide-with (collide-spec backgnd crate obstacle)
@@ -415,7 +415,7 @@
       (set! (-> v1-0 nav callback-info) *null-nav-callback-info*)
       )
     0
-    (dotimes (gp-0 (set-reaction-time! self (seconds 0.007) (seconds 0.01)))
+    (dotimes (gp-0 (rnd-time-frame self (seconds 0.007) (seconds 0.01)))
       (cond
         ((zero? (rnd-int self 4))
          (let ((v1-7 (ja-group)))
@@ -504,7 +504,7 @@
         (ja :num! (seek! max f30-0))
         )
       )
-    (go-best-state self)
+    (go-state-for-focused self)
     )
   )
 
@@ -540,6 +540,7 @@
   )
 
 (defmethod go-hostile ((this spiky-frog))
+  "Go to the hostile state, actively trying to attack the target."
   (if (get-focus! this)
       (go (method-of-object this rolling-start))
       (go (method-of-object this hostile))
@@ -554,7 +555,7 @@
         ((get-focus! self)
          (go-virtual rolling-start)
          )
-        ((not (enemy-method-104 self (-> self focus-pos) 8192.0))
+        ((not (pointing-toward? self (-> self focus-pos) 8192.0))
          (go-virtual turn)
          )
         )
@@ -582,7 +583,7 @@
     (logior! (-> self enemy-flags) (enemy-flag lock-focus))
     (logior! (-> self focus-status) (focus-status dangerous))
     (set! (-> self root penetrate-using) (penetrate generic-attack lunge))
-    (reset-penetrate! self)
+    (reset-penetrate-later! self)
     (let* ((v1-9 *game-info*)
            (a0-5 (+ (-> v1-9 attack-id) 1))
            )
@@ -645,7 +646,7 @@
       (let ((v1-16 (-> self nav state)))
         (logclear! (-> v1-16 flags) (nav-state-flag directional-mode))
         (logior! (-> v1-16 flags) (nav-state-flag target-poly-dirty))
-        (set! (-> v1-16 target-pos quad) (-> gp-0 quad))
+        (vector-copy! (-> v1-16 target-pos) gp-0)
         )
       )
     0
@@ -751,7 +752,7 @@
       (suspend)
       (ja :num! (seek!))
       )
-    (go-best-state self)
+    (go-state-for-focused self)
     )
   :post (behavior ()
     (let ((a0-0 self))
@@ -798,7 +799,7 @@
             )
         (logclear! (-> a0-3 flags) (nav-state-flag directional-mode))
         (logior! (-> a0-3 flags) (nav-state-flag target-poly-dirty))
-        (set! (-> a0-3 target-pos quad) (-> v1-17 quad))
+        (vector-copy! (-> a0-3 target-pos) v1-17)
         )
       )
     0
@@ -873,7 +874,7 @@
           )
         )
       )
-    (go-best-state self)
+    (go-state-for-focused self)
     )
   :post nav-enemy-simple-post
   )
@@ -899,7 +900,7 @@
           )
       )
     (let ((a1-0 (new 'stack-no-clear 'collide-query)))
-      (set-ground-pat! self a1-0 (collide-spec backgnd) 8192.0 81920.0 1024.0 (the-as process #f))
+      (find-ground-and-set-pat! self a1-0 (collide-spec backgnd) 8192.0 81920.0 1024.0 (the-as process #f))
       )
     )
   :exit (behavior ()
@@ -919,8 +920,7 @@
                    :num! (identity (the float (+ (-> (the-as art-joint-anim spiky-frog-ball0-end-ja) frames num-frames) -1)))
                    )
        (enable-ragdoll! (-> (the-as ragdoll-proc (handle->process (-> self ragdoll-proc))) ragdoll) self)
-       (suspend-for
-         (seconds 0.411)
+       (suspend-for (seconds 0.411)
          (if (!= (-> self root gspot-pos y) -40959590.0)
              (seek! (-> self root trans y) (-> self root gspot-pos y) (* 409600.0 (seconds-per-frame)))
              )
@@ -935,14 +935,16 @@
           )
         )
       )
-    (if (enemy-method-109 self)
+    (if (out-of-bounds? self)
         (go-die self)
         (go-hostile self)
         )
     )
   )
 
+;; WARN: Return type mismatch symbol vs object.
 (defmethod ragdoll-settled? ((this spiky-frog))
+  "Has the ragdoll stopped moving?"
   (let ((s5-0 (the-as ragdoll-proc (handle->process (-> this ragdoll-proc)))))
     (or (not s5-0)
         (or (ragdoll-proc-method-19 s5-0)
@@ -967,7 +969,7 @@
       (set! (-> a0-2 param0)
             (lambda ((arg0 cspace) (arg1 transformq))
               (let ((v1-0 (-> arg0 param1)))
-                (vector+! (-> arg1 trans) (-> arg1 trans) (the-as vector (-> (the-as spiky-frog v1-0) roll-transform)))
+                (vector+! (-> arg1 trans) (-> arg1 trans) (-> (the-as spiky-frog v1-0) roll-transform trans))
                 (quaternion*! (-> arg1 quat) (-> arg1 quat) (-> (the-as spiky-frog v1-0) roll-transform quat))
                 )
               (quaternion-normalize! (-> arg1 quat))
@@ -989,60 +991,24 @@
   )
 
 (defmethod event-handler ((this spiky-frog) (arg0 process) (arg1 int) (arg2 symbol) (arg3 event-message-block))
+  "Commmon handler for events."
   (case arg2
     (('hit 'hit-flinch 'hit-knocked)
-      (when (string= (-> this name) "toad-boss")
-      (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
-                (set! hpbar-max-hit-points (+ 4400.0 (* (the float enemy-noto) 3)))
-                (set! hpbar-max-hit-points (+ 2200.0 (* (the float enemy-noto) 3)))
-              )
-              (when (> hpbar-hit-points hpbar-max-hit-points)
-                (set! hpbar-hit-points hpbar-max-hit-points)
-              )
-              (set! hpbar-hit-points (-> this hit-points))
-              (set! enemy-string "Steamroller")
-              (set! enemy-hp #t)
-     )
-     (when
-      (and
-        (string= (-> this name) "toad-boss")
-        (<= (-> this hit-points) 0.0)
-      )
-      (when (rand-vu-percent? 0.83)
-        (drop-loot-crate! (-> this root trans) 0.3 0.14)
-        (boss-killed? 2500.0)
-      )
-      (go (method-of-object this knocked))
-     )
      (logclear! (-> this mask) (process-mask actor-pause))
      (logclear! (-> this focus-status) (focus-status dangerous))
      (logclear! (-> this enemy-flags) (enemy-flag use-notice-distance))
      (logior! (-> this enemy-flags) (enemy-flag alert))
      (logior! (-> this focus-status) (focus-status hit))
-     (when (and
-              (= (-> this hit-points) 0.0)
-              (< (-> *game-info* side-enemies-killed?) 16)
-              (task-node-open? (game-task-node wascity-kleeverquest-lavatoad))
-            )
-      (side-enemy-killed?)
-      (when (= (-> *game-info* side-enemies-killed?) 16)
-        (r3-hint)
-        (auto-save-user)
-        (task-node-close! (game-task-node wascity-kleeverquest-lavatoad) #t)
-      )
-     )
      (if (= (-> this hit-points) 0.0)
          (logior! (-> this focus-status) (focus-status dead))
          )
      (logclear! (-> this enemy-flags) (enemy-flag lock-focus))
-     (enemy-method-69 this)
+     (focus-on-attacker! this)
      (logior! (-> this enemy-flags) (enemy-flag lock-focus))
      (process-contact-action arg0)
      (send-event arg0 'get-attack-count 1)
      (freeze-hit-begin)
-     (when (not (string= (-> this name) "toad-boss"))
-      (go (method-of-object this knocked))
-     )
+     (go (method-of-object this knocked))
      )
     (else
       ((method-of-type nav-enemy event-handler) this arg0 arg1 arg2 arg3)
@@ -1051,10 +1017,11 @@
   )
 
 (defmethod enemy-common-post ((this spiky-frog))
+  "Common implementation of post. Runs ja-post."
   (when (< 1 (the-as int (-> this focus aware)))
     (let ((a0-3 (handle->process (-> this focus handle))))
       (if a0-3
-          (set! (-> this focus-pos quad) (-> (get-trans (the-as process-focusable a0-3) 1) quad))
+          (vector-copy! (-> this focus-pos) (get-trans (the-as process-focusable a0-3) 1))
           )
       )
     )
@@ -1077,6 +1044,7 @@
   )
 
 (defmethod init-enemy-collision! ((this spiky-frog))
+  "Typical place to construct collision shapes"
   (let ((s5-0 (new 'process 'collide-shape-moving this (collide-list-enum usually-hit-by-player))))
     (set! (-> s5-0 dynam) (copy *standard-dynamics* 'process))
     (set! (-> s5-0 reaction) cshape-reaction-default)
@@ -1156,116 +1124,16 @@
   )
 
 (defmethod init-enemy! ((this spiky-frog))
+  "Typical place for shared init code. Runs from entity or process style init."
   (initialize-skeleton
     this
     (the-as skeleton-group (art-group-get-by-name *level* "skel-spiky-frog" (the-as (pointer level) #f)))
     (the-as pair 0)
     )
-  (init-enemy-defaults! this *spiky-frog-nav-enemy-info*)
+  (setup-enemy! this *spiky-frog-nav-enemy-info*)
   (init-eyes! this 0 24)
   (init-eyes! this 1 25)
   (set! (-> this sound-id) (new-sound-id))
   0
   (none)
   )
-
-  (deftype steamroller (spiky-frog)
-    ()
-  )
-
-  (defmethod init-enemy-collision! ((this steamroller))
-  (let ((s5-0 (new 'process 'collide-shape-moving this (collide-list-enum usually-hit-by-player))))
-    (set! (-> s5-0 dynam) (copy *standard-dynamics* 'process))
-    (set! (-> s5-0 reaction) cshape-reaction-default)
-    (set! (-> s5-0 no-reaction)
-          (the-as (function collide-shape-moving collide-query vector vector object) nothing)
-          )
-    (set! (-> s5-0 penetrated-by) (penetrate
-                                    generic-attack
-                                    lunge
-                                    flop
-                                    punch
-                                    spin
-                                    roll
-                                    uppercut
-                                    bonk
-                                    tube
-                                    flut-attack
-                                    board
-                                    mech-punch
-                                    dark-punch
-                                    dark-smack
-                                    flut
-                                    )
-          )
-    (let ((s4-0 (new 'process 'collide-shape-prim-group s5-0 (the-as uint 2) 0)))
-      (set! (-> s5-0 total-prims) (the-as uint 3))
-      (set! (-> s4-0 prim-core collide-as) (collide-spec enemy))
-      (set! (-> s4-0 prim-core collide-with)
-            (collide-spec backgnd jak bot crate obstacle hit-by-others-list player-list)
-            )
-      (set! (-> s4-0 prim-core action) (collide-action solid deadly no-standon))
-      (set-vector! (-> s4-0 local-sphere) 0.0 (* 4096.0 4.0) 0.0 (* 8192.0 4.0))
-      (set! (-> s5-0 root-prim) s4-0)
-      )
-    (let ((v1-13 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 0))))
-      (set! (-> v1-13 prim-core collide-as) (collide-spec enemy))
-      (set! (-> v1-13 prim-core collide-with)
-            (collide-spec backgnd jak bot crate obstacle hit-by-others-list player-list)
-            )
-      (set! (-> v1-13 prim-core action) (collide-action solid deadly no-standon))
-      (set-vector! (-> v1-13 local-sphere) 0.0 (* 4915.2 4.0) (* 1638.4 4.0) (* 4915.2 4.0))
-      )
-    (let ((v1-15 (new 'process 'collide-shape-prim-sphere s5-0 (the-as uint 0))))
-      (set! (-> v1-15 prim-core collide-as) (collide-spec enemy))
-      (set! (-> v1-15 prim-core collide-with) (collide-spec jak bot player-list))
-      (set! (-> v1-15 prim-core action) (collide-action deadly))
-      (set! (-> v1-15 transform-index) 6)
-      (set-vector! (-> v1-15 local-sphere) 0.0 0.0 (* 2048.0 4.0) (* 2662.4 4.0))
-      )
-    (set! (-> s5-0 nav-radius) 4096.0)
-    (let ((v1-17 (-> s5-0 root-prim)))
-      (set! (-> s5-0 backup-collide-as) (-> v1-17 prim-core collide-as))
-      (set! (-> s5-0 backup-collide-with) (-> v1-17 prim-core collide-with))
-      )
-    (set! (-> s5-0 max-iteration-count) (the-as uint 3))
-    (set! (-> this root) s5-0)
-    )
-  0
-  (none)
-  )
-
-  (defbehavior steamroller-init-by-other steamroller ((vec vector))
-      (init-enemy-collision! self)
-      (set! (-> self root trans quad) (-> vec quad))
-      (quaternion-identity! (-> self root quat))
-      (vector-identity! (-> self root scale))
-      (init-enemy! self)
-      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-      (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
-        ;; verts for the path
-        (cverts (new 'static 'inline-array vector 3
-                (static-vectorm 1 0 0)
-                (static-vectorm 0 1 0)
-                (static-vectorm 0 0 1)
-                )
-          )
-        )
-    ;; if a nav mesh is close by, use that, otherwise use default
-    (if nav
-      (change-to nav self)
-      (change-to *default-nav-mesh* self)
-      )
-    ;; allocate path
-    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
-    (set! (-> self path curve cverts) cverts)
-    (set! (-> self path curve num-cverts) 3)
-    )
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (set! (-> self root scale x) 4.0)
-    (set! (-> self root scale y) 4.0)
-    (set! (-> self root scale z) 4.0)
-    (set! (-> self hit-points) (+ (+ 2200.0 (* enemy-noto 10)) (/ (the float enemy-noto) 3)))
-  (go (method-of-object self ambush))
-  (none)
-)

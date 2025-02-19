@@ -9,6 +9,7 @@
   "ash-shot.o"
   "ash.o"
   "ash-states.o"
+  "marauder.o"
   "oasis-defense.o"
   "ash-oasis-course.o"
   "tpage-1603.go"

@@ -13,6 +13,7 @@
   "10credits-tx.go"
   "credits-h.o"
   "credits.o"
+  "title-obs.o"
   "tpage-1830.go"
   "tpage-1854.go"
   "tpage-1324.go"

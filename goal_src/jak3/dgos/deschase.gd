@@ -1,5 +1,6 @@
 ("DESCHASE.DGO"
- ("external-player-control.o"
+ ("marauder.o"
+  "external-player-control.o"
   "wcar-catapult.o"
   "desert-jump.o"
   "wcar-marauder-b.o"

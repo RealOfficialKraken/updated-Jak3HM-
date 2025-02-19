@@ -10,6 +10,7 @@
   "mine-train.o"
   "mine-scenes.o"
   "mine-ocean.o"
+  "manta.o"
   "gekko.o"
   "rat.o"
   "monster-frog.o"

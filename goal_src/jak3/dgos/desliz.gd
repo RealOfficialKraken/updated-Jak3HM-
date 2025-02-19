@@ -1,5 +1,6 @@
 ("DESLIZ.DGO"
  ("flut-part.o"
+  "flut.o"
   "target-flut.o"
   "jak-fldax+0-ag.go"
   "desert-lizard-h.o"
