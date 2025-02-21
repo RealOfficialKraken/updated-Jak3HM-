@@ -545,5 +545,4 @@
   "credits-h.o"
   "vin-shop.o"
   "title-obs.o"
-  "battle.o"
  ))

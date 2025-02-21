@@ -408,11 +408,6 @@
 ;; the DGO file
 (custom-level-cgo "TSZ.DGO" "test-zone/testzone.gd")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(build-custom-level "battle-test")
-;; the DGO file
-(custom-level-cgo "BTT.DGO" "battle-test/battle-test.gd")
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ANIMATIONS
