@@ -121,7 +121,7 @@
    (jammed-starting-time      time-frame)
    (spawners                  battle-spawner-array)
    (allies                    battle-ally-array)
-   (alt-actor-max-count       int32)
+   (alt-actor-max-count       int32) ;; added - count the number of elements inside the 'alt-actor' lump
    )
   (:state-methods
     idle
@@ -159,7 +159,7 @@
     (beaten? (_type_) symbol)
     (spawner-active? (_type_ battle-spawner symbol) symbol)
     (spawner-active-count (_type_) int)
-    (handle-custom-level-entities (_type_) none)
+    (handle-custom-level-entities (_type_) none) ;; added - handle custom level battle entities
     )
   )
 
@@ -477,7 +477,7 @@
                       :spawner-blocked-by-player-xz 24576.0
                       :pick-spawner-max-dist 163840.0
                       :max-count #x20000000
-                      :desired-alive-count #x10
+                      :desired-alive-count #x6
                       :spawner-collide-with (collide-spec enemy hit-by-others-list)
                       )
                     (new 'static 'battle-info
@@ -492,41 +492,11 @@
                       :spawner-blocked-by-player-xz 24576.0
                       :pick-spawner-max-dist 163840.0
                       :max-count #x20000000
-                      :desired-alive-count #x10
-                      :spawner-collide-with (collide-spec enemy hit-by-others-list)
-                      )
-                      (new 'static 'battle-info
-                      :id 23
-                      :notice-spec #x2
-                      :notice-distance 1228800.0
-                      :dont-spawn-initial-until-notice? #f
-                      :play-battle-music 'wasfight
-                      :min-battle-spawn-delay #x96
-                      :max-battle-spawn-delay #x258
-                      :max-spawner-notice-attack-delay #x78
-                      :spawner-blocked-by-player-xz 24576.0
-                      :pick-spawner-max-dist 163840.0
-                      :max-count #x20000000
-                      :desired-alive-count #x10
-                      :spawner-collide-with (collide-spec enemy hit-by-others-list)
-                      )
-                    (new 'static 'battle-info
-                      :id 24
-                      :notice-spec #x2
-                      :notice-distance 819200.0
-                      :dont-spawn-initial-until-notice? #f
-                      :play-battle-music 'wasfight
-                      :min-battle-spawn-delay #x96
-                      :max-battle-spawn-delay #x258
-                      :max-spawner-notice-attack-delay #x78
-                      :spawner-blocked-by-player-xz 24576.0
-                      :pick-spawner-max-dist 163840.0
-                      :max-count #x20000000
-                      :desired-alive-count #x10
+                      :desired-alive-count #x6
                       :spawner-collide-with (collide-spec enemy hit-by-others-list)
                       )
                     (new 'static 'battle-info ;; added - new battle-info for custom battle
-                      :id 25
+                      :id 23
                       :notice-spec #x2
                       :notice-distance 122880.0
                       :dont-spawn-initial-until-notice? #f
@@ -536,12 +506,11 @@
                       :max-spawner-notice-attack-delay #x78
                       :spawner-blocked-by-player-xz 24576.0
                       :pick-spawner-max-dist 163840.0
-                      :max-count #x20000000
+                      :max-count #x22
                       :desired-alive-count #x8
                       :spawner-collide-with (collide-spec enemy hit-by-others-list)
                       )
                     )
-                    
         )
 
 ;; WARN: disable def twice: 9. This may happen when a cond (no else) is nested inside of another conditional, but it should be rare.
@@ -693,7 +662,7 @@
     (let ((gp-0 (new 'stack-no-clear 'vector))
           (f0-0 (-> this info spawner-blocked-by-collide-radius))
           )
-      (set! (-> gp-0 quad) (-> arg0 attack-pos quad))
+      (vector-copy! gp-0 (-> arg0 attack-pos))
       (set! (-> gp-0 w) f0-0)
       (let ((s5-0 (-> this info spawner-collide-with))
             (f30-0 (* f0-0 f0-0))
@@ -947,7 +916,7 @@
       (else
         (set! (-> arg0 creature-index) 0)
         (let ((v1-7 (-> arg0 entity)))
-          (set! (-> s3-0 quad) (-> v1-7 extra trans quad))
+          (vector-copy! s3-0 (-> v1-7 extra trans))
           (quaternion-copy! s4-0 (-> v1-7 quat))
           )
         )
@@ -956,7 +925,7 @@
           (s2-1 (!= s2-0 #f))
           (s0-1 (get-random-breed this arg0))
           )
-      (set! (-> s1-1 trans quad) (-> s3-0 quad))
+      (vector-copy! (-> s1-1 trans) s3-0)
       (quaternion-copy! (-> s1-1 quat) s4-0)
       (set! (-> s1-1 entity) (-> arg0 entity))
       (set! (-> s1-1 directed?) #t)
@@ -1528,7 +1497,7 @@
          )
        )
       (else
-        (set! (-> arg0 attack-pos quad) (-> arg0 entity extra trans quad))
+        (vector-copy! (-> arg0 attack-pos) (-> arg0 entity extra trans))
         )
       )
     )
@@ -1600,10 +1569,10 @@
             )
           )
         )
-        (when (and (not v0-0) (zero? (-> sv-16 elt-count))) ;; added - when the battle have no 'actor-group' 
-          (handle-custom-level-entities this) ;; handle custom level battle entities
-        )
       )
+      (when (and (not v0-0) (zero? (-> sv-16 elt-count))) ;; added - when the battle have no 'actor-group' 
+        (handle-custom-level-entities this) ;; handle custom level battle entities
+        )
     )
   0
   (none)
@@ -1658,17 +1627,17 @@
 
 ;; WARN: Return type mismatch int vs object.
 (defmethod init-from-entity! ((this battle) (arg0 entity-actor))
+  "Set up a newly created process from the entity that created it."
   (logior! (-> this mask) (process-mask enemy))
   (let ((s4-0 (new 'process 'trsqv)))
     (set! (-> this root) s4-0)
-    (set! (-> s4-0 trans quad) (-> arg0 extra trans quad))
+    (vector-copy! (-> s4-0 trans) (-> arg0 extra trans))
     (quaternion-copy! (-> s4-0 quat) (-> arg0 quat))
     (vector-identity! (-> s4-0 scale))
     )
   (initialize-battle this)
   (init-go this)
   )
-
 
 (defmethod handle-custom-level-entities ((this battle))
   (local-vars (v0-4 battle-ally-array) (sv-16 res-tag) (sv-32 entity-actor))
@@ -1733,16 +1702,4 @@
     )
   0
   (none)
-  )
-
-  (defbehavior battle-init-by-other battle ((vec vector))
-    (logior! (-> self mask) (process-mask enemy))
-  (let ((s4-0 (new 'process 'trsqv)))
-    (set! (-> self root) s4-0)
-    (set! (-> s4-0 trans quad) (-> vec quad))
-    (quaternion-identity! (-> self root quat))
-    (vector-identity! (-> s4-0 scale))
-    )
-  (initialize-battle self)
-  (init-go self)
   )

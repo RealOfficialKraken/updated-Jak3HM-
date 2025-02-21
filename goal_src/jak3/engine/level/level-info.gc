@@ -20941,7 +20941,7 @@
     )
   )|#
 
-  (define battle-test
+(define battle-test
   (new 'static 'level-load-info
     :name 'battle-test
     :visname 'battle-test-vis
@@ -20977,8 +20977,5 @@
 
 (#when PC_PORT
   (cons! *level-load-list* 'test-zone)
-  )
-
-(#when PC_PORT
   (cons! *level-load-list* 'battle-test)
   )

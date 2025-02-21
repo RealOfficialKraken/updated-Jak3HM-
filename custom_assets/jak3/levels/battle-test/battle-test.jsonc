@@ -50,7 +50,7 @@
   // "spawn-types": ["type", "spyder", "juicer"]
 
    // The base actor id for your custom level. If you have multiple levels, this should be unique!
-   "base_id": 101,
+   "base_id": 107,
 
   // All art groups you want to use in your custom level. Will add their models and corresponding textures to the FR3 file.
   "art_groups": ["spydroid-orig-ag"],
@@ -129,7 +129,7 @@
       "bsphere": [-706.83, 22.93, 1086.32, 10], // bounding sphere
       "lump": {
         "name": "battle-2",
-        "extra-id": ["int32", 25],
+        "extra-id": ["int32", 23],
         "alt-actor": ["uint32", 10000, 20000, 30000]
       }
     }

@@ -1892,7 +1892,7 @@
               )
             :on-open #f
             :manager #f
-            :borrow '((foresta 1 battle-test display))
+            :borrow '((foresta 0 lforring display) (foresta 1 battle-test display))
             :open? #f
             :on-close #f
             :reset #f
