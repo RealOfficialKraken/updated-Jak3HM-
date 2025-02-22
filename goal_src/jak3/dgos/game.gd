@@ -505,6 +505,7 @@
   "neo-wasp.o"
   "flamer-lava.o"
   "manta.o"
+  "mantis.o"
   "flut.o"
   "rat.o"
   "rage-ghost.o"

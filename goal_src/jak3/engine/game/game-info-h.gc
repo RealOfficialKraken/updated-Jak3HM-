@@ -65,6 +65,7 @@
 (define-extern roboguard-giant type)
 (define-extern wland-passenger type)
 (define-extern entity-boss type)
+(define-extern mantis-boss type)
 (declare-type rage-ghost process-focusable)
 (define *rage-ghost* (the (pointer rage-ghost) #f))
 (declare-type leaper-boss process-focusable)

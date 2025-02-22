@@ -3119,9 +3119,7 @@
         )
         (<= (-> this hit-points) 0.0)
       )
-      (when (rand-vu-percent? 0.83)
-        (drop-loot-crate! (-> this root trans) 0.5 0.3)
-      )
+      (drop-loot-crate! (-> this root trans) 0.5 0.3)
       (go (method-of-object this knocked))
      )
      #t

@@ -339,6 +339,7 @@ void extract_common(const ObjectFileDB& db,
   extract_single_ag("COMBA.DGO", "precursor-ag", db, tex_db, tfrag_level);
   extract_single_ag("MIC.DGO", "grunt-ag", db, tex_db, tfrag_level);
   extract_single_ag("FACC.DGO", "spydroid-orig-ag", db, tex_db, tfrag_level);
+  extract_single_ag("VOCA.DGO", "mantis-ag", db, tex_db, tfrag_level);
 
   add_all_textures_from_level(tfrag_level, "ARTSPOOL", tex_db);
   extract_art_groups_from_level(db, tex_db, {}, "ARTSPOOL", tfrag_level, art_group_data);

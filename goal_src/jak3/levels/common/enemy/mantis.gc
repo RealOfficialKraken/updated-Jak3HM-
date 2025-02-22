@@ -1463,6 +1463,18 @@
        )
      )
     (('hit 'hit-knocked)
+    (when (type? self mantis-boss)
+      (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
+        (set! hpbar-max-hit-points (+ (+ 2400.0 (* enemy-noto 10)) (/ (the float enemy-noto) 3)))
+        (set! hpbar-max-hit-points (+ (+ 1200.0 (* enemy-noto 10)) (/ (the float enemy-noto) 3)))
+      )
+      (when (> hpbar-hit-points hpbar-max-hit-points)
+        (set! hpbar-hit-points hpbar-max-hit-points)
+      )
+      (set! hpbar-hit-points (-> this hit-points))
+      (set! enemy-string "General Gouge")
+      (set! enemy-hp #t)
+    )
      (logclear! (-> this mask) (process-mask actor-pause))
      (logclear! (-> this focus-status) (focus-status dangerous))
      (logclear! (-> this enemy-flags) (enemy-flag use-notice-distance))
@@ -1479,6 +1491,9 @@
      (freeze-hit-begin)
      (cond
        ((= (-> this hit-points) 0.0)
+        (when (type? self mantis-boss)
+          (drop-loot-crate! (-> this root trans) 0.37 0.0022)
+        )
         (let ((s5-1 (-> this incoming knocked-type)))
           (cond
             ((and (= s5-1 (knocked-type yellow-shot))
@@ -1498,16 +1513,31 @@
              )
             ((or (= s5-1 (knocked-type yellow-shot)) (= s5-1 (knocked-type blue-shot)))
              (set! (-> this incoming knocked-type) (knocked-type none))
-             (go (method-of-object this knocked))
+             (when (or
+                    (not (type? self mantis-boss))
+                    (<= (-> self hit-points) 0.0)
+                   )
+              (go (method-of-object this knocked))
+             )
              )
             (else
-              (go (method-of-object this knocked))
+              (when (or
+                      (not (type? self mantis-boss))
+                      (<= (-> self hit-points) 0.0)
+                    )
+                (go (method-of-object this knocked))
+              )
               )
             )
           )
         )
        (else
-         (go (method-of-object this knocked))
+         (when (or
+                  (not (type? self mantis-boss))
+                  (<= (-> self hit-points) 0.0)
+                )
+            (go (method-of-object this knocked))
+            )
          )
        )
      #t
@@ -2096,4 +2126,79 @@
   (set! (-> this track-timer) 0)
   (set! (-> this draw light-index) (the-as uint 30))
   (none)
+  )
+
+(defbehavior mantis-init-by-other mantis ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+        ;; verts for the path
+        (cverts (new 'static 'inline-array vector 3
+                (static-vectorm 1 0 0)
+                (static-vectorm 0 1 0)
+                (static-vectorm 0 0 1)
+                )
+          )
+        )
+    ;; if a nav mesh is close by, use that, otherwise use default
+    (if nav
+      (change-to nav self)
+      (change-to *default-nav-mesh* self)
+      )
+    ;; allocate path
+    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+    (set! (-> self path curve cverts) cverts)
+    (set! (-> self path curve num-cverts) 3)
+    )
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (go-ambush-delay self)
+  )
+
+  (defun spawn-mantis ((vec vector) (arg0 string))
+    (process-spawn mantis vec :name arg0 *default-pool*)
+    (none)
+  )
+
+  (deftype mantis-boss (mantis)
+  ()
+  )
+
+  (defbehavior mantis-boss-init-by-other mantis-boss ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+        ;; verts for the path
+        (cverts (new 'static 'inline-array vector 3
+                (static-vectorm 1 0 0)
+                (static-vectorm 0 1 0)
+                (static-vectorm 0 0 1)
+                )
+          )
+        )
+    ;; if a nav mesh is close by, use that, otherwise use default
+    (if nav
+      (change-to nav self)
+      (change-to *default-nav-mesh* self)
+      )
+    ;; allocate path
+    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+    (set! (-> self path curve cverts) cverts)
+    (set! (-> self path curve num-cverts) 3)
+    )
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (set! (-> self root scale x) 2.0)
+    (set! (-> self root scale y) 2.0)
+    (set! (-> self root scale z) 2.0)
+    (set! (-> self hit-points) (+ (+ 1200.0 (* enemy-noto 10)) (/ (the float enemy-noto) 3)))
+  (go-ambush-delay self)
   )

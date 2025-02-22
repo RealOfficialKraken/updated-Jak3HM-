@@ -1698,6 +1698,8 @@
               )
             (send-event (ppointer->process (-> this parent)) 'child-hit)
             (when (and
+                    (not (type? self bipedal-boss))
+                    (not (type? self mantis-boss))
                     (not (string= (-> this name) "Bipedal Boss"))
                     (not (string= (-> this name) "toad-boss"))
                     (not (string= (-> this name) "rage-ghost"))
@@ -2206,7 +2208,11 @@
        )
      )
     ((= msg 'death-end)
-      (when (rand-vu-percent? 0.08)
+      (when (and
+              (rand-vu-percent? 0.08)
+              (not (type? self bipedal-boss))
+              (not (type? self mantis-boss))
+            )
         (drop-loot-crate! (-> this root trans) 0.3 0.0008)
       )
      (if (-> this skel effect)

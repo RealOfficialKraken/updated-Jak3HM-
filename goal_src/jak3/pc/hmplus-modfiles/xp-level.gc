@@ -341,7 +341,7 @@
         (set! *xp-gain* (/ (* xp-gain enemy-noto) 1.5))
         (cond 
           ((<= notoriety-level (- enemy-noto 7))
-            (set! xp-gain2 (+ xp-gain2 (* xp-gain2 0.32)))
+            (set! xp-gain2 (+ xp-gain2 (* xp-gain2 0.84)))
             (+! (-> *game-info* karma) xp-gain2)
           )
           (else

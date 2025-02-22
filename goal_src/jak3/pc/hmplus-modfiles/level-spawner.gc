@@ -59,14 +59,16 @@ dead
         (loop
             (when 
                 (and
-                    (>= (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 600000.0)
+                    (>= (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 2800000.0)
                 )
                 (go-virtual dead)
             )
             (when (not (process-by-name (-> self stored-name) *active-pool*))
                 (go-virtual cooldown)
             )
-            (format *stdcon* "~%Process Going: level-spawner is idle~%type: ~s~%spawner-name: ~s~%entity-name: ~s" (-> self spawn-type) (-> self name) (-> self stored-name))
+            (when (= in-debug? #t)
+                (format *stdcon* "~%Process Going: level-spawner is idle~%type: ~s~%spawner-name: ~s~%entity-name: ~s" (-> self spawn-type) (-> self name) (-> self stored-name))
+            )
             (suspend)
         )
     )
@@ -78,17 +80,23 @@ dead
     (behavior ()
         (loop
             (+! (-> self general-i) 1)
-            (format *stdcon* "~%Process Going: level-spawner is on cooldown~%type: ~s~%spawner-name: ~s~%cdr: ~d/~d" (-> self spawn-type) (-> self name) (-> self general-i) (-> self respawn-timer))
-            (when (>= (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 600000.0)
+            (when (= in-debug? #t)
+                (format *stdcon* "~%Process Going: level-spawner is on cooldown~%type: ~s~%spawner-name: ~s~%cdr: ~d/~d" (-> self spawn-type) (-> self name) (-> self general-i) (-> self respawn-timer))
+            )
+            (when (>= (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 2800000.0)
                 (go-virtual dead)
             )
             (when (process-by-name (-> self stored-name) *active-pool*)
                 (add-spawn-count self)
             )
+            (when (>= (-> self general-i) 50000)
+                (set! (-> self general-i) 0)
+            )
             (when 
                 (and
                     (>= (-> self general-i) (-> self respawn-timer))
                     (not (process-by-name (-> self stored-name) *active-pool*))
+                    (< (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 375000.0)
                 )
                 (cond
                     ((string= (-> self name) "Bipedal Boss")
@@ -98,11 +106,14 @@ dead
                         (spawn-dark-maker (-> self spawn-loc) (-> self stored-name))
                     )
                     ((string= (-> self name) "Mantis Boss")
-                        ;(spawn-dark-maker (-> self spawn-loc) (-> self stored-name))
-                        (print "SPAWNED MANTIS BOSS!")
+                        (process-spawn mantis-boss (-> self spawn-loc) :name (-> self stored-name) *active-pool*)
+                    )
+                    ((string= (-> self name) "mantis-c")
+                        (spawn-mantis (-> self spawn-loc) (-> self stored-name))
                     )
                     (else
                         (format #t "LEVEL SPAWNER: ~s cannot spawn the given entity because its not found on the list!" (-> self name))
+                        (go-virtual dead)
                     )
                 )
                 (go-virtual idle)
@@ -131,6 +142,18 @@ dead
 
 (define volcanoa-vbspawner (new 'static 'vector :x (meters 25.9791) :y (meters 10.2647) :z (meters -207.1895) :w 1.0))
 (define volcanoa-bspawner #f)
+
+(define minea-vbspawner-3 (new 'static 'vector :x (meters -69.3484) :y (meters 84.9264) :z (meters -108.0594) :w 1.0))
+(define minea-vbspawner-4 (new 'static 'vector :x (meters -98.0336) :y (meters 83.9966) :z (meters -81.5685) :w 1.0))
+(define minea-vbspawner-5 (new 'static 'vector :x (meters -88.3672) :y (meters 83.9966) :z (meters -115.4643) :w 1.0))
+(define minea-vbspawner-6 (new 'static 'vector :x (meters 75.4611) :y (meters 51.9216) :z (meters 15.3804) :w 1.0))
+(define minea-vbspawner-7 (new 'static 'vector :x (meters 71.8612) :y (meters 52.3163) :z (meters 2.7022) :w 1.0))
+(define minea-vbspawner-8 (new 'static 'vector :x (meters 74.4600) :y (meters 51.9492) :z (meters -7.5017) :w 1.0))
+(define minea-bspawner #f)
+
+(define darkworld-vbspawner-1 (new 'static 'vector :x (meters 242.7556) :y (meters 99.2942) :z (meters -81.5553) :w 1.0))
+(define darkworld-vbspawner-2 (new 'static 'vector :x (meters 241.7704) :y (meters 99.2169) :z (meters -110.7835) :w 1.0))
+(define darkworld-bspawner #f)
 
 (defun level-spawn-check ()
     (cond
@@ -166,7 +189,7 @@ dead
             (<= (vector-vector-distance (target-pos 0) volcanoa-vbspawner) 800000.0)
             (= volcanoa-bspawner #f)
         )
-        (init-respawner! volcanoa-vbspawner dp-bipedal "Bipedal Boss" 860)
+        (init-respawner! volcanoa-vbspawner mantis-boss "Mantis Boss" 1460)
         (set! volcanoa-bspawner #t)
         )
         ((and
@@ -178,6 +201,79 @@ dead
             (set! volcanoa-bspawner #f)
         )
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;MINEA MANTIS AREAS;;;;;;;;;;;;;;;;;;;;
+        ((and
+            (task-node-closed? (game-task-node mine-boss-resolution))
+            (or
+                (= (-> (level-get-target-inside *level*) name) 'minea)
+                (= (-> (level-get-target-inside *level*) name) 'minec)
+            )
+            (= minea-bspawner #f)
+        )
+        (init-respawner! minea-vbspawner-3 mantis "mantis-c" 600)
+        (init-respawner! minea-vbspawner-4 mantis "mantis-c" 600)
+        (init-respawner! minea-vbspawner-5 mantis "mantis-c" 600)
+        (init-respawner! minea-vbspawner-6 mantis "mantis-c" 600)
+        (init-respawner! minea-vbspawner-7 mantis "mantis-c" 600)
+        (init-respawner! minea-vbspawner-8 mantis "mantis-c" 600)
+        (set! minea-bspawner #t)
+        )
+        ((and
+            (!= (-> (level-get-target-inside *level*) name) 'minea)
+            (!= (-> (level-get-target-inside *level*) name) 'minec)
+            (> (vector-vector-distance (target-pos 0) minea-vbspawner-6) 2800000.0)
+            (= minea-bspawner #t)
+        )
+            (set! minea-bspawner #f)
+        )
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CTYINDA AREAS;;;;;;;;;;;;;;;;;;;;
+        #|((and
+            (task-node-closed? (game-task-node mine-boss-resolution))
+            (or
+                (= (-> (level-get-target-inside *level*) name) 'ctyinda)
+                (= (-> (level-get-target-inside *level*) name) 'minec)
+            )
+            (= minea-bspawner #f)
+        )
+        (init-respawner! minea-vbspawner-3 mantis "mantis-c" 600)
+        (init-respawner! minea-vbspawner-4 mantis "mantis-c" 600)
+        (init-respawner! minea-vbspawner-5 mantis "mantis-c" 600)
+        (set! minea-bspawner #t)
+        )
+        ((and
+            (!= (-> (level-get-target-inside *level*) name) 'minea)
+            (!= (-> (level-get-target-inside *level*) name) 'minec)
+            (> (vector-vector-distance (target-pos 0) minea-vbspawner-6) 2800000.0)
+            (= minea-bspawner #t)
+        )
+            (set! minea-bspawner #f)
+        )|#
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;DARK-WORLD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    #|((and
+            (= weather-dark-mode #t)
+            (or
+                (= (-> (level-get-target-inside *level*) name) 'desert)
+            )
+            (<= (vector-vector-distance (target-pos 0) darkworld-vbspawner-1) 800000.0)
+            (= darkworld-bspawner #f)
+        )
+        (init-respawner! darkworld-vbspawner-1 mantis "mantis-c" 600)
+        (init-respawner! darkworld-vbspawner-2 mantis "mantis-c" 600)
+        (set! darkworld-bspawner #t)
+        )
+        ((and
+            (!= (-> (level-get-target-inside *level*) name) 'desert)
+            (> (vector-vector-distance (target-pos 0) darkworld-vbspawner-1) 2800000.0)
+            (= darkworld-bspawner #t)
+        )
+            (set! darkworld-bspawner #f)
+        )|#
     )
     (none)
 )
