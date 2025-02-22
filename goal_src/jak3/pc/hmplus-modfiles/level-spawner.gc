@@ -1,0 +1,187 @@
+(in-package goal)
+
+;name: level-spawner.gc
+
+(deftype level-spawner (process)
+((spawn-loc            vector :inline)
+(respawn-timer                    int)
+(spawn-type                      type)
+(general-i                        int)
+(stored-name                   string)
+(entity-count                     int))
+(:state-methods
+idle
+cooldown
+dead
+)
+(:methods
+(add-spawn-count (_type_) none)
+)
+)
+
+(defmethod add-spawn-count ((this level-spawner))
+    (let ((thename (new 'global 'string 2048 (the-as string #f))))
+        (cond
+            ((process-by-name (-> this stored-name) *active-pool*)
+                (+! (-> this entity-count) 1)
+                (format thename "~s-~d" (-> this name) (-> this entity-count))
+                (set! (-> this stored-name) thename)
+            )
+            (else
+                (format thename "~s-~d" (-> this name) (-> this entity-count))
+                (set! (-> this stored-name) thename)
+            )
+        )
+    )
+    (none)
+)
+
+(defbehavior level-spawner-init-by-other level-spawner ((vec vector) (arg0 type) (arg1 int))
+    (stack-size-set! (-> self main-thread) 1024)
+    (set! (-> self spawn-loc quad) (-> vec quad))
+    (set! (-> self respawn-timer) arg1)
+    (set! (-> self spawn-type) arg0)
+    (set! (-> self entity-count) 1)
+    (let ((thename (new 'global 'string 2048 (the-as string #f))))
+        (format thename "~s-~d" (-> self name) (-> self entity-count))
+        (set! (-> self stored-name) thename)
+        (format #t "~%~%Set level-spawner entity: ~s~%" (-> self stored-name))
+    )
+    (go (method-of-object self idle))
+    (none)
+)
+
+(defstate idle (level-spawner)
+    :virtual #t
+    :code
+    (behavior ()
+        (set! (-> self general-i) 0)
+        (loop
+            (when 
+                (and
+                    (>= (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 600000.0)
+                )
+                (go-virtual dead)
+            )
+            (when (not (process-by-name (-> self stored-name) *active-pool*))
+                (go-virtual cooldown)
+            )
+            (format *stdcon* "~%Process Going: level-spawner is idle~%type: ~s~%spawner-name: ~s~%entity-name: ~s" (-> self spawn-type) (-> self name) (-> self stored-name))
+            (suspend)
+        )
+    )
+)
+
+(defstate cooldown (level-spawner)
+    :virtual #t
+    :code
+    (behavior ()
+        (loop
+            (+! (-> self general-i) 1)
+            (format *stdcon* "~%Process Going: level-spawner is on cooldown~%type: ~s~%spawner-name: ~s~%cdr: ~d/~d" (-> self spawn-type) (-> self name) (-> self general-i) (-> self respawn-timer))
+            (when (>= (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 600000.0)
+                (go-virtual dead)
+            )
+            (when (process-by-name (-> self stored-name) *active-pool*)
+                (add-spawn-count self)
+            )
+            (when 
+                (and
+                    (>= (-> self general-i) (-> self respawn-timer))
+                    (not (process-by-name (-> self stored-name) *active-pool*))
+                )
+                (cond
+                    ((string= (-> self name) "Bipedal Boss")
+                        (spawn-dark-boss (-> self spawn-loc) (-> self stored-name))
+                    )
+                    ((string= (-> self name) "dp-bipedal-c")
+                        (spawn-dark-maker (-> self spawn-loc) (-> self stored-name))
+                    )
+                    ((string= (-> self name) "Mantis Boss")
+                        ;(spawn-dark-maker (-> self spawn-loc) (-> self stored-name))
+                        (print "SPAWNED MANTIS BOSS!")
+                    )
+                    (else
+                        (format #t "LEVEL SPAWNER: ~s cannot spawn the given entity because its not found on the list!" (-> self name))
+                    )
+                )
+                (go-virtual idle)
+            )
+            (suspend)
+        )
+    )
+)
+
+(defstate dead (level-spawner)
+    :virtual #t
+    :code
+    (behavior ()
+        (kill-by-name (-> self stored-name) *active-pool*)
+        (kill-by-name (-> self name) *active-pool*)
+    )
+)
+
+(defun init-respawner! ((vec vector) (arg0 type) (spawner-name string) (arg1 int))
+    (process-spawn level-spawner vec arg0 arg1 :name spawner-name *nk-dead-pool*)
+    (none)
+)
+
+(define temple-vbspawner (new 'static 'vector :x (meters 4124.4360) :y (meters 44.8466) :z (meters 4337.4125) :w 1.0))
+(define temple-bspawner #f)
+
+(define volcanoa-vbspawner (new 'static 'vector :x (meters 25.9791) :y (meters 10.2647) :z (meters -207.1895) :w 1.0))
+(define volcanoa-bspawner #f)
+
+(defun level-spawn-check ()
+    (cond
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;TEMPLEA BIPEDAL BOSS;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ((and
+            (task-node-closed? (game-task-node temple-oracle-resolution))
+            (or
+                (= (-> (level-get-target-inside *level*) name) 'templea)
+                (= (-> (level-get-target-inside *level*) name) 'templec)
+            )
+            (<= (vector-vector-distance (target-pos 0) temple-vbspawner) 500000.0)
+            (= temple-bspawner #f)
+        )
+        (init-respawner! temple-vbspawner dp-bipedal "Bipedal Boss" 860)
+        (set! temple-bspawner #t)
+        )
+        ((and
+            (!= (-> (level-get-target-inside *level*) name) 'templea)
+            (!= (-> (level-get-target-inside *level*) name) 'templec)
+            (> (vector-vector-distance (target-pos 0) temple-vbspawner) 600000.0)
+            (= temple-bspawner #t)
+        )
+            (set! temple-bspawner #f)
+        )
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;VOLCANOA MANTIS BOSS;;;;;;;;;;;;;;;;;;;;
+        ((and
+            (task-node-closed? (game-task-node temple-oracle-resolution))
+            (or
+                (= (-> (level-get-target-inside *level*) name) 'volcanoa)
+                (= (-> (level-get-target-inside *level*) name) 'volcanox)
+            )
+            (<= (vector-vector-distance (target-pos 0) volcanoa-vbspawner) 800000.0)
+            (= volcanoa-bspawner #f)
+        )
+        (init-respawner! volcanoa-vbspawner dp-bipedal "Bipedal Boss" 860)
+        (set! volcanoa-bspawner #t)
+        )
+        ((and
+            (!= (-> (level-get-target-inside *level*) name) 'volcanoa)
+            (!= (-> (level-get-target-inside *level*) name) 'volcanox)
+            (> (vector-vector-distance (target-pos 0) volcanoa-vbspawner) 1000000.0)
+            (= volcanoa-bspawner #t)
+        )
+            (set! volcanoa-bspawner #f)
+        )
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    )
+    (none)
+)
+
+;(init-respawner! (target-pos 0) dp-bipedal "dp-bipedal-c" 600)
+;(init-respawner! (target-pos 0) bipedal-boss "Bipedal Boss" 800)
+;(init-respawner! (target-pos 0) mantis-boss "Mantis Boss" 800)

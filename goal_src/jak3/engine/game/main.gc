@@ -15,6 +15,7 @@
 (defun-extern run-warp-room (none))
 (define-extern title-progress (function symbol int))
 (defun-extern runs-shop! (none))
+(defun-extern level-spawn-check (none))
 
 ;; DECOMP BEGINS
 
@@ -1450,6 +1451,7 @@
         (update-xp!)
         (wasteland-spawn!)
         (run-warp-room)
+        (level-spawn-check)
         (when (= weather-dark-mode #t)
           (runs-shop!)
         )
