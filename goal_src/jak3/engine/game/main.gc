@@ -1452,7 +1452,11 @@
         (wasteland-spawn!)
         (run-warp-room)
         (level-spawn-check)
-        (when (= weather-dark-mode #t)
+        (when 
+          (and
+            (= weather-dark-mode #t)
+            (task-node-closed? (game-task-node desert-vin-quest-resolution))
+          )
           (runs-shop!)
         )
 

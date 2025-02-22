@@ -1130,10 +1130,28 @@ BUGS:
         )
     
     )
-
-(when (and (= in-superpowers? #f)(= in-modifiers? #f)(= in-gunmods? #f)(= in-skill? #f))
-
+(when (and (= in-superpowers? #f)(= cars-level 0)(= in-modifiers? #f)(= in-gunmods? #f)(= in-skill? #f))
 (when (= in-menu? #t)
+    (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                        (bucket-id particles)
+                                        )
+(draw-sprite2d-xy s2-0 0 345 730 27 (new 'static 'rgba :a #x40) #x3fffff)
+)
+    (clear matt-str)
+    (clear *pc-encoded-matt-str*)
+    (format matt-str "~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%~%<COLOR_ORANGE>(<COLOR_GREEN>Triangle<COLOR_ORANGE>)<COLOR_YELLOW> Back/Exit"
+    )
+    (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+    (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+    (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+    (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 10 0.0 (font-color default) (font-flags middle shadow kerning large))))
+    (set! (-> font-ctx scale) 0.325)
+    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+)
+)
+(when (and (= in-superpowers? #f)(!= cars-level 0)(= in-modifiers? #f)(= in-gunmods? #f)(= in-skill? #f))
+
+(when (and (= in-menu? #t))
     (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
                                         (bucket-id particles)
                                         )
@@ -1316,6 +1334,7 @@ BUGS:
 (= in-gunmods? #f)
 (= in-superpowers? #f)
 (= in-skill? #f)
+(!= cars-level 0)
 )
     (when
     (= menu-select 0)
@@ -2526,7 +2545,7 @@ BUGS:
 (when (and (= (-> *game-info* total-deaths) 0)(= menu-unlocked? #t)(= on-vehicle? #f)(not *scene-player*)(= in-menu? #t))
     (clear matt-str)
     (clear *pc-encoded-matt-str*)
-    (format matt-str "<COLOR_WHITE>Welcome to <COLOR_BLUE>Hero<COLOR_RED>Mode<COLOR_CYAN>+~%<COLOR_GREEN>Made by Kraken~%~%<COLOR_CYAN>RPG Elements have been added!~%Information about your levels can be accessed in the <COLOR_ORANGE>Skills<COLOR_CYAN> tab~%~%Weapons are not obtained the traditional way!~%The new way to get weapons is to find them in enemy-dropped~%crates, which can be found in any tier.~%Black crates yield higher chances!~%~%Gun Mods are new additions that are incredibly rare, and each one is unique.~%These are found in crates and from special events.~%Different loot varies from enemy to enemy,~%some have higher chances of dropping black crates.~%~%Enemies also have a level, so be careful treading into certain areas~%You can backtrack into certain levels to fight~%custom enemies, bosses, and complete quests~%for varying rewards.~%~%<COLOR_GREEN>Good Luck!"
+    (format matt-str "~%~%<COLOR_WHITE>Welcome to <COLOR_BLUE>Hero<COLOR_RED>Mode<COLOR_CYAN>+~%<COLOR_GREEN>Made by Kraken~%~%<COLOR_CYAN>RPG Elements have been added!~%Information about your levels can be accessed in the <COLOR_ORANGE>Skills<COLOR_CYAN> tab~%~%Weapons are not obtained the traditional way!~%The new way to get weapons is to find them in enemy-dropped~%crates, which can be found in any tier.~%Black crates yield higher chances!~%~%Gun Mods are new additions that are incredibly rare, and each one is unique.~%These are found in crates and from special events.~%Different loot varies from enemy to enemy,~%some have higher chances of dropping black crates.~%~%Enemies also have a level, so be careful treading into certain areas~%You can backtrack into certain levels to fight~%custom enemies, and sometimes bosses~%for varying rewards. <COLOR_RED>Some enemies respawn for farming purposes!~%~%<COLOR_GREEN>Good Luck!"
     )
     (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
     (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4841,7 +4860,7 @@ BUGS:
                     (set! (-> fact pickup-type) (pickup-type ammo-yellow))
                 )
             )
-            (set! (-> fact pickup-amount) 80.0)
+            (set! (-> fact pickup-amount) 50.0)
          )
          ((= rnd 5)
             (if (or
