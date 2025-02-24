@@ -506,6 +506,7 @@
   "flamer-lava.o"
   "manta.o"
   "mantis.o"
+  "neo-grenadier.o"
   "flut.o"
   "rat.o"
   "rage-ghost.o"

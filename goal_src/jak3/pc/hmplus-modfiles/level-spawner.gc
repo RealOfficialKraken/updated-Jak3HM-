@@ -61,6 +61,7 @@ dead
                 (and
                     (>= (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 2800000.0)
                 )
+                (format #t "||||||||RESPAWNER ~s DIED ON IDLE BEING TOO FAR AWAY||||||||" (-> self name))
                 (go-virtual dead)
             )
             (when (not (process-by-name (-> self stored-name) *active-pool*))
@@ -84,6 +85,7 @@ dead
                 (format *stdcon* "~%Process Going: level-spawner is on cooldown~%type: ~s~%spawner-name: ~s~%cdr: ~d/~d" (-> self spawn-type) (-> self name) (-> self general-i) (-> self respawn-timer))
             )
             (when (>= (vector-vector-distance (target-pos 0) (-> self spawn-loc)) 2800000.0)
+                (format #t "||||||||RESPAWNER ~s DIED ON COOLDOWN BEING TOO FAR AWAY||||||||" (-> self name))
                 (go-virtual dead)
             )
             (when (process-by-name (-> self stored-name) *active-pool*)
@@ -110,6 +112,12 @@ dead
                     )
                     ((string= (-> self name) "mantis-c")
                         (spawn-mantis (-> self spawn-loc) (-> self stored-name))
+                    )
+                    ((string= (-> self name) "neo-grenadier")
+                        (process-spawn neo-grenadier (-> self spawn-loc) :name (-> self stored-name) *active-pool*)
+                    )
+                    ((string= (-> self name) "neo-grenadier-boss")
+                        (process-spawn neo-grenadier-boss (-> self spawn-loc) :name (-> self stored-name) *active-pool*)
                     )
                     (else
                         (format #t "LEVEL SPAWNER: ~s cannot spawn the given entity because its not found on the list!" (-> self name))
@@ -154,6 +162,9 @@ dead
 (define darkworld-vbspawner-1 (new 'static 'vector :x (meters 242.7556) :y (meters 99.2942) :z (meters -81.5553) :w 1.0))
 (define darkworld-vbspawner-2 (new 'static 'vector :x (meters 241.7704) :y (meters 99.2169) :z (meters -110.7835) :w 1.0))
 (define darkworld-bspawner #f)
+
+(define mhcitya-vbspawner-1 (new 'static 'vector :x (meters -379.2566) :y (meters 10.3946) :z (meters 1176.0876) :w 1.0))
+(define mhcitya-bspawner #f)
 
 (defun level-spawn-check ()
     (cond
@@ -227,28 +238,26 @@ dead
             (set! minea-bspawner #f)
         )
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CTYINDA AREAS;;;;;;;;;;;;;;;;;;;;
-        #|((and
-            (task-node-closed? (game-task-node mine-boss-resolution))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;MHCITYA AREAS;;;;;;;;;;;;;;;;;;;;
+        ((and
+            (task-node-closed? (game-task-node city-destroy-darkeco-resolution))
             (or
-                (= (-> (level-get-target-inside *level*) name) 'ctyinda)
-                (= (-> (level-get-target-inside *level*) name) 'minec)
+                (= (-> (level-get-target-inside *level*) name) 'mhcitya)
+                (= (-> (level-get-target-inside *level*) name) 'ctyport)
             )
-            (= minea-bspawner #f)
+            (= mhcitya-bspawner #f)
         )
-        (init-respawner! minea-vbspawner-3 mantis "mantis-c" 600)
-        (init-respawner! minea-vbspawner-4 mantis "mantis-c" 600)
-        (init-respawner! minea-vbspawner-5 mantis "mantis-c" 600)
-        (set! minea-bspawner #t)
+        (init-respawner! mhcitya-vbspawner-1 neo-grenadier "neo-grenadier-boss" 600)
+        (set! mhcitya-bspawner #t)
         )
         ((and
-            (!= (-> (level-get-target-inside *level*) name) 'minea)
-            (!= (-> (level-get-target-inside *level*) name) 'minec)
-            (> (vector-vector-distance (target-pos 0) minea-vbspawner-6) 2800000.0)
-            (= minea-bspawner #t)
+            (!= (-> (level-get-target-inside *level*) name) 'mhcitya)
+            (!= (-> (level-get-target-inside *level*) name) 'ctyport)
+            (> (vector-vector-distance (target-pos 0) mhcitya-vbspawner-1) 2800000.0)
+            (= mhcitya-bspawner #t)
         )
-            (set! minea-bspawner #f)
-        )|#
+            (set! mhcitya-bspawner #f)
+        )
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

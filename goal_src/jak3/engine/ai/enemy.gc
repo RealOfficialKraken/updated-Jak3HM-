@@ -1700,6 +1700,7 @@
             (when (and
                     (not (type? self bipedal-boss))
                     (not (type? self mantis-boss))
+                    (not (type? self neo-grenadier-boss))
                     (not (string= (-> this name) "Bipedal Boss"))
                     (not (string= (-> this name) "toad-boss"))
                     (not (string= (-> this name) "rage-ghost"))
@@ -2212,6 +2213,7 @@
               (rand-vu-percent? 0.08)
               (not (type? self bipedal-boss))
               (not (type? self mantis-boss))
+              (not (type? self neo-grenadier-boss))
             )
         (drop-loot-crate! (-> this root trans) 0.3 0.0008)
       )

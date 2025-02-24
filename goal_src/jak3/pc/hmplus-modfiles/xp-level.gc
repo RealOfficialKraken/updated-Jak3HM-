@@ -1437,20 +1437,45 @@
                 )
                 (set! enemy-noto 1)
             )
-            (when ;WASCITYA
-                (and
-                    (= (-> (level-get-target-inside *level*) name) 'wascitya)
-                    (!= enemy-noto 1)
+            (when (not (task-node-closed? (game-task-node wascity-pre-game-introduction)))
+                (when ;WASCITYA
+                    (and
+                        (= (-> (level-get-target-inside *level*) name) 'wascitya)
+                        (!= enemy-noto 1)
+                    )
+                    (set! enemy-noto 1)
                 )
-                (set! enemy-noto 1)
+                (when ;WASCITYB
+                    (and
+                        (= (-> (level-get-target-inside *level*) name) 'wascityb)
+                        (not (task-node-open? (game-task-node wascity-pre-game-battle)))
+                        (!= enemy-noto 2)
+                    )
+                    (set! enemy-noto 2)
+                )
             )
-            (when ;WASCITYB
-                (and
-                    (= (-> (level-get-target-inside *level*) name) 'wascityb)
-                    (not (task-node-open? (game-task-node wascity-pre-game-battle)))
-                    (!= enemy-noto 2)
+            (when (task-node-closed? (game-task-node wascity-pre-game-introduction))
+                (when ;WASCITYA
+                    (and
+                        (= (-> (level-get-target-inside *level*) name) 'wascitya)
+                        (or
+                            (< enemy-noto 1)
+                            (> enemy-noto 11)
+                        )
+                    )
+                    (set! enemy-noto (rand-vu-int-range 1 11))
                 )
-                (set! enemy-noto 2)
+                (when ;WASCITYB
+                    (and
+                        (= (-> (level-get-target-inside *level*) name) 'wascityb)
+                        (not (task-node-open? (game-task-node wascity-pre-game-battle)))
+                        (or
+                            (< enemy-noto 7)
+                            (> enemy-noto 17)
+                        )
+                    )
+                    (set! enemy-noto (rand-vu-int-range 7 17))
+                )
             )
             (when ;ARENA FIGHT 1
                 (and
