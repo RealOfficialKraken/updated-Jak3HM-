@@ -1734,7 +1734,16 @@
                 )
                 (set! enemy-noto (rand-vu-int-range 63 72))
             )
-
+            (when ;FORESTA
+                (and
+                    (= (-> (level-get-target-inside *level*) name) 'foresta)
+                    (or
+                        (< enemy-noto 47)
+                        (> enemy-noto 56)
+                    )
+                )
+                (set! enemy-noto (rand-vu-int-range 47 56))
+            )
             (when ;factory
                 (and
                     (or

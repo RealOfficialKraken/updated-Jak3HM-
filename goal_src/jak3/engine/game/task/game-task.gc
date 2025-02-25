@@ -9593,7 +9593,7 @@
               :on-complete '(begin (want-continue "foresta-start") (auto-save 'auto-save))
               :on-fail #f
               )
-            :borrow '((foresta 0 lforplnt display))
+            :borrow '((foresta 0 lforplnt display)(foresta 1 lformach display))
             :open? #f
             :on-close #f
             :reset (new 'static 'task-reset-info

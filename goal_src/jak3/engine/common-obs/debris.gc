@@ -7,7 +7,10 @@
 
 ;; DECOMP BEGINS
 
-(deftype debris-static-joint-params (structure)
+
+
+
+  (deftype debris-static-joint-params (structure)
   ((parent-joint-index  int16)
    (group               string)
    (offset              vector)
@@ -95,8 +98,7 @@
     )
   )
 
-
-;; WARN: Return type mismatch structure vs debris-tuning.
+  ;; WARN: Return type mismatch structure vs debris-tuning.
 (defmethod new debris-tuning ((allocation symbol) (type-to-make type) (arg0 uint))
   (let ((t9-0 (method-of-type structure new))
         (v1-1 type-to-make)
@@ -132,6 +134,7 @@
       )
     )
   )
+
 
 (defmethod update-box! ((this debris-group) (idx int))
   (let ((debris-box (-> this boxes idx)))

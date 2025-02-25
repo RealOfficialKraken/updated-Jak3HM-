@@ -9,6 +9,11 @@
 
 (define *guard-died-recently?* #f)
 
+(deftype cty-attack-controller (mission-squad-control)
+  ((guard-angry-hatred-info-index  int8)
+   )
+  )
+
 (defskelgroup skel-crimson-guard crimson-guard crimson-guard-lod0-jg -1
               ((crimson-guard-lod0-mg (meters 20)) (crimson-guard-lod2-mg (meters 999999)))
               :bounds (static-spherem 0 0 0 5)
@@ -2282,7 +2287,6 @@
       (set! (-> self path curve num-cverts) 3)
       )
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (set! (-> self hit-points) (+ (-> self enemy-info default-hit-points) 35.0))
     (go (method-of-object self idle))
     (none)
   )

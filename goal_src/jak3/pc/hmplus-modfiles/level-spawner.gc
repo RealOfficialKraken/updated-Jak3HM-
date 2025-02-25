@@ -2,6 +2,8 @@
 
 ;name: level-spawner.gc
 
+(define-extern roboguard type)
+
 (deftype level-spawner (process)
 ((spawn-loc            vector :inline)
 (respawn-timer                    int)
@@ -119,6 +121,12 @@ dead
                     ((string= (-> self name) "neo-grenadier-boss")
                         (process-spawn neo-grenadier-boss (-> self spawn-loc) :name (-> self stored-name) *active-pool*)
                     )
+                    ((string= (-> self name) "roboguard")
+                        (process-spawn roboguard (-> self spawn-loc) :name (-> self stored-name))
+                    )
+                    ((string= (-> self name) "kg-guard")
+                        (process-spawn crimson-guard (-> self spawn-loc) :name (-> self stored-name))
+                    )
                     (else
                         (format #t "LEVEL SPAWNER: ~s cannot spawn the given entity because its not found on the list!" (-> self name))
                         (go-virtual dead)
@@ -165,6 +173,25 @@ dead
 
 (define mhcitya-vbspawner-1 (new 'static 'vector :x (meters -379.2566) :y (meters 10.3946) :z (meters 1176.0876) :w 1.0))
 (define mhcitya-bspawner #f)
+
+(define ctyinda-vbspawner-1 (new 'static 'vector :x (meters 970.73) :y (meters 7.9936) :z (meters 925.5459) :w 1.0))
+(define ctyinda-vbspawner-2 (new 'static 'vector :x (meters 946.7975) :y (meters 7.9936) :z (meters 928.8559) :w 1.0))
+(define ctyinda-vbspawner-3 (new 'static 'vector :x (meters 947.8950) :y (meters 7.9936) :z (meters 965.5139) :w 1.0))
+(define ctyinda-vbspawner-4 (new 'static 'vector :x (meters 958.0089) :y (meters 7.9936) :z (meters 961.6403) :w 1.0))
+(define ctyinda-vbspawner-5 (new 'static 'vector :x (meters 968.4634) :y (meters 7.9936) :z (meters 983.3506) :w 1.0))
+(define ctyinda-vbspawner-6 (new 'static 'vector :x (meters 936.1512) :y (meters 8.1321) :z (meters 975.7429) :w 1.0))
+(define ctyinda-vbspawner-7 (new 'static 'vector :x (meters 971.3947) :y (meters 7.9936) :z (meters 1001.3099) :w 1.0))
+(define ctyinda-vbspawner-8 (new 'static 'vector :x (meters 947.2451) :y (meters 7.9936) :z (meters 1008.2397) :w 1.0))
+
+
+(define ctyinda-kbspawner-2 (new 'static 'vector :x (meters 974.1008) :y (meters 7.9936) :z (meters 1072.7497) :w 1.0))
+(define ctyinda-kbspawner-3 (new 'static 'vector :x (meters 964.1898) :y (meters 7.9936) :z (meters 1082.1157) :w 1.0))
+(define ctyinda-kbspawner-4 (new 'static 'vector :x (meters 936.7274) :y (meters 8.0335) :z (meters 1064.9246) :w 1.0))
+(define ctyinda-kbspawner-5 (new 'static 'vector :x (meters 927.8038) :y (meters 7.9936) :z (meters 1053.6208) :w 1.0))
+(define ctyinda-kbspawner-6 (new 'static 'vector :x (meters 936.1512) :y (meters 8.1321) :z (meters 975.7429) :w 1.0))
+(define ctyinda-kbspawner-7 (new 'static 'vector :x (meters 947.5040) :y (meters 7.9936) :z (meters 1088.8927) :w 1.0))
+(define ctyinda-kbspawner-8 (new 'static 'vector :x (meters 948.7875) :y (meters 7.9936) :z (meters 1078.1287) :w 1.0))
+(define ctyinda-bspawner #f)
 
 (defun level-spawn-check ()
     (cond
@@ -257,6 +284,42 @@ dead
             (= mhcitya-bspawner #t)
         )
             (set! mhcitya-bspawner #f)
+        )
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CTYINDA AREAS;;;;;;;;;;;;;;;;;;;;
+        ((and
+            (task-node-closed? (game-task-node city-destroy-darkeco-resolution))
+            (or
+                (= (-> (level-get-target-inside *level*) name) 'ctyinda)
+                (= (-> (level-get-target-inside *level*) name) 'ctyindb)
+            )
+            (= ctyinda-bspawner #f)
+        )
+        ;(init-respawner! ctyinda-vbspawner-1 roboguard "roboguard" 600)
+        ;(init-respawner! ctyinda-vbspawner-2 roboguard "roboguard" 600)
+        ;(init-respawner! ctyinda-vbspawner-3 roboguard "roboguard" 600)
+        ;(init-respawner! ctyinda-vbspawner-4 roboguard "roboguard" 600)
+        ;(init-respawner! ctyinda-vbspawner-5 roboguard "roboguard" 600)
+        ;(init-respawner! ctyinda-vbspawner-6 roboguard "roboguard" 600)
+        ;(init-respawner! ctyinda-vbspawner-7 roboguard "roboguard" 600)
+        (init-respawner! ctyinda-vbspawner-8 roboguard "roboguard" 600)
+        (init-respawner! ctyinda-kbspawner-2 roboguard "roboguard" 600)
+        (init-respawner! ctyinda-kbspawner-3 roboguard "roboguard" 600)
+
+        (init-respawner! ctyinda-kbspawner-4 roboguard "roboguard" 600)
+        (init-respawner! ctyinda-kbspawner-5 roboguard "roboguard" 600)
+        (init-respawner! ctyinda-kbspawner-6 roboguard "roboguard" 600)
+        (init-respawner! ctyinda-kbspawner-7 roboguard "roboguard" 600)
+        (init-respawner! ctyinda-kbspawner-8 roboguard "roboguard" 600)
+        (set! ctyinda-bspawner #t)
+        )
+        ((and
+            (!= (-> (level-get-target-inside *level*) name) 'ctyinda)
+            (!= (-> (level-get-target-inside *level*) name) 'ctyindb)
+            (> (vector-vector-distance (target-pos 0) ctyinda-vbspawner-1) 2800000.0)
+            (= ctyinda-bspawner #t)
+        )
+            (set! ctyinda-bspawner #f)
         )
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

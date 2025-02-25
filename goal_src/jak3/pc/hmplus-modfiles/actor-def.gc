@@ -2130,3 +2130,31 @@
   :trans #f
   :code sleep-code
   )
+
+  ;; +++city-target-type
+(defenum city-target-type
+  (unk1 1)
+  (unk2 2)
+  (guard-tazer 3)
+  (guard-rifle 4)
+  (guard-grenade 5)
+  (grunt 6)
+  (flitter 7)
+  (unknown 8)
+  (roboguard 9)
+  (turret 10)
+  (spydroid 11)
+  (roboguard-giant 12)
+  )
+;; ---city-target-type
+
+
+;; +++cty-faction
+(defenum cty-faction
+  :type uint8
+  (ff 0)
+  (kg 1)
+  (mh 2)
+  (invalid 128)
+  )
+;; ---cty-faction
