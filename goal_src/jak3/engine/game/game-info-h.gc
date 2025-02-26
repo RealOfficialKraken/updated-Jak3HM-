@@ -517,6 +517,8 @@
 
   (defun-extern spawn-manipy-sat vector string symbol none)
   
+  (define draw-bombbot-hint #f)
+  (define draw-bbh 0)
 
 
 

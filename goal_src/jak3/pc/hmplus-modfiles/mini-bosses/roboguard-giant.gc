@@ -1421,7 +1421,7 @@
      (send-event arg0 'get-attack-count 1)
      (freeze-hit-begin)
 
-    (set! hpbar-max-hit-points 60000.0)
+    (set! hpbar-max-hit-points 18000.0)
     (set! hpbar-hit-points (-> self hit-points))
     (when (> hpbar-hit-points hpbar-max-hit-points)
         (set! hpbar-hit-points hpbar-max-hit-points)
@@ -1789,12 +1789,11 @@
         (set! (-> self path curve num-cverts) 3)
         )
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (set! (-> self hit-points) 60000.0)
+    (set! (-> self hit-points) 18000.0)
     (set! (-> self root scale x) 4.8)
     (set! (-> self root scale y) 4.8)
     (set! (-> self root scale z) 4.8)
     (set-vector! (-> self draw color-mult) 0.0 0.75 0.9 1.0)
-    (set! (-> self name) "roboguard-giant")
     (go (method-of-object self idle))
     (none)
 )

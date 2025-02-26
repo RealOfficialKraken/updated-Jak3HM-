@@ -77,14 +77,14 @@
     :vehicle-type (vehicle-type-u8 vt27)
     :transmission (new 'static 'vehicle-transmission-info :gear-count 1)
     :handling (new 'static 'vehicle-handling-info
-      :max-engine-thrust (meters 59)
+      :max-engine-thrust (meters 300)
       :inv-max-engine-thrust 0.0000041379767
       :engine-response-rate 20.0
       :engine-intake-factor 1.0
       :brake-factor 2.25
       :turbo-boost-factor 1.0
       :turbo-boost-duration (seconds 1)
-      :max-xz-speed (meters 60)
+      :max-xz-speed (meters 200)
       :player-turn-anim-min -1.0
       :player-turn-anim-max 1.0
       :pilot-x-accel-factor 1.0
@@ -208,8 +208,8 @@
     :particles (new 'static 'vehicle-particle-info
       :headlight-count 2
       :taillight-count 2
-      :thruster-flame-width (meters 0.6)
-      :thruster-flame-length (meters 2)
+      :thruster-flame-width (meters 0.8)
+      :thruster-flame-length (meters 5)
       :thruster-local-pos (new 'static 'inline-array vector 2
         (new 'static 'vector :x 3072.0 :z -14336.0 :w 1.0)
         (new 'static 'vector :x -3072.0 :z -14336.0 :w 1.0)

@@ -10473,7 +10473,7 @@
             :flags (game-task-node-flag save-on-life act2)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node city-hijack-vehicle-resolution)
-              (game-task-node city-gun-course-2-resolution)
+              (game-task-node none)
               (game-task-node none)
               (game-task-node none)
               )
@@ -10520,25 +10520,45 @@
             :reset (new 'static 'task-reset-info
               :restart-info (new 'static 'resetter-params
                 :flags (resetter-flag auto-reset text-message no-draw-target)
-                :fail (new 'static 'resetter-spec :continue "ctyport-bombbot" :reset-mode 'try :execute #f)
+                :fail (new 'static 'resetter-spec
+                  :continue "ctyport-hiphog-no-hiphog"
+                  :node (game-task-node city-blow-barricade-introduction)
+                  :reset-mode 'life
+                  :execute #f
+                  )
                 :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
                 :reset-delay (seconds 6.5)
                 )
               :quit-info (new 'static 'resetter-params
                 :flags (resetter-flag auto-reset no-draw-target)
-                :fail (new 'static 'resetter-spec :continue "ctyport-bombbot" :reset-mode 'life :execute #f)
+                :fail (new 'static 'resetter-spec
+                  :continue "ctyport-hiphog-no-hiphog"
+                  :node (game-task-node city-blow-barricade-introduction)
+                  :reset-mode 'life
+                  :execute #f
+                  )
                 :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
                 :reset-delay (seconds 6.5)
                 )
               :fail-info (new 'static 'resetter-params
                 :flags (resetter-flag auto-reset no-draw-target)
-                :fail (new 'static 'resetter-spec :continue "ctyport-bombbot" :reset-mode 'life :execute #f)
+                :fail (new 'static 'resetter-spec
+                  :continue "ctyport-hiphog-no-hiphog"
+                  :node (game-task-node city-blow-barricade-introduction)
+                  :reset-mode 'life
+                  :execute #f
+                  )
                 :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
                 :reset-delay (seconds 6.5)
                 )
               :death-info (new 'static 'resetter-params
                 :flags (resetter-flag auto-reset text-message no-audio no-slow-down no-draw-target)
-                :fail (new 'static 'resetter-spec :continue "ctyport-bombbot" :reset-mode 'life :execute #f)
+                :fail (new 'static 'resetter-spec
+                  :continue "ctyport-hiphog-no-hiphog"
+                  :node (game-task-node city-blow-barricade-introduction)
+                  :reset-mode 'life
+                  :execute #f
+                  )
                 :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
                 )
               )

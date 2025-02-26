@@ -2321,7 +2321,7 @@
 
 ;; WARN: Return type mismatch (pointer bombbot-shot) vs (pointer projectile).
 (defmethod fire-shot ((this bombbot) (arg0 vector) (arg1 vector))
-  (the-as (pointer projectile) (spawn-bombbot-projectile this arg0 arg1 819200.0 (the-as vector #f) 2.0))
+  (the-as (pointer projectile) (spawn-bombbot-projectile this arg0 arg1 819200.0 (the-as vector #f) (+ (the float (/ notoriety-level 9)) (the float (/ guns-level 4)))))
   )
 
 (defmethod bombbot-method-197 ((this bombbot))
@@ -4466,7 +4466,7 @@
         )
       (when (handle->process (-> self focus handle))
         )
-      (when (and (cpad-pressed? 0 r1) (>= (+ (current-time) (seconds -0.02)) (-> self next-shoot)))
+      (when (and (cpad-hold? 0 r1) (>= (+ (current-time) (seconds -0.00001)) (-> self next-shoot)))
         (set-time! (-> self next-shoot))
         (bombbot-method-197 self)
         )
@@ -4648,7 +4648,7 @@
     (set! (-> self shoot-duration) 1.0)
     (set! (-> self hold-fire) #f)
     (set! (-> self draw light-index) (the-as uint 10))
-    (set! (-> self max-hit-points) (the float (+ (* 50 (the int (you-suck-scale *game-info* #f 0))) 50)))
+    (set! (-> self max-hit-points) (the float (+ (* (+ 50 (* cars-level 4)) (the int (you-suck-scale *game-info* #f 0))) (+ 50 (* cars-level 4)))))
     (set! (-> self hit-points) (-> self max-hit-points))
     (set! (-> self health-hud)
           (ppointer->handle (process-spawn bombbot-hud :init hud-init-by-other :name "bombbot-hud" :to self))
@@ -4712,7 +4712,10 @@
             )
         )
       )
-    (if (and (zero? (-> self done?)) (not (handle->process (-> self bombbot-h))))
+    (when (and (zero? (-> self done?)) (not (handle->process (-> self bombbot-h))))
+        (when (< notoriety-level 40)
+          (set! draw-bombbot-hint #t)
+        )
         (send-event self 'fail)
         )
     (let ((s3-0 (new 'static 'vector :x 4199997.5 :y 30146.56 :z 1763819.5 :w 1.0))
