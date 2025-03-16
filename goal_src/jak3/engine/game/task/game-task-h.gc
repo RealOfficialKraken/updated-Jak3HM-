@@ -167,6 +167,8 @@
   (desert-logo-title1)
   (desert-logo-title2)
   (desert-interceptors-attack-exclude)
+  (tp-fb-ground)
+  (tp-fb-fight)
   (desertf-anchor-introduction)
   (desertf-anchor-resolution)
   (desertc-anchor-introduction)

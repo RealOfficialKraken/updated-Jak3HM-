@@ -176,6 +176,8 @@
   (define matt-str (new 'global 'string 2048 (the-as string #f)))
   (define *pc-encoded-matt-str* (new 'global 'string 2048 (the-as string #f)))
 
+  (define pause-menu-blocked? #f)
+
   (define notoriety-level 0)
   (define cars-level 0)
   (define guns-level 0)
@@ -368,6 +370,18 @@
   (define vin-hinti 0)
   (define vin-crystals 0)
   (define tp-fb? #f)
+  (define tpfb-active #f)
+
+  (defun-extern spawn-precursor-man vector none)
+  (defun-extern lightjak-get-off-part vector none)
+  (defun-extern init-entity-1! none)
+  (defun-extern init-entity-2! none)
+  (defun-extern init-entity-3! none)
+  (defun-extern init-entity-4! none)
+  (defun-extern init-entity-5! none)
+  (define init-entity-delay #f)
+  (define ied-i 0)
+  (define stored-target-vector (new 'static 'vector :x 0.0 :y 0.0 :z 0.0 :w 1.0))
 
 
   (deftype vehicle-info (structure)

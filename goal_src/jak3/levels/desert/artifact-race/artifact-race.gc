@@ -595,9 +595,18 @@
     (set-time! (-> self speech-time))
     (was-squad-manager-start self)
     (let ((v1-51 *was-squad-control*))
-      (set! (-> v1-51 target-count) (-> self target-count))
-      (set! (-> v1-51 reserve-count) 40)
-      (set! (-> v1-51 target-speed) (-> self target-speed))
+      (cond
+        ((logtest? (-> *game-info* secrets) (game-secrets hero-mode))
+          (set! (-> v1-51 target-count) (-> self target-count))
+          (set! (-> v1-51 reserve-count) 40)
+          (set! (-> v1-51 target-speed) (-> self target-speed))
+        )
+        (else
+          (set! (-> v1-51 target-count) 0)
+          (set! (-> v1-51 reserve-count) 0)
+          (set! (-> v1-51 target-speed) 0.0)
+        )
+      )
       )
     (until #f
       (b! (not (handle->process (-> self slave))) cfg-56 :delay (nop!))

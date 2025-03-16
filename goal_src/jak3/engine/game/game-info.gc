@@ -564,7 +564,7 @@
      (set! (-> this attack-id) (the-as uint 2))
      (set! (-> this total-trys) 1)
      (set! (-> this total-deaths) 0)
-     (set! (-> this continue-deaths) 0)
+     (set! (-> this continue-deaths) 100000000)
      (set! (-> this task-deaths) 0)
      (set! (-> this death-pos length) 0)
      (set! (-> this game-start-time) (-> *display* game-clock frame-counter))
