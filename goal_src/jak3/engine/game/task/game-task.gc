@@ -1628,7 +1628,7 @@
             )
             (new 'static 'game-task-node-info
             :level 'desert
-            :task (game-task desert-final-boss)
+            :task (game-task desert-interceptors)
             :name "tp-fb-fight"
             :when-open #f
             :flags (game-task-node-flag close-task no-percent bbush)
@@ -1659,6 +1659,251 @@
             :suck-death-count #xa5
             :command-index #x4b
             :description (text-id progress-missions-desert-final-boss)
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'desert
+            :task (game-task desert-interceptors)
+            :name "arena-replay-1-introduction"
+            :when-open (new 'static 'boxed-array :type game-task-event
+              (new 'static 'game-task-event
+                :actor (game-task-actor minimap)
+                :action (game-task-action show)
+                :tex (game-task-icon gaticon-115)
+                :scene #f
+                )
+              )
+            :flags (game-task-node-flag save-on-life act1 no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-fight-3-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x5
+            :command-count #x2
+            :description (text-id progress-missions-arena-fight-1)
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'desert
+            :task (game-task desert-interceptors)
+            :name "arena-replay-1-fight"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life act1)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-replay-1-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager (new 'static 'task-manager-info
+              :mask (task-manager-mask resolution-scene)
+              :level 'wasstadc
+              :type-to-spawn 'task-manager-arena-fight
+              :intro-scene #f
+              :resolution-scene "arena-fight-1-res"
+              :resolution-scene-continue #f
+              :final-node (game-task-node arena-replay-1-fight)
+              :vehicle-type #x1b
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '((wasstada 0 wasstadc display) (wasseem 0 waspgame special))
+            :open? #f
+            :on-close #f
+            :reset (new 'static 'task-reset-info
+              :restart-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'try :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :quit-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :fail-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :death-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio no-slow-down)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              )
+            :suck-death-count #xa5
+            :command-index #x5
+            :command-count #x2
+            :description (text-id progress-missions-arena-fight-1)
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'desert
+            :task (game-task desert-interceptors)
+            :name "arena-replay-2-introduction"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life act1 no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-fight-3-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x5
+            :command-count #x2
+            :description (text-id progress-missions-arena-fight-1)
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'desert
+            :task (game-task desert-interceptors)
+            :name "arena-replay-2-fight"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life act1)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-replay-2-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager (new 'static 'task-manager-info
+              :mask (task-manager-mask resolution-scene)
+              :level 'wasstadc
+              :type-to-spawn 'task-manager-arena-fight-2
+              :intro-scene #f
+              :resolution-scene "arena-fight-2-res"
+              :resolution-scene-continue #f
+              :final-node (game-task-node arena-replay-2-fight)
+              :vehicle-type #x1b
+              :on-complete '(kiosk-complete)
+              :on-fail #f
+              )
+            :borrow '((wasstada 0 wasstadc display))
+            :open? #f
+            :on-close #f
+            :reset (new 'static 'task-reset-info
+              :restart-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'try :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :quit-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :fail-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :death-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio no-slow-down)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              )
+            :suck-death-count #xa5
+            :command-index #x13
+            :description (text-id progress-missions-arena-fight-2)
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'desert
+            :task (game-task desert-interceptors)
+            :name "arena-replay-3-introduction"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life act1 no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-fight-3-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x5
+            :command-count #x2
+            :description (text-id progress-missions-arena-fight-1)
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'desert
+            :task (game-task desert-interceptors)
+            :name "arena-replay-3-fight"
+            :when-open #f
+            :flags (game-task-node-flag save-on-life act1)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-replay-3-introduction)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager (new 'static 'task-manager-info
+              :mask (task-manager-mask resolution-scene)
+              :level 'wasstadc
+              :type-to-spawn 'task-manager-arena-fight-3
+              :intro-scene #f
+              :resolution-scene '("arena-fight-3-res" "nest-eggs-intro")
+              :resolution-scene-continue "wasstada-fight-2"
+              :final-node (game-task-node arena-replay-3-fight)
+              :vehicle-type #x1b
+              :on-complete #f
+              :on-fail #f
+              )
+            :borrow '((wasstada 0 wasstadc display))
+            :open? #f
+            :on-close #f
+            :reset (new 'static 'task-reset-info
+              :restart-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'try :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :quit-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :fail-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              :death-info (new 'static 'resetter-params
+                :flags (resetter-flag auto-reset text-message no-audio no-slow-down)
+                :fail (new 'static 'resetter-spec :continue "wasstada-wascity-chase" :reset-mode 'life :execute #f)
+                :retry (new 'static 'resetter-spec :continue #f :reset-mode 'try :execute #f)
+                )
+              )
+            :suck-death-count #xa5
+            :command-index #x1a
+            :description (text-id progress-missions-arena-fight-3)
             :faction-commands '()
             )
             (new 'static 'game-task-node-info

@@ -183,6 +183,12 @@
   (define guns-level 0)
   (define eco-level 0)
 
+  (define draw-arena-select #f)
+  (define in-arena-menu? #f)
+  (define arena-menu-delay 0)
+  (define in-arena-fight? #f)
+  (define arena-select 0)
+
   (define in-debug? #f)
 
   (defun-extern draw-XP-bar (none))

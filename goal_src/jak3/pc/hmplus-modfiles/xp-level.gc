@@ -332,6 +332,9 @@
 )
 
 (defun enemy-killed? ((xp-gain float))
+    (when (= in-arena-fight? #t)
+        (set! xp-gain (/ xp-gain 1.6))
+    )
     (let ((xp-gain2 (/ (* xp-gain enemy-noto) 1.5))
           (xp-gain3 (/ (* xp-gain enemy-noto) 4)))
 
@@ -1106,26 +1109,28 @@
                 )
                 (set! enemy-noto 91)
             )
-            (when ;ARENA FIGHT 1
-                (and
+            (cond
+                ;ARENA FIGHT 1
+                ((and
                     (task-node-open? (game-task-node arena-fight-1-fight))
                     (!= enemy-noto 1)
                 )
                 (set! enemy-noto 72)
             )
-            (when ;ARENA FIGHT 2
-                (and
+            ;ARENA FIGHT 2
+            ((and
                     (task-node-open? (game-task-node arena-fight-2-fight))
                     (!= enemy-noto notoriety-level)
                 )
                 (set! enemy-noto (+ notoriety-level 72))
             )
-            (when ;ARENA FIGHT 3
-                (and
-                    (task-node-open? (game-task-node arena-fight-3-fight))
-                    (!= enemy-noto (+ notoriety-level 10))
+            ;ARENA FIGHT 3
+            ((and
+                (task-node-open? (game-task-node arena-fight-3-fight))
+                (!= enemy-noto (+ notoriety-level 10))
                 )
                 (set! enemy-noto (+ notoriety-level 120))
+            )
             )
             (when ;DESERT
                 (and
@@ -1397,6 +1402,7 @@
             (when 
                 (and
                     (!= (-> (level-get-target-inside *level*) name) 'desert)
+                    (not (task-node-open? (game-task-node arena-replay-1-fight)))
                     (= start-was-uprising #t)
                 )
                     (set! wasi 0)
@@ -1437,44 +1443,47 @@
                 )
                 (set! enemy-noto 1)
             )
-            (when (not (task-node-closed? (game-task-node wascity-pre-game-introduction)))
-                (when ;WASCITYA
-                    (and
-                        (= (-> (level-get-target-inside *level*) name) 'wascitya)
-                        (!= enemy-noto 1)
-                    )
-                    (set! enemy-noto 1)
-                )
-                (when ;WASCITYB
-                    (and
-                        (= (-> (level-get-target-inside *level*) name) 'wascityb)
-                        (not (task-node-open? (game-task-node wascity-pre-game-battle)))
-                        (!= enemy-noto 2)
-                    )
-                    (set! enemy-noto 2)
-                )
-            )
-            (when (task-node-closed? (game-task-node wascity-pre-game-introduction))
-                (when ;WASCITYA
-                    (and
-                        (= (-> (level-get-target-inside *level*) name) 'wascitya)
-                        (or
-                            (< enemy-noto 1)
-                            (> enemy-noto 11)
+            (when
+                (not in-arena-fight?)
+                    (when (not (task-node-closed? (game-task-node wascity-pre-game-introduction)))
+                    (when ;WASCITYA
+                        (and
+                            (= (-> (level-get-target-inside *level*) name) 'wascitya)
+                            (!= enemy-noto 1)
                         )
+                        (set! enemy-noto 1)
                     )
-                    (set! enemy-noto (rand-vu-int-range 1 11))
-                )
-                (when ;WASCITYB
-                    (and
-                        (= (-> (level-get-target-inside *level*) name) 'wascityb)
-                        (not (task-node-open? (game-task-node wascity-pre-game-battle)))
-                        (or
-                            (< enemy-noto 7)
-                            (> enemy-noto 17)
+                    (when ;WASCITYB
+                        (and
+                            (= (-> (level-get-target-inside *level*) name) 'wascityb)
+                            (not (task-node-open? (game-task-node wascity-pre-game-battle)))
+                            (!= enemy-noto 2)
                         )
+                        (set! enemy-noto 2)
                     )
-                    (set! enemy-noto (rand-vu-int-range 7 17))
+                )
+                (when (task-node-closed? (game-task-node wascity-pre-game-introduction))
+                    (when ;WASCITYA
+                        (and
+                            (= (-> (level-get-target-inside *level*) name) 'wascitya)
+                            (or
+                                (< enemy-noto 1)
+                                (> enemy-noto 11)
+                            )
+                        )
+                        (set! enemy-noto (rand-vu-int-range 1 11))
+                    )
+                    (when ;WASCITYB
+                        (and
+                            (= (-> (level-get-target-inside *level*) name) 'wascityb)
+                            (not (task-node-open? (game-task-node wascity-pre-game-battle)))
+                            (or
+                                (< enemy-noto 7)
+                                (> enemy-noto 17)
+                            )
+                        )
+                        (set! enemy-noto (rand-vu-int-range 7 17))
+                    )
                 )
             )
             (when ;ARENA FIGHT 1
@@ -1567,14 +1576,14 @@
                     (= (-> (level-get-target-inside *level*) name) 'templea)
                     (!= enemy-noto 11)
                 )
-                (set! enemy-noto 11)
+                (set! enemy-noto (+ notoriety-level 3))
             )
             (when ;TEMPLEB
                 (and
                     (= (-> (level-get-target-inside *level*) name) 'templeb)
                     (!= enemy-noto 14)
                 )
-                (set! enemy-noto 14)
+                (set! enemy-noto (+ notoriety-level 3))
             )
             (when ;TEMPLED
                 (and
@@ -1785,6 +1794,7 @@
             (when 
                 (and
                     (!= (-> (level-get-target-inside *level*) name) 'desert)
+                    (not (task-node-open? (game-task-node arena-replay-1-fight)))
                     (= start-was-uprising #t)
                 )
                     (set! wasi 0)

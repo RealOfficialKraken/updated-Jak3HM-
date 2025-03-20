@@ -2032,6 +2032,16 @@
                           (arg3 symbol)
                           (arg4 symbol)
                           )
+    (when (and
+            (rand-vu-percent? 0.25)
+            (or
+              (task-node-open? (game-task-node arena-replay-1-fight))
+              (task-node-open? (game-task-node arena-replay-2-fight))
+              (task-node-open? (game-task-node arena-replay-3-fight))
+            )
+          )
+      (+! enemy-noto 1)
+    )
   (let ((s5-0 (new 'stack-no-clear 'marauder-init-by-other-params)))
     (set! (-> s5-0 trans quad) (-> arg0 quad))
     (quaternion-copy! (-> s5-0 quat) arg1)
@@ -2442,7 +2452,10 @@
   (task-manager-arena-fight-base-method-33 this)
   (task-manager-arena-fight-base-method-34 this)
   (cond
-    ((or (task-node-closed? (game-task-node arena-fight-1-fight))
+    ((or (and 
+          (task-node-closed? (game-task-node arena-fight-1-fight))
+          (task-node-closed? (game-task-node arena-replay-1-fight)) 
+         )
          (and (zero? (-> this count-alive)) (zero? (-> this count)))
          )
      (task-node-close! (game-task-node arena-fight-1-fight) 'event)
@@ -2553,11 +2566,21 @@
   (set! (-> this dark) #f)
   (set! (-> this next-go-down) (+ (current-time) (seconds 15)))
   (cond
-    ((task-node-closed? (game-task-node arena-fight-1-throne))
+    ((and
+        (task-node-closed? (game-task-node arena-fight-1-throne))
+        (not (task-node-open? (game-task-node arena-replay-1-fight)))
+      )
      (go (method-of-object this throne))
      )
     (else
-      (set! (-> this count) (the-as uint 20))
+      (cond
+        ((task-node-open? (game-task-node arena-replay-1-fight))
+          (set! (-> this count) (the-as uint 250))
+        )
+        (else
+          (set! (-> this count) (the-as uint 20))
+        )
+      )
       (set-setting! 'music 'arenafi 0.0 0)
       (set-setting! 'extra-bank '((wascity1 wasstad4)) 0.0 0)
       (talker-spawn-func (-> *talker-speech* 81) *entity-pool* (target-pos 0) (the-as region #f))
@@ -2578,7 +2601,10 @@
                               )
             )
       (cond
-        ((task-node-closed? (game-task-node arena-fight-1-fight))
+        ((and
+          (task-node-closed? (game-task-node arena-fight-1-fight))
+          (not (task-node-open? (game-task-node arena-replay-1-fight)))
+        )
          (set! (-> this display-fire) #f)
          (set! (-> this hud-counter) (the-as handle #f))
          )
@@ -3032,7 +3058,14 @@
   (let ((t9-0 (method-of-type task-manager set-time-limit)))
     (t9-0 this)
     )
-  (set! (-> this count) (the-as uint 60))
+  (cond
+    ((task-node-open? (game-task-node arena-replay-2-fight))
+      (set! (-> this count) (the-as uint 250))
+    )
+    (else
+      (set! (-> this count) (the-as uint 60))
+    )
+  )
   (set! (-> this angle) (the-as uint 0))
   (set! (-> this gui-id) (new 'static 'sound-id))
   (set! (-> this dj-train) (the-as uint 0))
@@ -3117,7 +3150,10 @@
                           )
         )
   (cond
-    ((task-node-closed? (game-task-node arena-fight-2-fight))
+    ((and 
+        (task-node-closed? (game-task-node arena-fight-2-fight))
+        (not (task-node-open? (game-task-node arena-replay-2-fight)))
+      )
      (let ((v1-33 (entity-by-name "wstd-arena-plat-10")))
        (if v1-33
            (send-event (-> v1-33 extra process) 'hide)
@@ -3348,7 +3384,14 @@
   (let ((t9-0 (method-of-type task-manager set-time-limit)))
     (t9-0 this)
     )
-  (set! (-> this count) (the-as uint 75))
+  (cond
+    ((task-node-open? (game-task-node arena-replay-3-fight))
+      (set! (-> this count) (the-as uint 250))
+    )
+    (else
+      (set! (-> this count) (the-as uint 75))
+    )
+  )
   (set! (-> this angle) (the-as uint 0))
   (if (kiosk?)
       (talker-spawn-func (-> *talker-speech* 98) *entity-pool* (target-pos 0) (the-as region #f))
@@ -3386,7 +3429,10 @@
                           )
         )
   (cond
-    ((task-node-closed? (game-task-node arena-fight-3-fight))
+    ((and 
+      (task-node-closed? (game-task-node arena-fight-3-fight))
+      (not (task-node-open? (game-task-node arena-replay-3-fight)))
+      )
      (go (method-of-object this done))
      )
     (else

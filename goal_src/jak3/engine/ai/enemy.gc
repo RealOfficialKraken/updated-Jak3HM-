@@ -2215,7 +2215,7 @@
               (not (type? self mantis-boss))
               (not (type? self neo-grenadier-boss))
             )
-        (drop-loot-crate! (-> this root trans) 0.3 0.0008)
+        (drop-loot-crate! (-> this root trans) 0.3 0.00008)
       )
      (if (-> this skel effect)
          (logior! (-> this skel effect flags) (effect-control-flag ecf2))

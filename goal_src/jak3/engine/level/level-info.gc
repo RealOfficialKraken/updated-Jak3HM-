@@ -10073,7 +10073,7 @@
                        :name "wasdoors-city"
                        :level 'wasdoors
                        :flags (continue-flags no-auto)
-                       :trans (new 'static 'vector :x 9284744.0 :y 128190.875 :z 684149.56 :w 1.0)
+                       :trans (new 'static 'vector :x (meters 2264.7424) :y (meters 30.5585) :z (meters 162.0832) :w 1.0)
                        :camera-trans (new 'static 'vector :x 9281600.0 :y 149347.94 :z 632856.2 :w 1.0)
                        :quat (new 'static 'vector4h :data (new 'static 'array int16 4 0 #xc46 0 #x7f64))
                        :camera-rot (new 'static 'array int16 9 #x7fd7 0 -1595 #xbe #x7f0c #xf6c #x62e -3954 #x7ee8)
