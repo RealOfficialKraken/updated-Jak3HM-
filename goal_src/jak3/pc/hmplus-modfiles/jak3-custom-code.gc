@@ -90,7 +90,8 @@ BUGS:
 (define warp-s4 "???")
 (define warp-s5 "???")
 
-
+(define paused-custom-music? #f)
+(define global-volume-level (-> *setting-control* user-default music-volume))
 
 (defun auto-save-delayed ()
     (set! auto-i 0)
@@ -2550,7 +2551,7 @@ BUGS:
     (set! (-> font-ctx scale) 0.325)
     (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
 )
-
+#|
 (when 
     (and 
         (= (-> *game-info* total-deaths) 0)
@@ -2570,7 +2571,7 @@ BUGS:
     (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 330 253 0.0 (font-color default) (font-flags middle shadow kerning large))))
     (set! (-> font-ctx scale) 0.325)
     (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-)
+)|#
 
 (when (and (= (-> *game-info* total-deaths) 0)(= menu-unlocked? #t)(= on-vehicle? #f)(not *scene-player*)(= in-menu? #t))
     (clear matt-str)
@@ -3766,6 +3767,7 @@ BUGS:
                 (= (paused?) #f)
                 (= (pause-allowed?) #t)
             )
+            (set! (-> *setting-control* user-default music-volume) 0.0)
             (when (= globalrandi 1)
                 (let ((camera-loc (new 'static 'vector
                         :x (meters 2717.8078)
@@ -3790,6 +3792,9 @@ BUGS:
                         (spawn-jak3logo vec 0.9 0.9 0.9 -180)
                         (set! spawned-logo? #t)
                     ) ;^ hack for bypassing the weird crash bug
+                    (spawn-dust-storm)
+                    (set! in-main-menu? #t)
+                    (start-menu-music!)
                 )
                 )
             )
@@ -3817,6 +3822,9 @@ BUGS:
                         (spawn-jak3logo vec 0.9 0.9 0.9 40)
                         (set! spawned-logo? #t)
                     ) ;^ hack for bypassing the weird crash bug
+                    (spawn-dust-storm)
+                    (set! in-main-menu? #t)
+                    (start-menu-music!)
                 )
                 )
             )
@@ -3844,6 +3852,9 @@ BUGS:
                         (spawn-jak3logo vec 1.1 1.1 1.1 -180)
                         (set! spawned-logo? #t)
                     ) ;^ hack for bypassing the weird crash bug
+                    (spawn-dust-storm)
+                    (set! in-main-menu? #t)
+                    (start-menu-music!)
                 )
                 )
             )
@@ -3871,6 +3882,9 @@ BUGS:
                         (spawn-jak3logo vec 0.9 0.9 0.9 -260)
                         (set! spawned-logo? #t)
                     ) ;^ hack for bypassing the weird crash bug
+                    (spawn-dust-storm)
+                    (set! in-main-menu? #t)
+                    (start-menu-music!)
                 )
                 )
             )
@@ -3915,6 +3929,7 @@ BUGS:
                 (cpad-pressed? 0 x)
                 (cpad-pressed? 0 start)
             )
+            (pause-main-music)
             (activate-progress *dproc* 'title)
             (camera-unlocked)
         )
@@ -3960,6 +3975,27 @@ BUGS:
             )
             (set! weather-dark-mode #t)
         )
+
+        (when 
+            (and
+                (or
+                    (= weather-dark-mode #t)
+                    (= in-pre-tutorial? #t)
+                )
+                (= (paused?) #t)
+                (= paused-custom-music? #t)
+            )
+                (pause-main-music)
+                (set! paused-custom-music? #t)
+            )
+        (when 
+            (and
+                (= (paused?) #f)
+                (= paused-custom-music? #t)
+            )
+                (resume-main-music)
+                (set! paused-custom-music? #f)
+            )
 
         (when
             (and
@@ -5181,7 +5217,10 @@ BUGS:
       )
       ((= weather-dark-mode #f)
         (reset-actors 'life)
+        (start-menu-music!)
         (spawn-dust-storm)
+        (set! global-volume-level (-> *setting-control* user-default music-volume))
+        (set! (-> *setting-control* user-default music-volume) 0.0)
         (set! global-float-time (-> *time-of-day-context* time))
         (set! weather-dark-mode #t)
         (set! (-> *mood-control* overide-weather-flag) #f)
@@ -6106,6 +6145,8 @@ BUGS:
     (set! desert-spawn-mission-oasis #f)
     (set! desert-spawn-mission-deserta #f)
     (set! desert-spawn-mission-brute #f)
+    (stop-main-music)
+    (set! (-> *setting-control* user-default music-volume) global-volume-level) ;terrible hack to give the main menu and dark world music.
     (kill-all-sat)
     (when (= enemy-hp #t)
         (set! enemy-hp #f)

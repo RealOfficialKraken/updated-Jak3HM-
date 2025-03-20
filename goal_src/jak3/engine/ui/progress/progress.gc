@@ -8,6 +8,9 @@
 (define-extern memcard-unlocked-secrets? (function object symbol game-secrets))
 (define-extern *progress-list-level* progress-list-level)
 
+(defun-extern start-menu-music! (none))
+
+
 ;; DECOMP BEGINS
 
 (kmemopen global "progress-data")
@@ -231,6 +234,7 @@
   (set! in-pre-tutorial? #t)
   (set! weather-dark-mode #t)
   (set! tutorial-prologue #t)
+  (resume-main-music)
   (set-master-mode 'game)
   0
   )
@@ -2220,6 +2224,8 @@
            ((= (-> arg0 current) 'select-load)
             (when (= (-> *progress-save-info* file (-> arg0 option-index) present) 1)
               (set! s5-0 #t)
+              (stop-main-music)
+              (set! in-main-menu? #f)
               (set-next-state arg0 'loading 0)
               )
             )

@@ -566,4 +566,5 @@
   "vin-shop.o"
   "title-obs.o"
   "level-spawner.o"
+  "kraken-volume.o"
  ))
