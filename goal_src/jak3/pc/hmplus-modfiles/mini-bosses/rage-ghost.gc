@@ -1232,6 +1232,7 @@
           (set! (-> gp-0 vehicle-impulse-factor) 777.0)
           (set! (-> gp-0 ignore-proc) (process->handle #f))
           (explosion-spawn gp-0 (the-as process-drawable *default-pool*))
+          (stop-main-music)
           (when (<= (-> *target* fact health) 0.0)
             (kill-by-name "rage-ghost" *default-pool*)
           )

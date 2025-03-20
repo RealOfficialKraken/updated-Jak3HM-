@@ -92,6 +92,6 @@ im-loopin-it!
 )
 
 (defun start-menu-music! ()
-    (play-main-music "snd/music/main-menu.wav" 100)
+    (play-main-music "snd/music/main-menu.wav" 175)
     (none)
 )
