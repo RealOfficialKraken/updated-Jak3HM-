@@ -272,9 +272,12 @@
     )
   )
 
+(define gunship-1-count 0)
+(define gunship-2-count 0)
+
 ;; WARN: Return type mismatch int vs handle.
 (defmethod spawn-gunship ((this task-manager-protect-hq) (arg0 vector) (arg1 int) (arg2 float))
-  (let ((s5-0 (new 'stack-no-clear 'protect-gunship-init-params)))
+    (let ((s5-0 (new 'stack-no-clear 'protect-gunship-init-params)))
     (set! (-> s5-0 task-man) (process->handle this))
     (set! (-> s5-0 script) *gunship-0-script*)
     (set! (-> s5-0 num-stages) 2)
@@ -338,7 +341,7 @@
   :enter (behavior ()
     (ff-squad-control-method-56 *ff-squad-control* 0 0 0)
     (ff-squad-control-method-56 *ff-squad-control* 1 7 7)
-    (when (rand-vu-percent? 0.25)
+    (when (rand-vu-percent? 1.0)
       (let ((vec (new 'static 'vector :x (meters 558.9866) :y (meters 2.8709) :z (meters -531.0272) :w 1.0)))
         (process-spawn roboguard-giant vec :name "terry")
       )
@@ -429,6 +432,10 @@
      )
     (('gunship-spawn)
      (let ((a1-3 (-> arg3 param 0)))
+       (gunship-spawn this (the-as protect-gunship-enemy-spawn-params a1-3))
+       (gunship-spawn this (the-as protect-gunship-enemy-spawn-params a1-3))
+       (gunship-spawn this (the-as protect-gunship-enemy-spawn-params a1-3))
+       (gunship-spawn this (the-as protect-gunship-enemy-spawn-params a1-3))
        (gunship-spawn this (the-as protect-gunship-enemy-spawn-params a1-3))
        )
      )

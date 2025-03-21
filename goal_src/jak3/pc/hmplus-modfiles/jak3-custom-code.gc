@@ -376,6 +376,14 @@ BUGS:
     (set-master-mode 'game)
 )
 
+(when *scene-player*
+    (when (and (= mushroom-movies-start #f)(rand-vu-percent? 0.03)(= mushroom-movies #t)
+      (set! mushroom-movies-start #t)
+      (set! mushroom-var (rand-vu-int-range 1 6))
+    )
+  )
+)
+
 (when (and (= menu-unlocked? #f) (task-node-closed? (game-task-node arena-fight-1-resolution)))
     (set! menu-unlocked? #t)
 )
@@ -458,6 +466,7 @@ BUGS:
 (= in-arena-fight? #f)
 (= in-satbattle? #f)
 (task-node-closed? (game-task-node arena-fight-1-resolution))
+(not (task-node-open? (game-task-node city-blow-barricade-resolution)))
 (not (focus-test? *target* pilot))
 )
 (freeze-enemies-in-menu!)
