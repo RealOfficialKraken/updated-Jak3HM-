@@ -75,6 +75,8 @@ BUGS:
 - levelup explosion runs out of memory, or happens outside of goal code
 - terraformer in dark-world makes auto-saving fail, probably easy fix
 |#
+
+(defun-extern freeze-enemies-in-menu! (none))
 (defun-extern level-up! int none)
 (defun-extern level-up-guns! int none)
 (defun-extern level-up-cars! int none)
@@ -83,6 +85,30 @@ BUGS:
 (defun-extern pick-random-anchor none)
 (defun-extern spawn-rage-ghost none)
 (defun-extern boss-leaper! vector none)
+
+(define in-picture-mode? #f)
+
+(defun toggle-picture-mode ()
+    (cond
+        ((= in-picture-mode? #f)
+            (process-grab? *target* #f)
+            (set-master-mode 'freeze)
+            (kill-by-type hud-map *active-pool*)
+            (set! *external-cam-mode* 'pad-0)
+            (set! in-picture-mode? #t)
+        )
+        (else
+            (process-release? *target*)
+            (when (not (search-process-tree *active-pool* (lambda ((p process)) (type? p hud-map))))
+                (process-spawn hud-map :init hud-init-by-other :name "hud-map" :to *target*)
+            )
+            (set-master-mode 'game)
+            (set! *external-cam-mode* #f)
+            (set! in-picture-mode? #f)
+        )
+    )
+    (none)
+)
 
 (define warp-s1 "???")
 (define warp-s2 "???")
@@ -375,7 +401,42 @@ BUGS:
     ))
     )
 
-
+(when
+    (and
+        *target*
+        (not *scene-player*)
+        (= (paused?) #t)
+        *debug-segment*
+    )
+    (when (= in-picture-mode? #f)
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_RED>Press <COLOR_BLUE>X<COLOR_WHITE>+<COLOR_PINK>Square<COLOR_RED> to go into Picture mode~%<COLOR_GREEN>Triangle<COLOR_RED> to exit"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 255 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.325)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (when
+        (and
+            (cpad-pressed? 0 triangle)
+            (= in-picture-mode? #t)
+        )
+        (toggle-picture-mode)
+        (set-master-mode 'game)
+        (process-release? *target*)
+        )
+    (when
+        (and
+            (cpad-pressed? 0 x)
+            (cpad-pressed? 0 square)
+        )
+        (toggle-picture-mode)
+    )
+)
 
 
 (when 
@@ -399,6 +460,7 @@ BUGS:
 (task-node-closed? (game-task-node arena-fight-1-resolution))
 (not (focus-test? *target* pilot))
 )
+(freeze-enemies-in-menu!)
 (set! in-menu? #t)
 (camera-locked #f #t #f)
 (set! menu-slot 1)
@@ -419,6 +481,7 @@ BUGS:
 (= in-skill? #f)
 )
 (set! in-menu? #f)
+(kill-by-name "proc-mask-enemyfreeze" *active-pool*)
 (camera-unlocked)
 (when (= (-> *game-info* total-deaths) 0)
     (level-up-cars! 1)
@@ -5803,6 +5866,17 @@ BUGS:
 
   (define in-cfreeze? #f)
 
+  (defun freeze-enemies-in-menu! ()
+    (process-spawn-function process
+    :name "proc-mask-enemyfreeze"
+  (lambda :behavior process ()
+    (loop
+      (set-setting! 'process-mask 'set 0.0 (process-mask enemy platform projectile death))
+      (suspend)
+      )))
+    (none)
+  )
+
   (defun toggle-freeze ()
     #|(cond
         ((= in-cfreeze? #f)
@@ -6105,6 +6179,7 @@ BUGS:
     (kill-by-name "roboguard-giant" *default-pool*)
     (kill-by-name "entity-boss" *default-pool*)
     (kill-by-name "man-eb" *default-pool*)
+    (kill-by-name "proc-mask-enemyfreeze" *active-pool*)
     (when 
         (or
             (task-node-open? (game-task-node arena-replay-1-fight))
