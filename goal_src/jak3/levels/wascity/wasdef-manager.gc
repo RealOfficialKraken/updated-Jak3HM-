@@ -509,9 +509,14 @@
     (new 'static 'boxed-array :type array
       (new 'static 'boxed-array :type hip-maker-event
         (new 'static 'hip-maker-event :mode (hip-maker-mode hmm7) :angle 4551.1113 :speed 81920.0)
-        (new 'static 'hip-maker-event :event-length #x384 :path-idx #x3 :mode (hip-maker-mode hmm6))
-        (new 'static 'hip-maker-event :event-length #x7c38 :path-idx #x6a :mode (hip-maker-mode hmm3))
-        (new 'static 'hip-maker-event :event-length #xe10 :path-idx #xc :mode (hip-maker-mode hmm6))
+        (new 'static 'hip-maker-event :path-idx #x3 :mode (hip-maker-mode hmm6))
+        (new 'static 'hip-maker-event :path-idx #x6a :mode (hip-maker-mode hmm3))
+        (new 'static 'hip-maker-event :path-idx #xc :mode (hip-maker-mode hmm6))
+        (new 'static 'hip-maker-event :event-length #x258 :path-idx #x2 :mode (hip-maker-mode hmm6))
+        (new 'static 'hip-maker-event :event-length #x93a8 :path-idx #x7e :mode (hip-maker-mode hmm3))
+        (new 'static 'hip-maker-event :event-length #x5dc :path-idx #x5 :mode (hip-maker-mode hmm6))
+        (new 'static 'hip-maker-event :mode (hip-maker-mode hmm2))
+        (new 'static 'hip-maker-event :mode (hip-maker-mode hmm5))
         (new 'static 'hip-maker-event
           :event-length #x12c
           :path-idx #x1
@@ -1740,7 +1745,7 @@
         (set! (-> self kick-your-ass-count) (the-as uint 0))
         0
         )
-      (set! *maker-num-grenades* (+ *maker-num-grenades* -1))
+      ;(set! *maker-num-grenades* (+ *maker-num-grenades* -1))
       (maker-method-36 self)
       )
     (seek! (-> self tentacle-speed) 1.0 (* 0.2 (seconds-per-frame)))
@@ -1766,8 +1771,8 @@
                (> (-> self num-shots) 0)
                (< 0.0 (-> self walk-idle-blend))
                (and (< 0.0 (-> self hit-points))
-                    (time-elapsed? *maker-last-shot-time* (seconds 1))
-                    (time-elapsed? (-> self last-fire-time) (seconds 1))
+                    (time-elapsed? *maker-last-shot-time* (seconds 0.09))
+                    (time-elapsed? (-> self last-fire-time) (seconds 0.09))
                     (not (focus-test? *target* dead))
                     (not (and (-> self next-state) (= (-> self next-state name) 'fail)))
                     (> *maker-num-grenades* 0)
@@ -1776,7 +1781,7 @@
       (let ((v1-228 (vector<-cspace! (new 'stack-no-clear 'vector) (joint-node dm-robot-lod0-jg head))))
         (+! (-> v1-228 z) 163840.0)
         )
-      (set! *maker-num-grenades* (+ *maker-num-grenades* -1))
+      ;(set! *maker-num-grenades* (+ *maker-num-grenades* -1))
       (maker-method-36 self)
       (when (not *maker-first-missile*)
         (talker-spawn-func (-> *wascity-defend-speech-list* 32) *entity-pool* (target-pos 0) (the-as region #f))
@@ -2087,26 +2092,26 @@
   (the-as (array (array vector))
     (new 'static 'boxed-array :type array
       (new 'static 'boxed-array :type vector
-        (new 'static 'vector :x 6594560.0 :y -307200.0 :z -3686400.0 :w 1.0)
-        (new 'static 'vector :x 6594560.0 :z -2273280.0 :w 1.0)
+        (new 'static 'vector :x 6594560.0 :y -127200.0 :z -3686400.0 :w 1.0)
+        (new 'static 'vector :x 6331173.0 :z -873561.0 :w 1.0)
         )
       (new 'static 'boxed-array :type vector
         (new 'static 'vector :x 6225920.0 :y -307200.0 :z -3686400.0 :w 1.0)
-        (new 'static 'vector :x 6225920.0 :z -3276800.0 :w 1.0)
-        (new 'static 'vector :x 6594560.0 :z -3276800.0 :w 1.0)
-        (new 'static 'vector :x 6594560.0 :z -2867200.0 :w 1.0)
-        (new 'static 'vector :x 6594560.0 :z -2560000.0 :w 1.0)
+        (new 'static 'vector :x 6115189.0 :z -1312303.0 :w 1.0)
+        (new 'static 'vector :x 6091739.0 :z -1347975.0 :w 1.0)
+        (new 'static 'vector :x 6350435.0 :z -1650733.0 :w 1.0)
+        (new 'static 'vector :x 6314335.0 :z -1943385.0 :w 1.0)
         )
       (new 'static 'boxed-array :type vector
         (new 'static 'vector :x 6963200.0 :y -307200.0 :z -3686400.0 :w 1.0)
-        (new 'static 'vector :x 6963200.0 :z -3276800.0 :w 1.0)
-        (new 'static 'vector :x 6594560.0 :z -3276800.0 :w 1.0)
-        (new 'static 'vector :x 6594560.0 :z -2867200.0 :w 1.0)
+        (new 'static 'vector :x 6364303.0 :z -1833073.0 :w 1.0)
+        (new 'static 'vector :x 6339002.0 :z -2113050.0 :w 1.0)
+        (new 'static 'vector :x 5941592.0 :z -2226854.0 :w 1.0)
         )
       (new 'static 'boxed-array :type vector
         (new 'static 'vector :x 7258112.0 :y 286720.0 :z -630784.0 :w 1.0)
-        (new 'static 'vector :x 7139328.0 :y 139264.0 :z -1142784.0 :w 1.0)
-        (new 'static 'vector :x 6963200.0 :y 110592.0 :z -1376256.0 :w 1.0)
+        (new 'static 'vector :x 6966939.0 :y 139264.0 :z -1795258.0 :w 1.0)
+        (new 'static 'vector :x 6739301.0 :y 110592.0 :z -1376256.0 :w 1.0)
         )
       (new 'static 'boxed-array :type vector
         (new 'static 'vector :x 6549504.0 :y 274432.0 :z -552960.0 :w 1.0)
@@ -2391,6 +2396,12 @@
     )
   )
 
+(defun wascity-defend-hint ()
+  (set! wascity-defend-hint? #t)
+  (set! wasdh-i 0)
+  (none)
+)
+
 (define *maker-avoid-spheres* (new 'static 'boxed-array :type vector
                                 (new 'static 'vector :x 7016448.0 :y 65536.0 :z -2945433.5 :w 327680.0)
                                 (new 'static 'vector :x 6477005.0 :y 65536.0 :z -2750873.5 :w 81920.0)
@@ -2405,6 +2416,7 @@
 (defstate active (task-manager-wascity-defend)
   :virtual #t
   :code (behavior ()
+    (wascity-defend-hint)
     (until #f
       (when *debug-segment*
         )
@@ -2479,14 +2491,15 @@
       0.0
       (set-vector! s5-0 6585594.5 263189.94 -1938929.1 1.0)
       (let ((f0-5 (vector-vector-distance-squared s5-0 (target-pos 0)))
-            (f1-0 409600.0)
+            (f1-0 (* 400.0 4096.0))
             )
         (if (and (< (* f1-0 f1-0) f0-5) (!= (-> this info index) 1))
-            (send-event this 'fail)
+            (task-node-open! (game-task-node wascity-defend-get-to) #t)
             )
         )
       )
     (when (and (-> this completed) (>= *maker-num-grenades* 7))
+      (send-event this 'complete)
       (when (not (-> this out-of-turret?))
         (send-event *target* 'end-mode 'turret)
         (task-manager-wascity-defend-method-32 this)
@@ -2514,7 +2527,7 @@
       (set! (-> a1-10 message) 'query)
       (set! (-> a1-10 param 0) (the-as uint 'mode))
       (cond
-        ((and (= (send-event-function *target* a1-10) 'turret)
+        ((and (= (-> (level-get-target-inside *level*) name) 'wascityb)
               (and (not (focus-test? *target* dead)) (not (and (-> this next-state) (= (-> this next-state name) 'fail))))
               )
          (set! (-> this out-of-turret?) #f)
@@ -2531,6 +2544,7 @@
                    (process-spawn hud-wasdef-damage :init hud-init-by-other :name "hud-wasdef-damage" :to this)
                    )
                  )
+           (send-event (handle->process (-> this hud-damage)) 'hide-and-die)
            (set! (-> this hud-active?) #t)
            )
          (task-manager-wascity-defend-method-34 this)

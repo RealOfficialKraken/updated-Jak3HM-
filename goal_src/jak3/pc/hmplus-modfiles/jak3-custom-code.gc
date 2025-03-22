@@ -4281,6 +4281,54 @@ BUGS:
                 )
                 (set-continue! *game-info* "wasdoors-city" #t)
             )
+    
+    (when
+        (and
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (task-node-open? (game-task-node wascity-defend-get-to))
+        )
+          (let ((s5-0 (new 'stack-no-clear 'vector)))
+            0.0
+            (set-vector! s5-0 6585594.5 263189.94 -1938929.1 1.0)
+            (let ((f0-5 (vector-vector-distance-squared s5-0 (target-pos 0)))
+                    (f1-0 409600.0)
+                    )
+                (if (and (> (* f1-0 f1-0) f0-5))
+                    (task-node-close! (game-task-node wascity-defend-get-to) #t)
+                  )
+                )
+          )
+    )
+
+    (when
+        (and
+            *target*
+            (not *scene-player*)
+            (= (paused?) #f)
+            (= (pause-allowed?) #t)
+            (= wascity-defend-hint? #t)
+        )
+        (+! wasdh-i 1)
+        (when (< wasdh-i 1400)
+            (clear matt-str)
+            (clear *pc-encoded-matt-str*)
+            (format matt-str "<COLOR_WHITE>Crouching on <COLOR_YELLOW>sloped surfaces<COLOR_WHITE> can~%allow a higher angled shot!"
+            )
+            (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+            (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+            (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+            (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 285 0.0 (font-color default) (font-flags middle shadow kerning large))))
+            (set! (-> font-ctx scale) 0.525)
+            (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        )
+        (when (>= wasdh-i 2500)
+            (set! wasdh-i 0)
+            (set! wascity-defend-hint? #f)
+        )
+    )
 
     (when 
         (and
@@ -6189,6 +6237,9 @@ BUGS:
     (kill-by-name "entity-boss" *default-pool*)
     (kill-by-name "man-eb" *default-pool*)
     (kill-by-name "proc-mask-enemyfreeze" *active-pool*)
+    (when (task-node-open? (game-task-node wascity-defend-resolution))
+        (task-node-open! (game-task-node wascity-defend-get-to) #t)
+    )
     (when 
         (or
             (task-node-open? (game-task-node arena-replay-1-fight))

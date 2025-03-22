@@ -13,7 +13,10 @@
   (let ((s5-0 (new 'stack-no-clear 'vector))
         (s4-0 (new 'stack-no-clear 'vector))
         )
-    (when (wascity-turret-get-reticle-fire-pos s4-0)
+    (when (and
+              (wascity-turret-get-reticle-fire-pos s4-0)
+              (focus-test? *target* grabbed)
+          )
       (transform-point-vector! s5-0 s4-0)
       (if (logtest? (-> *game-info* secrets) (game-secrets hflip-screen))
           (set! (-> s5-0 x) (- (-> s5-0 x)))

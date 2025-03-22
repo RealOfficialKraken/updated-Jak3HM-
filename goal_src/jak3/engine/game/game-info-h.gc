@@ -179,6 +179,9 @@
   (define mushroom-movies-start #f)
   (define mushroom-var 0)
 
+  (define wascity-defend-hint? #f)
+  (define wasdh-i 0)
+
   (define matt-str (new 'global 'string 2048 (the-as string #f)))
   (define *pc-encoded-matt-str* (new 'global 'string 2048 (the-as string #f)))
 
