@@ -178,6 +178,10 @@
   (define movie-int 0)
   (define mushroom-movies-start #f)
   (define mushroom-var 0)
+  (define mm-hint #f)
+  (define mm-hinti 0)
+  (define mm-hint-1 #f)
+  (define mm-hint-1i 0)
 
   (define wascity-defend-hint? #f)
   (define wasdh-i 0)

@@ -333,7 +333,7 @@
   (cond
     ((< 0.0 (-> self health-hud-timer))
      (logclear! (-> self mask) (process-mask actor-pause))
-     (send-event (handle->process (-> self hud-health)) 'set-health (the int (+ 0.5 (* 10.0 (-> self health)))))
+     (send-event (handle->process (-> self hud-health)) 'set-health (the int (+ 0.5 (* 1.0 (-> self health)))))
      (let ((s5-0 (new 'stack-no-clear 'vector))
            (gp-0 (new 'stack-no-clear 'vector4w))
            )
@@ -819,7 +819,7 @@
   (set! (-> this manager-entity) (entity-actor-lookup (-> this entity) 'alt-actor 1))
   (set! (-> this turret-entity) (entity-actor-lookup (-> this entity) 'alt-actor 2))
   (set! (-> this minimap) #f)
-  (set! (-> this health) 1.0)
+  (set! (-> this health) 10.0)
   (set! (-> this health-hud-timer) 0.0)
   (set! (-> this triggered?) #f)
   (set! (-> this hud-health) (the-as handle #f))

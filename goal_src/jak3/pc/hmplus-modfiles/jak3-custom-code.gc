@@ -747,7 +747,7 @@ BUGS:
         ((and (not (string= warp-s4 "Freedom HQ")) (task-node-closed? (game-task-node city-protect-hq-resolution)))
             (set! warp-s4 "Freedom HQ")
         )
-        ((and (not (string= warp-s5 "Infested Tower")) (task-node-closed? (game-task-node city-protect-hq-resolution)))
+        ((and (not (string= warp-s5 "Infested Tower")) (task-node-closed? (game-task-node city-blow-tower-resolution)))
             (set! warp-s5 "Infested Tower")
         )
     )
@@ -816,7 +816,7 @@ BUGS:
                 (send-event *target* 'draw #f)
                 (remove-setting-by-arg0 *setting-control* 'mode-name)
                 (set! camera-locked? #f)
-                (delayed-play-continue "mhcityb-near-final-towers")
+                (delayed-play-continue "towera-start")
                 (set! in-menu? #f)
                 (set! in-modifiers? #f)
                 (when (= (-> *game-info* total-deaths) 0)
@@ -828,6 +828,110 @@ BUGS:
             )
         )
     )
+)
+
+(when (= mm-hint-1 #t)
+    (+! mm-hint-1i 1)
+    (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "<COLOR_WHITE>Press <COLOR_RED>O<COLOR_WHITE> to toggle <COLOR_CYAN>Mushroom Movies<COLOR_WHITE>!"
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 35 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.525)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (when (= mm-hint-1i 500)
+            (set! mm-hint-1i 0)
+            (set! mm-hint-1 #f)
+        )
+)
+
+(when
+    (and
+        *scene-player*
+        (cpad-pressed? 0 circle)
+    )
+    (cond
+        ((= mushroom-movies #t)
+            (set! mushroom-movies #f)
+        )
+        (else
+            (set! mushroom-movies #t)
+        )
+    )
+    (set! mm-hint #t)
+    (set! mm-hinti 0)
+)
+
+(when
+    (and
+        *scene-player*
+        (= mm-hint #t)
+    )
+    (+! mm-hinti 1)
+    (when (= mm-hint-1 #t)
+        (set! mm-hint-1i 0)
+        (set! mm-hint-1 #f)
+    )
+    (when (or
+            (and (> mm-hinti 0) (< mm-hinti 50))
+            (and (> mm-hinti 55) (< mm-hinti 105))
+          )
+        (cond
+            ((= mushroom-movies #t)
+                (clear matt-str)
+                (clear *pc-encoded-matt-str*)
+                (format matt-str "<COLOR_CYAN>Mushroom Movies<COLOR_GREEN> Enabled"
+                )
+                (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+                (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+                (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+                (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 35 0.0 (font-color default) (font-flags middle shadow kerning large))))
+                (set! (-> font-ctx scale) 0.475)
+                (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+            )
+            (else
+                (clear matt-str)
+                (clear *pc-encoded-matt-str*)
+                (format matt-str "<COLOR_CYAN>Mushroom Movies<COLOR_RED> Disabled"
+                )
+                (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+                (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+                (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+                (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 35 0.0 (font-color default) (font-flags middle shadow kerning large))))
+                (set! (-> font-ctx scale) 0.475)
+                (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+            )
+        )
+    )
+    (when (>= mm-hinti 105)
+        (set! mm-hinti 0)
+        (set! mm-hint #f)
+    )
+)
+
+(when
+    (and
+        (not *scene-player*)
+        (or
+            (= mm-hint #t)
+            (> mm-hinti 0)
+        )
+    )
+    (set! mm-hint #f)
+    (set! mm-hinti 0)
+)
+
+(when 
+    (and
+        (not (task-node-closed? (game-task-node factory-boss-resolution)))
+        (task-node-closed? (game-task-node factory-boss-introduction))
+        (!= (-> (level-get-target-inside *level*) name) 'lfacrm2)
+        (!= (-> (level-get-target-inside *level*) name) 'factoryd)
+    )
+    (task-node-open! (game-task-node factory-assault-resolution) #t)
 )
 
 (when ;gunmods select
@@ -2567,7 +2671,7 @@ BUGS:
     (= menu-slot 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_PINK>Vehicles:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Wasteland cars can have better output damage on guns~%~%<COLOR_YELLOW>Destroy other Marauder Cars to earn XP~%~%~%<COLOR_ORANGE>At Level 2~%~s~%<COLOR_ORANGE>At Level 6~%~s~%<COLOR_ORANGE>At Level 14~%~s"
+        (format matt-str "<COLOR_PINK>Vehicles:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Wasteland cars can have better output damage on guns~%~%<COLOR_YELLOW>Earn reputation while on a vehicle to earn XP~%~%~%<COLOR_ORANGE>At Level 2~%~s~%<COLOR_ORANGE>At Level 6~%~s~%<COLOR_ORANGE>At Level 14~%~s"
         cars-level
         skill-cars-string1
         skill-cars-string2

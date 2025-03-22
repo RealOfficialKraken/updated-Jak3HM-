@@ -127,6 +127,7 @@
       ((-> self intro-sequence)
        (send-event (handle->process (-> self player-vehicle)) 'ignore-impulse #t)
        (send-event (handle->process (-> self player-vehicle)) 'ignore-damage #t)
+    (print "IGNORE DAMAGE")
        (until #f
          (if (and *target* (focus-test? *target* pilot-riding))
              (goto cfg-46)
@@ -138,6 +139,7 @@
        (set-sbanks self)
        (send-event (handle->process (-> self player-vehicle)) 'ignore-impulse #f)
        (send-event (handle->process (-> self player-vehicle)) 'ignore-damage #f)
+    (print "IGNORE DAMAGE")
        (send-event (handle->process (-> self player-vehicle)) 'ai-set-target-speed 0)
        (send-event (handle->process (-> self player-vehicle)) 'ai-set-target-position (-> self intro-target))
        (until #f
@@ -213,7 +215,7 @@
       (send-event (handle->process (-> self player-vehicle)) 'in-tunnel #f)
       (send-event (handle->process (-> self player-vehicle)) 'ai-set-target-position (-> self outro-target2))
       (send-event (handle->process (-> self player-vehicle)) 'ignore-damage #t)
-      (print "in-tunnel??????????????????????????")
+    (print "IGNORE DAMAGE")
       )
     (until #f
       (let* ((s5-1 (handle->process (-> self player-vehicle)))
@@ -243,6 +245,7 @@
     (remove-setting! 'pilot-exit)
     (set-setting! 'pilot #f 0.0 0)
     (send-event (handle->process (-> self player-vehicle)) 'ignore-damage #f)
+    (print "IGNORE DAMAGE")
     (call-parent-state-handler code)
     )
   )
@@ -286,7 +289,7 @@
     (send-event *target* 'end-mode 'pilot)
     (send-event (handle->process (-> self player-vehicle)) 'sled-disable)
     (send-event (handle->process (-> self player-vehicle)) 'ignore-damage #t)
-    (print "COMPLETE LOL!!!!!!!!!!!!!!!!Q")
+    (print "IGNORE DAMAGE")
     (suspend-for (seconds 2))
     (call-parent-state-handler code)
     )

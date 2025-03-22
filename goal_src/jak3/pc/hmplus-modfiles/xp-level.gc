@@ -1360,6 +1360,25 @@
                 )
                 (set! enemy-noto (rand-vu-int-range 289 298))
             )
+            (when ;ltowera+ltowerb
+                (and
+                    (or
+                        (= (-> (level-get-target-inside *level*) name) 'ltowera)
+                        (= (-> (level-get-target-inside *level*) name) 'ltowerb)
+                    )
+                    (!= enemy-noto 289)
+                    (!= enemy-noto 290)
+                    (!= enemy-noto 291)
+                    (!= enemy-noto 292)
+                    (!= enemy-noto 293)
+                    (!= enemy-noto 294)
+                    (!= enemy-noto 295)
+                    (!= enemy-noto 296)
+                    (!= enemy-noto 297)
+                    (!= enemy-noto 298)
+                )
+                (set! enemy-noto (rand-vu-int-range 289 298))
+            )
 
             (when ;factory
                 (and
@@ -1742,6 +1761,51 @@
                     (!= enemy-noto 72)
                 )
                 (set! enemy-noto (rand-vu-int-range 63 72))
+            )
+            (when ;ltowera+ltowerb
+                (and
+                    (or
+                        (= (-> (level-get-target-inside *level*) name) 'ltowera)
+                        (= (-> (level-get-target-inside *level*) name) 'ltowerb)
+                    )
+                    (!= enemy-noto 76)
+                    (!= enemy-noto 77)
+                    (!= enemy-noto 78)
+                    (!= enemy-noto 79)
+                    (!= enemy-noto 80)
+                    (!= enemy-noto 81)
+                    (!= enemy-noto 82)
+                    (!= enemy-noto 83)
+                    (!= enemy-noto 84)
+                    (!= enemy-noto 85)
+                )
+                (set! enemy-noto (rand-vu-int-range 289 298))
+            )
+            (when ;STADIUMA+B
+                (and
+                    (or
+                        (= (-> (level-get-target-inside *level*) name) 'stadiuma)
+                        (= (-> (level-get-target-inside *level*) name) 'stadiumb)
+                    )
+                    (or
+                        (< enemy-noto 81)
+                        (> enemy-noto 84)
+                    )
+                )
+                (set! enemy-noto (rand-vu-int-range 81 84))
+            )
+            (when ;DARK SHIP
+                (and
+                    (or
+                        (= (-> (level-get-target-inside *level*) name) 'precura)
+                        (= (-> (level-get-target-inside *level*) name) 'precurb)
+                        (= (-> (level-get-target-inside *level*) name) 'precurc)
+                        (= (-> (level-get-target-inside *level*) name) 'precurd)
+                    )
+                    (task-node-closed? (game-task-node precursor-tour-resolution))
+                    (!= enemy-noto (+ notoriety-level 5))
+                )
+                (set! enemy-noto (+ notoriety-level 5))
             )
             (when ;FORESTA
                 (and
