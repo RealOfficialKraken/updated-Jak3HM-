@@ -567,4 +567,6 @@
   "title-obs.o"
   "level-spawner.o"
   "kraken-volume.o"
+  "gyro-warp.o"
+  "for-turret-shot.o"
  ))

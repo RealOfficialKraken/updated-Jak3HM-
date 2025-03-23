@@ -552,18 +552,6 @@
   (go-virtual idle)
   )
 
-(defskelgroup skel-dm-tentacle dm-tentacle dm-tentacle-lod0-jg dm-tentacle-idle-ja
-              ((dm-tentacle-lod0-mg (meters 999999)))
-              :bounds (static-spherem 0 0 0 15)
-              :shadow dm-tentacle-shadow-mg
-              :origin-joint-index 10
-              :global-effects 32
-              )
-
-(defskelgroup skel-dm-tentacle-explode dm-tentacle dm-tentacle-explode-lod0-jg dm-tentacle-explode-idle-ja
-              ((dm-tentacle-explode-lod0-mg (meters 999999)))
-              :bounds (static-spherem 0 0 0 6)
-              )
 
 (define *dm-tentacle-exploder-params*
   (new 'static 'joint-exploder-static-params

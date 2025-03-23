@@ -422,10 +422,13 @@
   (defun-extern someone-fire-red-2 vector vector none)
   (defun-extern someone-fire-red-3 vector vector none)
   (defun-extern someone-fire-blue-1 vector vector none)
-  (defun-extern someone-fire-blue-2 vector vector none)
+  (defun-extern someone-fire-blue-2 none)
   (defun-extern someone-fire-blue-3 vector vector none)
   (defun-extern shield-shot string vector vector none)
   (defun-extern commando-shot! vector vector none)
+  (defun-extern someone-fire-jak-purple vector vector none)
+  (defun-extern disc-shot! vector vector none)
+  (defun-extern black-hole! vector none)
 
   (defun-extern gun-freeze vector vector none)
 

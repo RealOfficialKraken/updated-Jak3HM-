@@ -1926,7 +1926,9 @@
         (go (method-of-object this explode))
         )
        (else
-         (go (method-of-object this knocked))
+         (when (and (<= enemy-noto 100))
+            (go (method-of-object this knocked))
+         )
          )
        )
      #t

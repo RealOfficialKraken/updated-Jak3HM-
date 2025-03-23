@@ -1,5 +1,4 @@
 (in-package goal)
-
 ;name: level-spawner.gc
 
 (define-extern roboguard type)

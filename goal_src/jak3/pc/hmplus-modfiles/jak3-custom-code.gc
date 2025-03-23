@@ -34,7 +34,7 @@ Gun mods can be accessed in the mod-menu, and selected via dpad for the color.
 Then, you can choose the gun mods for that specific color, and each of them are different.
 Saving the gunmods to the save file might require different fanagling with tasks somehow
 |YELLOW|
-gunmod-fireball - IMPLEMENTED
+gunmod-fireball - (chance to spawn raining fireballs on hit location)
 gunmod-nukeonly - IMPLEMENTED
 gunmod-freeze IMPLEMENTED
 |RED|
@@ -42,11 +42,11 @@ gunmod-bigshot - IMPLEMENTED
 gunmod-sheild - IMPLEMENTED
 gunmod-missles - IMPLEMENTED
 |BLUE|
-gunmod-ammo (some shots save ammo)
-gunmod-disperser (chance to spawn a random shot)
-gunmod-airstrike (chance to spawn a fireball above the target projectile hit)
+gunmod-ammo IMPLEMENTED
+gunmod-disperser (chance to spawn a BUNCH of blue shots from the target on hit)
+gunmod-minigun (turns blue shots into purple turret shots)
 |DARK|
-gunmod-morpher (spawns a random NPC-init-by-other list)
+gunmod-morpher (rains peacemaker shots downward)
 gunmod-randomshot (spawns a random projectile)
 gunmod-reaper (chance to spawn a mini dark maker ship that fires dark-grenades everywhere)
 
@@ -417,7 +417,7 @@ BUGS:
         *debug-segment*
     )
     (when (= in-picture-mode? #f)
-        (clear matt-str)
+        #|(clear matt-str)
         (clear *pc-encoded-matt-str*)
         (format matt-str "<COLOR_RED>Press <COLOR_BLUE>X<COLOR_WHITE>+<COLOR_PINK>Square<COLOR_RED> to go into Picture mode~%<COLOR_GREEN>Triangle<COLOR_RED> to exit"
         )
@@ -426,7 +426,7 @@ BUGS:
         (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
         (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 255 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.325)
-        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))|#
     )
     (when
         (and
@@ -827,6 +827,18 @@ BUGS:
                 (format #t "ERROR AT MODIFIER MENU SLOT ~D, PLEASE CONTACT DEV" menu-slot)
             )
         )
+    )
+)
+
+;make vin quest close after completing artifact race 1
+(when
+    (and
+        (task-node-closed? (game-task-node desert-artifact-race-1-introduction))
+        (or
+            (task-node-open? (game-task-node desert-vin-quest-introduction))
+            (task-node-open? (game-task-node desert-vin-quest-resolution))
+        )
+        (task-node-close! (game-task-node desert-vin-quest-resolution) #t)
     )
 )
 
@@ -1802,10 +1814,10 @@ BUGS:
     (when (task-node-closed? (game-task-node modb-airstrike))
         (cond
             ((= gunmod-airstrike #t)
-                (set! blue-3s "<COLOR_GREEN>Star Strike")
+                (set! blue-3s "<COLOR_GREEN>Minigunner")
             )
             (else
-                (set! blue-3s "<COLOR_RED>Star Strike")
+                (set! blue-3s "<COLOR_RED>Minigunner")
             )
         )
     )

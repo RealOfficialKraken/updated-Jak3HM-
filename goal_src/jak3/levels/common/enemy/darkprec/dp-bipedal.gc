@@ -3109,7 +3109,9 @@
           (not (type? this bipedal-boss))
           (not (string= (-> this name) "Black Harbinger"))
         )
-      (go (method-of-object this knocked))
+      (when (or (<= (-> this hit-points) 0.0)(<= enemy-noto 100))
+            (go (method-of-object this knocked))
+         )
      )
      (when
       (and
@@ -3120,7 +3122,9 @@
         (<= (-> this hit-points) 0.0)
       )
       (drop-loot-crate! (-> this root trans) 0.5 0.3)
-      (go (method-of-object this knocked))
+      (when (or (<= (-> this hit-points) 0.0)(<= enemy-noto 100))
+            (go (method-of-object this knocked))
+         )
      )
      #t
     )
@@ -3214,7 +3218,7 @@
   (set! (-> this minimap) #f)
   (set-time! (-> this valid-ground-timer))
   (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
-      (set! (-> this hit-points) (+ (* 6.0 (-> this enemy-info default-hit-points)) (* (the float enemy-noto) 3)))
+      (set! (-> this hit-points) (+ (* 14.0 (-> this enemy-info default-hit-points)) (* (the float enemy-noto) 3)))
       (set! (-> this hit-points) (+ (-> this enemy-info default-hit-points) (* (the float enemy-noto) 3)))
       )
   (when (> enemy-noto 71)
