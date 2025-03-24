@@ -135,6 +135,8 @@
     (else (-> en-type symbol)))
   )
 
+  (defun-extern reset-gunmod-vars! symbol none)
+
   (define anchor-day? (if (rand-vu-percent? 0.5)
                         #t
                         #f
@@ -427,8 +429,14 @@
   (defun-extern shield-shot string vector vector none)
   (defun-extern commando-shot! vector vector none)
   (defun-extern someone-fire-jak-purple vector vector none)
+  (defun-extern someone-fire-dark-grenade vector vector float none)
   (defun-extern disc-shot! vector vector none)
   (defun-extern black-hole! vector none)
+  (defun-extern random-shot! vector vector process-drawable none)
+  (defun-extern peacemaker-burst! none)
+
+  (define pm-burst #f)
+  (define pmi 0)
 
   (defun-extern gun-freeze vector vector none)
 

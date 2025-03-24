@@ -238,6 +238,7 @@
       (spawn-projectile jak-maker-grenade gp-0 (ppointer->process (-> *target* gun gun)) *default-dead-pool*)
       )
     )
+    (none)
   )
 
   (defun start-rift-particle ((vec vector))
@@ -254,12 +255,11 @@
     (none)
   )
 
-(deftype gyro-warp (process)
+(deftype gyro-warp (process-drawable)
     ((timer                     int)
      (pos                       vector :inline)
      (fire-point                vector :inline)
      (fire-dir-out              vector :inline)
-     (part                      sparticle-launch-control)
      (shot-x2                   int)
      (move-mode                 int)
      (stored-name               string)
@@ -546,7 +546,14 @@
                 (vector-rotate-y! startpos startpos (degrees 90))
                 (vector-rotate-y! startpos startpos (degrees -90))
             )
-            (someone-fire-dark-grenade vec startpos (rand-vu-float-range -255000.0 255000.0))
+            (cond 
+              ((= gunmod-randomshot #t)
+                (random-shot! vec startpos this)
+              )
+              (else
+                (someone-fire-dark-grenade vec startpos (rand-vu-float-range -255000.0 255000.0))
+              )
+            )
         )
     (none)
 )

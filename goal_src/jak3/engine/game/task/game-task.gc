@@ -2187,7 +2187,7 @@
             :task (game-task desert-interceptors)
             :name "mody-fireball"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2209,7 +2209,7 @@
             :task (game-task desert-interceptors)
             :name "mody-nukeonly"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2231,7 +2231,7 @@
             :task (game-task desert-interceptors)
             :name "mody-freeze"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2253,7 +2253,7 @@
             :task (game-task desert-interceptors)
             :name "modr-bigshot"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2275,7 +2275,7 @@
             :task (game-task desert-interceptors)
             :name "modr-shield"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2297,7 +2297,7 @@
             :task (game-task desert-interceptors)
             :name "modr-missles"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2319,7 +2319,7 @@
             :task (game-task desert-interceptors)
             :name "modb-ammo"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2341,7 +2341,7 @@
             :task (game-task desert-interceptors)
             :name "modb-disperser"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2363,7 +2363,7 @@
             :task (game-task desert-interceptors)
             :name "modb-airstrike"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2385,7 +2385,7 @@
             :task (game-task desert-interceptors)
             :name "modd-morpher"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2407,7 +2407,7 @@
             :task (game-task desert-interceptors)
             :name "modd-random"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
@@ -2429,7 +2429,7 @@
             :task (game-task desert-interceptors)
             :name "modd-reaper"
             :when-open #f
-            :flags (game-task-node-flag no-percent close-task)
+            :flags (game-task-node-flag no-percent close-task utility-node)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node none)
               (game-task-node none)
