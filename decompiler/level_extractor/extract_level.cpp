@@ -342,6 +342,7 @@ void extract_common(const ObjectFileDB& db,
   extract_single_ag("VOCA.DGO", "mantis-ag", db, tex_db, tfrag_level);
   extract_single_ag("SEN.DGO", "neo-grenadier-ag", db, tex_db, tfrag_level);
   extract_single_ag("DESW.DGO", "dm-tentacle-ag", db, tex_db, tfrag_level);
+  extract_single_ag("COMBA.DGO", "kidmedallion-ag", db, tex_db, tfrag_level);
 
   add_all_textures_from_level(tfrag_level, "ARTSPOOL", tex_db);
   extract_art_groups_from_level(db, tex_db, {}, "ARTSPOOL", tfrag_level, art_group_data);

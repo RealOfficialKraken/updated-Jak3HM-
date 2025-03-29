@@ -2698,7 +2698,7 @@
               )
         (when s5-0
           (send-event gp-0 'leave)
-          (set-setting! 'airlock #f 0.0 0)
+          (remove-setting! 'airlock)
           (let ((v1-20 (entity-by-name "wstd-arena-plat-10")))
             (if v1-20
                 (send-event (-> v1-20 extra process) 'hide)

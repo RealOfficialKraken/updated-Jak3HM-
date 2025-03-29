@@ -478,8 +478,20 @@
   (define dark-2s "???")
   (define dark-3s "???")
 
+  (defun-extern spawn-palace-blockers (none))
+  (defun-extern spawn-volcano-blocker (none))
+  (defun-extern spawn-course-race-block (none))
   (defun-extern drop-loot-crate! vector float float none)
   (defun-extern group-drop! vector float float none)
+  (defun-extern drop-gun-mod! vector none)
+  (define drop-gun-mod #f)
+  (define gun-i 0)
+
+  (define *pal-blockers* #f)
+  (define *vol-blockers* #f)
+  (define desert-task-stored #f)
+
+  (define blocker-delay 0)
 
   (defun-extern custom-intro (none))
 
@@ -661,6 +673,7 @@
   (ammo-dark-light-random 49)
   (light-random 50)
   (eco-crystal-dark-c 51)
+  (gun-mod-upgrade 52)
   )
 ;; ---pickup-type
 

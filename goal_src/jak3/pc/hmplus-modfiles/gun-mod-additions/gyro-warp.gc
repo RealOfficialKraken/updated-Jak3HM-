@@ -312,7 +312,7 @@
 )
 
 (defbehavior gyro-warp-init-by-other gyro-warp ((vec vector))
-    ;(stack-size-set! (-> self main-thread) 1024)
+    (stack-size-set! (-> self main-thread) 128)
     (set! (-> self timer) 0)
     (set! (-> self pos quad) (-> vec quad))
     (set! (-> self fire-point quad) (-> vec quad))
