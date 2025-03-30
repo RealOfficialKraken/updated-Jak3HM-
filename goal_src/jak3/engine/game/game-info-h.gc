@@ -480,6 +480,7 @@
 
   (defun-extern spawn-palace-blockers (none))
   (defun-extern spawn-volcano-blocker (none))
+  (defun-extern spawn-arena-blocker (none))
   (defun-extern spawn-course-race-block (none))
   (defun-extern drop-loot-crate! vector float float none)
   (defun-extern group-drop! vector float float none)
@@ -489,7 +490,24 @@
 
   (define *pal-blockers* #f)
   (define *vol-blockers* #f)
+  (define *arena-blockers* #f)
   (define desert-task-stored #f)
+
+  (define global-marauder-count 0)
+  (defun-extern spawn-kraken-timer none)
+  (declare-type kraken-timer process)
+  (define *kraken-timer* (the (pointer kraken-timer) #f))
+  (define inf-fall? #f)
+  (defun-extern toggle-inf-fall (none))
+  (define achallenge-str "")
+  (define areward-str "")
+  (define aarena-str "")
+  (define arena-delay-blockers #f)
+  (define arena-delay 0)
+
+  (defun-extern objective-completed (none))
+  (define objective-win #f)
+  (define obj-i 0)
 
   (define blocker-delay 0)
 

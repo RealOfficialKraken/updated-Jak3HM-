@@ -153,6 +153,7 @@
   (desert-spawn-task-deserta 140)
   (desert-brute-killed 141)
   (desert-ship-lod 142)
+  (arena-challenges 143)
   )
 ;; ---game-task
 
@@ -625,6 +626,16 @@
   (desert-brute-killed-introduction)
   (desert-brute-killed-resolution)
   (desert-ship-lod-introduction)
+  (arena-challenge-1)
+  (arena-challenge-2)
+  (arena-challenge-3)
+  (arena-challenge-4)
+  (arena-challenge-5)
+  (arena-challenge-6)
+  (arena-challenge-7)
+  (arena-challenge-8)
+  (arena-challenge-9)
+  (arena-challenge-10)
   )
 ;; ---game-task-node
 

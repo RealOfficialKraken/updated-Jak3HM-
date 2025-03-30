@@ -1317,6 +1317,15 @@
             :play-continue "wasdoors-city"
             :kiosk-play-continue #f
             )
+            (new 'static 'game-task-info
+            :name "arena-challenges"
+            :pre-play-node (game-task-node arena-challenge-1)
+            :kiosk-play-node (game-task-node none)
+            :pre-play-continue "wasstada-start"
+            :play-node (game-task-node arena-challenge-1)
+            :play-continue "wasstada-start"
+            :kiosk-play-continue #f
+            )
           )
         )
   (set! (-> game-info sub-task-list)
@@ -25020,6 +25029,226 @@
             :flags (game-task-node-flag bbush act1 save-on-life)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node desert-interceptors-attack)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-1"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-fight-3-resolution)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-2"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-1)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-3"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-2)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-4"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-3)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-5"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-4)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-6"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-5)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-7"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-6)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-8"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-7)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-9"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-8)
+              (game-task-node none)
+              (game-task-node none)
+              (game-task-node none)
+              )
+            :on-open #f
+            :manager #f
+            :borrow '()
+            :open? #f
+            :on-close #f
+            :reset #f
+            :suck-death-count #xa5
+            :command-index #x4
+            :faction-commands '()
+            )
+            (new 'static 'game-task-node-info
+            :level 'none
+            :task (game-task arena-challenges)
+            :name "arena-challenge-10"
+            :when-open #f
+            :flags (game-task-node-flag bbush close-task no-percent)
+            :parent-node (new 'static 'array game-task-node 4
+              (game-task-node arena-challenge-9)
               (game-task-node none)
               (game-task-node none)
               (game-task-node none)
