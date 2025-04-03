@@ -90,7 +90,71 @@
        (set! (-> self current-attack-mode) (the-as symbol v0-0))
        v0-0
        )
-      (('touch 'bonk 'attack)
+      (('touch)
+        (cond 
+        ((-> self current-attack-mode)
+         (let ((v1-25 (vector-z-quaternion! (new 'stack-no-clear 'vector) (-> self root quat))))
+           (if (< (vector-dot
+                    (vector-! (new 'stack-no-clear 'vector) (-> (the-as process-drawable proc) root trans) (-> self root trans))
+                    v1-25
+                    )
+                  0.0
+                  )
+               (vector-float*! v1-25 v1-25 -1.0)
+               )
+           (send-event
+             proc
+             'attack
+             #f
+             (static-attack-info :mask (vehicle-impulse-factor) ((id (new-attack-id))
+                                                                 (damage 2.0)
+                                                                 (vehicle-damage-factor 1.0)
+                                                                 (vehicle-impulse-factor 1.0)
+                                                                 (mode (-> self current-attack-mode))
+                                                                 (vector v1-25)
+                                                                 (shove-up (meters 2))
+                                                                 (shove-back (meters 4))
+                                                                 )
+                                 )
+             )
+           )
+         )
+         ((string= (-> self name) "blocking-plane-course-1")
+          (send-event
+             proc
+             'attack
+             (-> block param 0)
+             (static-attack-info :mask (vehicle-impulse-factor) ((id (the-as uint 0))
+                                                                 (damage 2.0)
+                                                                 (vehicle-damage-factor 99999999.0)
+                                                                 (vehicle-impulse-factor 999999999.0)
+                                                                 (mode 'explode)
+                                                                 )
+                                 )
+             )
+         )
+        )
+        (when (string= (-> self name) "blocking-plane-course-1")
+        (let ((gp-0 (new 'stack-no-clear 'explosion-init-params)))
+          (set! (-> gp-0 spawn-point quad) (-> (target-pos 0) quad))
+          (vector-copy! (-> gp-0 spawn-quat) (-> self root quat))
+          (set! (-> gp-0 radius) (meters 9999))
+          (set! (-> gp-0 scale) (meters 9999))
+          (set! (-> gp-0 group) #f) ;(-> *part-group-id-table* 499)
+          (set! (-> gp-0 collide-with)
+                  (collide-spec backgnd jak crate civilian obstacle vehicle-sphere hit-by-others-list player-list pusher)
+                  )
+          (set! (-> gp-0 damage) 3.0)
+          (set! (-> gp-0 damage-scale) 999.0)
+          (set! (-> gp-0 vehicle-damage-factor) 999.0)
+          (set! (-> gp-0 vehicle-impulse-factor) (meters 999999999))
+          (set! (-> gp-0 ignore-proc) (the-as handle #f))
+          (nice-try)
+          (explosion-spawn gp-0 self)
+        )
+       )
+      )
+      (('bonk 'attack)
        (when (-> self current-attack-mode)
          (let ((v1-25 (vector-z-quaternion! (new 'stack-no-clear 'vector) (-> self root quat))))
            (if (< (vector-dot

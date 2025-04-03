@@ -528,6 +528,7 @@
   "spiky-frog.o"
   "leaper-boss.o"
   "jak3-custom-code.o" ;custom-mod
+  "kraken-timer.o"
   "wasteland-spawner.o"
   "rope-system-h.o"
   "rope-system.o"
@@ -569,4 +570,5 @@
   "kraken-volume.o"
   "gyro-warp.o"
   "for-turret-shot.o"
+  "arena-events.o"
  ))

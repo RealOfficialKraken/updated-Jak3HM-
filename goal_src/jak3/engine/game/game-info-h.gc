@@ -297,8 +297,8 @@
 
   ;mainmenu stuff
   (define globalrandi 0)
-  (define globaltpos (new 'static 'vector))
-  (define globalpos (new 'static 'vector))
+  (define-extern globaltpos vector)
+  (define-extern globalpos vector)
   (defun-extern launch-mmenu (none))
   (defun-extern disable-hudmap (none))
   (defun-extern spawn-jak3logo vector float float float int none)
@@ -488,15 +488,31 @@
   (define drop-gun-mod #f)
   (define gun-i 0)
 
+  (define gun-weapon-roll #f)
+  (define gun-wri 0)
+
+  (define nice-try-dude #f)
+  (define nice-i 0)
+  (define nice-string "")
+  (defun-extern nice-try (none))
+
   (define *pal-blockers* #f)
   (define *vol-blockers* #f)
   (define *arena-blockers* #f)
   (define desert-task-stored #f)
 
+  (declare-type jak3logo process)
+  (define *jak3logo* (the (pointer jak3logo) #f))
+
+  (define load-delay-1 #f)
+  (define load-i 0)
   (define global-marauder-count 0)
   (defun-extern spawn-kraken-timer none)
   (declare-type kraken-timer process)
   (define *kraken-timer* (the (pointer kraken-timer) #f))
+  (declare-type arena-event process)
+  (define *arena-event* (the (pointer arena-event) #f))
+  (defun-extern summon-arena-event (none))
   (define inf-fall? #f)
   (defun-extern toggle-inf-fall (none))
   (define achallenge-str "")

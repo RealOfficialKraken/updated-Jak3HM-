@@ -1684,7 +1684,7 @@
               )
             :flags (game-task-node-flag save-on-life act1 no-percent)
             :parent-node (new 'static 'array game-task-node 4
-              (game-task-node arena-fight-3-resolution)
+              (game-task-node nest-eggs-gas)
               (game-task-node none)
               (game-task-node none)
               (game-task-node none)
@@ -1764,7 +1764,7 @@
             :when-open #f
             :flags (game-task-node-flag save-on-life act1 no-percent)
             :parent-node (new 'static 'array game-task-node 4
-              (game-task-node arena-fight-3-resolution)
+              (game-task-node nest-eggs-gas)
               (game-task-node none)
               (game-task-node none)
               (game-task-node none)
@@ -1843,7 +1843,7 @@
             :when-open #f
             :flags (game-task-node-flag save-on-life act1 no-percent)
             :parent-node (new 'static 'array game-task-node 4
-              (game-task-node arena-fight-3-resolution)
+              (game-task-node nest-eggs-gas)
               (game-task-node none)
               (game-task-node none)
               (game-task-node none)

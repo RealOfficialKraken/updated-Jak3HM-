@@ -350,7 +350,7 @@
        (set! (-> this values arg0 current) (-> this values arg0 target))
        )
       ((> v1-3 0)
-       (sound-play "inc-pickup" :pitch 0.5)
+       ;(sound-play "inc-pickup" :pitch 0.5)
        )
       (else
         (sound-play "gem-spawn" :vol 80 :pitch 0.4)
@@ -412,7 +412,8 @@
 
 (defmethod update-value-callback ((this hud-skill) (arg0 int) (arg1 int))
   (if (> arg1 0)
-      (sound-play "inc-pickup" :pitch 0.5)
+      ;(sound-play "inc-pickup" :pitch 0.5)
+      (print "no increment sound cuz I like Jak 2's way c:")
       )
   0
   (none)

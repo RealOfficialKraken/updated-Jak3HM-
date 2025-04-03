@@ -916,6 +916,13 @@
   )
 
   (defun spawn-dust-storm ()
-    (process-spawn dust-storm-randomizer :name "dust-storm-randomizer")
+    (cond
+      ((= (-> (level-get-target-inside *level*) name) 'desert)
+        (process-spawn dust-storm-randomizer :name "dust-storm-randomizer")
+      )
+      (else
+        (format #t "~%| SPAWN-DUST-STORM | COULD NOT SPAWN! - NOT IN DESERT")
+      )
+    )
     (none)
   )

@@ -1102,7 +1102,7 @@
                                    :overlaps-others-collide-with-filter (collide-spec jak bot player-list)
                                    :movement-gravity (meters -100)
                                    :friction 0.8
-                                   :attack-shove-back (meters 2089)
+                                   :attack-shove-back (meters 9999999999)
                                    :attack-shove-up (meters 46)
                                    :attack-mode 'generic
                                    :attack-damage 2
@@ -1193,8 +1193,8 @@
                                  :overlaps-others-collide-with-filter (collide-spec jak bot player-list)
                                  :movement-gravity (meters -100)
                                  :friction 0.8
-                                 :attack-shove-back (meters 2089)
-                                 :attack-shove-up (meters 46)
+                                 :attack-shove-back (meters 9999999999)
+                                 :attack-shove-up (meters 9999999999)
                                  :attack-mode 'generic
                                  :attack-damage 2
                                  :recover-gnd-collide-with (collide-spec backgnd crate obstacle hit-by-others-list pusher)
@@ -1800,8 +1800,8 @@
      )
     (('attack)
     (if (logtest? (-> *game-info* secrets) (game-secrets hero-mode))
-      (set! hpbar-max-hit-points (+ 500.0 (/ (the float enemy-noto) 3)))
-      (set! hpbar-max-hit-points (+ 250.0 (/ (the float enemy-noto) 3)))
+      (set! hpbar-max-hit-points (+ 2000.0 (/ (the float enemy-noto) 3)))
+      (set! hpbar-max-hit-points (+ 1000.0 (/ (the float enemy-noto) 3)))
     )
     (set! hpbar-hit-points (-> self hit-points))
     (set! draw-enemy-noto enemy-noto)
@@ -1915,8 +1915,8 @@
                                                                    (damage 17.0)
                                                                    (vehicle-damage-factor 6.0)
                                                                    (vehicle-impulse-factor 1.0)
-                                                                   (shove-back (meters 2089))
-                                                                   (shove-up (meters 46))
+                                                                   (shove-back (meters 9999999999))
+                                                                   (shove-up (meters 9999999999999999))
                                                                    )
                                    )
                )
@@ -2479,12 +2479,12 @@
   (set! (-> this can-turn?) #f)
   (cond
     ((kiosk?)
-     (set! (-> this hit-points) 110.0)
-     (set! (-> this hit-points2) 35.0)
+     (set! (-> this hit-points) (-> this enemy-info default-hit-points))
+     (set! (-> this hit-points2) (-> this enemy-info default-hit-points))
      )
     (else
-      (set! (-> this hit-points) (- 225.0 (* 70.0 (you-suck-scale *game-info* #f 0))))
-      (set! (-> this hit-points2) 50.0)
+      (set! (-> this hit-points) (-> this enemy-info default-hit-points))
+      (set! (-> this hit-points2) (-> this enemy-info default-hit-points))
       )
     )
   (set! (-> this angry) 0.0)
