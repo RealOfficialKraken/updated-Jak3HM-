@@ -469,6 +469,7 @@ BUGS:
 (= draw-arena-select #f)
 (= in-arena-fight? #f)
 (= in-satbattle? #f)
+(> (-> *target* fact health) 0.0)
 (task-node-closed? (game-task-node arena-fight-1-resolution))
 (not (task-node-open? (game-task-node city-blow-barricade-resolution)))
 (not (focus-test? *target* pilot))
@@ -848,6 +849,10 @@ BUGS:
 
 (when (= mm-hint-1 #t)
     (+! mm-hint-1i 1)
+    (when (not *scene-player*)
+        (set! mm-hint-1 #f)
+        (set! mm-hint-1i 0)
+    )
     (clear matt-str)
         (clear *pc-encoded-matt-str*)
         (format matt-str "<COLOR_WHITE>Press <COLOR_RED>O<COLOR_WHITE> to toggle <COLOR_CYAN>Mushroom Movies<COLOR_WHITE>!"
@@ -1015,7 +1020,6 @@ BUGS:
         (= in-tutorial? #t)
         (= tutorial-msg 0)
         *target*
-        (= (pause-allowed?) #t)
         (not *scene-player*)
     )
         (+! tutorial-freeze 1)
@@ -3861,7 +3865,12 @@ BUGS:
 
     (when 
         (and
-            (= weather-dark-mode #t)
+            (or
+                (= weather-dark-mode #t)
+                (= in-volcano-level? #t)
+                (= in-mine-level? #t)
+                (= in-factory-level? #t)
+            )
             (or
                 (= (-> *time-of-day-context* overide-enable) #f)
                 (= (-> *mood-control* overide-weather-flag) #f)
@@ -3965,10 +3974,8 @@ BUGS:
                 (= in-mine-boss? #f)
                 (= in-arena-fight? #f)
                 (= in-factory-level? #f)
-                (and
-                    (= (-> *time-of-day-context* overide-enable) #t)
-                    (= (-> *mood-control* overide-weather-flag) #t)
-                )
+                (= (-> *time-of-day-context* overide-enable) #t)
+                (= (-> *mood-control* overide-weather-flag) #t)
             )
                 (set! (-> *time-of-day-context* overide-enable) #f)
                 (set! (-> *mood-control* overide-weather-flag) #f)
@@ -4009,6 +4016,7 @@ BUGS:
                 (turn-to-scene-camera camera-loc tpos #t)
                 (when (= spawned-logo? #f)
                     (disable-hudmap)
+                    (spawn-dark-world-forest)
                     (set! *jak3logo* (process-spawn jak3logo :name "jak3logo-flicker" *active-pool*))
                     (spawn-dust-storm)
                     (set! in-main-menu? #t)
@@ -6065,6 +6073,7 @@ BUGS:
       ((= weather-dark-mode #f)
         (reset-actors 'life)
         (start-menu-music!)
+        (spawn-dark-world-forest)
         (when (= in-desert-game-task? #t)
             (set! in-desert-game-task? #f)
             (set! desert-task-stored #t)
@@ -6191,6 +6200,7 @@ BUGS:
         ((= in-factory-level? #f)
             (reset-actors 'life)
             (set! in-factory-level? #t)
+            (dark-weather-override)
         )
         ((= in-factory-level? #t)
             (set! in-factory-level? #f)
@@ -6205,6 +6215,7 @@ BUGS:
         ((= in-mine-level? #f)
             (reset-actors 'life)
             (set! in-mine-level? #t)
+            (dark-weather-override)
         )
         ((= in-mine-level? #t)
             (set! in-mine-level? #f)
@@ -6310,6 +6321,7 @@ BUGS:
             (reset-actors 'life)
             (set! in-volcano-level? #t)
             (spawn-volcano-mobs)
+            (dark-weather-override)
         )
         ((= in-volcano-level? #t)
             (set! in-volcano-level? #f)
@@ -7047,6 +7059,7 @@ BUGS:
     (kill-by-name "man-eb" *default-pool*)
     (kill-by-name "proc-mask-enemyfreeze" *active-pool*)
     (kill-by-name "arena-event-1" *active-pool*)
+    (kill-by-name "darkworld-tower" *active-pool*)
     (when (ppointer->process *jak3logo*)
         (send-event (ppointer->process *jak3logo*) 'diepls #t)
     )

@@ -748,6 +748,7 @@
             (= (pause-allowed?) #t)
             (= in-satbattle? #f)
             (= cdr-satbattle #f)
+            (= in-pre-tutorial? #f)
             (= (-> (level-get-target-inside *level*) name) 'desert)
         )
         ;This is for spawning the manipy inside a big radius, waiting for jak to get close

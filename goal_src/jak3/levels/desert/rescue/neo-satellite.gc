@@ -13,6 +13,9 @@
 (define-extern *curve-sat-explo-scale-x* curve2d-fast)
 (define-extern *curve-sat-explo-scale-y* curve2d-fast)
 
+(declare-type dp-bipedal-grenade-shot projectile-bounce)
+(define-extern spawn-dp-bipedal-grenade (function process-focusable vector vector float (pointer dp-bipedal-grenade-shot)))
+
 ;; DECOMP BEGINS
 
     

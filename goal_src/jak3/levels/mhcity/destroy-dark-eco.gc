@@ -252,7 +252,7 @@
 (defstate die (dark-eco-orb)
   :virtual #t
   :enter (behavior ()
-    (if (-> self movie?)
+    (if (and (-> self movie?) (= weather-dark-mode #f))
         (go-virtual die-movie)
         )
     )
@@ -328,7 +328,7 @@
       (vector-rotate*! (-> sv-688 move-dist) (-> s5-0 probe-dirs sv-736) sv-672)
       (vector-normalize! (-> sv-688 move-dist) sv-656)
       (let ((v1-19 sv-688))
-        (set! (-> v1-19 radius) 409.6)
+        (set! (-> v1-19 radius) 2700.0)
         (set! (-> v1-19 collide-with) (collide-spec backgnd crate obstacle hit-by-others-list pusher))
         (set! (-> v1-19 ignore-process0) arg0)
         (set! (-> v1-19 ignore-process1) #f)
@@ -428,13 +428,13 @@
 
 (set! (-> *dark-tower-lightning* alpha-1-mode) (the-as uint 3))
 
-(set! (-> *dark-tower-lightning* alpha-1-repeat-dist) 262144.0)
+(set! (-> *dark-tower-lightning* alpha-1-repeat-dist) (meters 750))
 
 (set! (-> *dark-tower-lightning* alpha-2-curve) #f)
 
 (set! (-> *dark-tower-lightning* alpha-2-mode) (the-as uint 3))
 
-(set! (-> *dark-tower-lightning* alpha-2-repeat-dist) 4096.0)
+(set! (-> *dark-tower-lightning* alpha-2-repeat-dist) (meters 750))
 
 (set! (-> *dark-tower-lightning* width-curve) *dark-lightning-width*)
 
@@ -442,7 +442,7 @@
 
 (set! (-> *dark-tower-lightning* width-repeat-dist) 4096.0)
 
-(set! (-> *dark-tower-lightning* uv-repeat-dist) 28672.0)
+(set! (-> *dark-tower-lightning* uv-repeat-dist) (meters 750))
 
 (set! (-> *dark-tower-lightning* regenerate-time-start) (seconds 0.167))
 
@@ -474,7 +474,7 @@
     (if (>= 0.0 (-> self hit-points))
         (go-virtual die)
         )
-    (when (and (< (vector-vector-xz-distance (-> self root trans) (camera-pos)) 614400.0)
+    (when (and ;(< (vector-vector-xz-distance (-> self root trans) (camera-pos)) (meters 9999))
                (time-elapsed? (-> self shock-spawn-time) (seconds 0.017))
                )
       (new 'stack-no-clear 'vector)
@@ -482,7 +482,7 @@
         (set-vector!
           gp-1
           (rand-vu-float-range -8192.0 8192.0)
-          (rand-vu-float-range 0.0 12288.0)
+          (rand-vu-float-range 0.0 73288.0)
           (rand-vu-float-range -8192.0 8192.0)
           1.0
           )
@@ -494,7 +494,7 @@
           lightning-probe-callback
           (the-as sparticle-launcher #f)
           0
-          409600.0
+          (meters 700)
           )
         )
       (sound-play "de-tower-zap" :id (-> self plasma-sound) :position (-> self root trans))

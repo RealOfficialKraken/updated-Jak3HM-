@@ -23,6 +23,7 @@
    (visible-last           time-frame)
    (traj                   trajectory       :inline)
    (skip-jump              symbol)
+   (arena-dead?            symbol)
    )
   (:state-methods
     attack-run

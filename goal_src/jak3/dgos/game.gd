@@ -571,4 +571,8 @@
   "gyro-warp.o"
   "for-turret-shot.o"
   "arena-events.o"
+  "mhcity-obs.o"
+  "mhcity-obs2.o"
+  "destroy-dark-eco.o"
+  "darkworld-tower.o"
  ))

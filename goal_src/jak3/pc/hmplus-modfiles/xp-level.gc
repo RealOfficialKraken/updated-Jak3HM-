@@ -510,7 +510,6 @@
         *target*
         (not *scene-player*)
         (= (paused?) #f)
-        (= (pause-allowed?) #t)
     )
     
     )
@@ -651,7 +650,6 @@
             *target*
             (not *scene-player*)
             (= (paused?) #f)
-            (= (pause-allowed?) #t)
             (= levelup-color #t)
         )
         (+! lui 1)
@@ -835,7 +833,6 @@
             *target*
             (not *scene-player*)
             (= (paused?) #f)
-            (= (pause-allowed?) #t)
             (!= (-> *game-info* karma) 0.0)
             (!= notoriety-level 0)
         )
@@ -849,7 +846,6 @@
             *target*
             (not *scene-player*)
             (= (paused?) #f)
-            (= (pause-allowed?) #t)
             (!= (-> *game-info* buzzer-total) 0.0)
             (!= guns-level 0)
         )
@@ -863,7 +859,6 @@
             *target*
             (not *scene-player*)
             (= (paused?) #f)
-            (= (pause-allowed?) #t)
             (!= (-> *game-info* fuel) 0.0)
             (!= guns-level 0)
         )
@@ -876,7 +871,6 @@
                 *target*
                 (not *scene-player*)
                 (= (paused?) #f)
-                (= (pause-allowed?) #t)
                 (task-node-closed? (game-task-node arena-training-1-introduction))
                 (not (task-node-closed? (game-task-node arena-training-1-collect)))
                 (= (-> *game-info* karma) (the int 65))
@@ -922,7 +916,6 @@
                     *target*
                     (not *scene-player*)
                     (= (paused?) #f)
-                    (= (pause-allowed?) #t)
                     (= in-menu? #f)
                 )
                 (let ((health-pos 0))
@@ -1018,7 +1011,6 @@
                 (not *scene-player*)
                 *target*
                 (not (focus-test? *target* pilot))
-                (= (pause-allowed?) #t)
                 (= in-pre-tutorial? #f)
                 (= (paused?) #f)
                 (= in-vin-shop? #f)
@@ -1874,7 +1866,6 @@
             *target*
             (not *scene-player*)
             (= (paused?) #f)
-            (= (pause-allowed?) #t)
             (not mainmenu-camera)
             (task-node-closed? (game-task-node arena-fight-1-introduction))
         ) ;gain XP
@@ -1931,7 +1922,6 @@
             *target*
             (not *scene-player*)
             (= (paused?) #f)
-            (= (pause-allowed?) #t)
             (not mainmenu-camera)
             (= completed-tutorial? #t)
         ) ;gain XP
@@ -1976,7 +1966,6 @@
                 *target*
                 (not *scene-player*)
                 (= (paused?) #f)
-                (= (pause-allowed?) #t)
                 (= in-menu? #f)
             )
             (clear matt-str)
@@ -2027,7 +2016,6 @@
             *target*
             (not *scene-player*)
             (= (paused?) #f)
-            (= (pause-allowed?) #t)
             (= r3-noto #t)
         )
             (+! notoi 1)
@@ -2059,7 +2047,6 @@
         *target*
         (not *scene-player*)
         (= (paused?) #f)
-        (= (pause-allowed?) #t)
         (= r3-noto #t)
         (= in-menu? #f)
     )
@@ -2082,7 +2069,6 @@
         *target*
         (not *scene-player*)
         (= (paused?) #f)
-        (= (pause-allowed?) #t)
         (= r3-noto #t)
         (= in-menu? #f)
         (task-node-closed? (game-task-node arena-fight-1-introduction))
@@ -2106,7 +2092,6 @@
         *target*
         (not *scene-player*)
         (= (paused?) #f)
-        (= (pause-allowed?) #t)
         (= r3-noto #t)
         (= in-menu? #f)
         (!= (-> *game-info* total-deaths) 0)
@@ -2130,7 +2115,6 @@
             *target*
             (not *scene-player*)
             (= (paused?) #f)
-            (= (pause-allowed?) #t)
             (focus-test? *target* pilot)
             ) ;for the turbo meter, also referenced in wvehicle.gc and wvehicle-util.gc
             (let 

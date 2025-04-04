@@ -610,6 +610,9 @@
   (define draw-bombbot-hint #f)
   (define draw-bbh 0)
 
+  (defun-extern spawn-dark-world-forest none)
+  (defun-extern dark-weather-override none)
+
 
 
 ;; +++game-items
