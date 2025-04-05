@@ -560,6 +560,8 @@
   "tm-desertc-anchor.o"
   "tm-desertg-anchor.o"
   "tm-ctyinda-anchor.o"
+  "hover-nav-templea.o"
+  "temple-obs.o"
   "firefight.o"
   "tm-vin-intro.o"
   "warp-room.o"

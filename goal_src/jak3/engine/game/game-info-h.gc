@@ -610,6 +610,8 @@
   (define draw-bombbot-hint #f)
   (define draw-bbh 0)
 
+  (define spawned-df-mobs? #f)
+
   (defun-extern spawn-dark-world-forest none)
   (defun-extern dark-weather-override none)
 

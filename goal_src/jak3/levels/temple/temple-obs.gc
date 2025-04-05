@@ -223,6 +223,15 @@
   (none)
   )
 
+(defbehavior tpl-bouncer-init-by-other tpl-bouncer ((vec vector))
+  (set! (-> self root trans quad) (-> vec quad))
+  (quaternion-identity! (-> self root quat))
+  (init-collision! self)
+  (init-skel! self)
+  (go-virtual idle)
+  (none)
+)
+
 (defskelgroup skel-tpl-outer-airlock-door tpl-outer-airlock-door tpl-outer-airlock-door-lod0-jg tpl-outer-airlock-door-idle-ja
               ((tpl-outer-airlock-door-lod0-mg (meters 999999)))
               :bounds (static-spherem 0 6 0 18)

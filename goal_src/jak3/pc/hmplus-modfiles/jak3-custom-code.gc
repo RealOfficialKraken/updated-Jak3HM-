@@ -7060,6 +7060,8 @@ BUGS:
     (kill-by-name "proc-mask-enemyfreeze" *active-pool*)
     (kill-by-name "arena-event-1" *active-pool*)
     (kill-by-name "darkworld-tower" *active-pool*)
+    (kill-by-name "jak3logo" *active-pool*)
+    (kill-by-name "jak3logo-flicker" *active-pool*)
     (when (ppointer->process *jak3logo*)
         (send-event (ppointer->process *jak3logo*) 'diepls #t)
     )
