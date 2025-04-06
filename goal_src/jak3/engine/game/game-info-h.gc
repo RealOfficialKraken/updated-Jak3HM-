@@ -314,6 +314,10 @@
   (define autosave-delayed #f)
   (define auto-i 0)
 
+  (defun-extern spawn-vin-effect vector string none)
+  (defun-extern spawn-giant-vin-effect vector none)
+  (define *dark-forest* #f)
+
   ;firefight stuff
   (define-extern *target-battle!* symbol)
   (define-extern flr-ally int)

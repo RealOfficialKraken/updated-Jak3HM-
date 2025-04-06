@@ -97,7 +97,7 @@ im-loopin-it!
             (play-main-music "snd/music/main-menu.wav" 175)
         )
         (else
-            (play-main-music "snd/music/dark-world-theme.wav" 175)
+            (play-main-music "snd/music/dark-world-theme.wav" 100)
         )
     )
     (none)

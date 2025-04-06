@@ -50,7 +50,7 @@
               :origin-joint-index 3
               )
 
-(defun spawn-vin-effect ((vec vector))
+(defun spawn-vin-effect ((vec vector) (name string))
     (let ((vin (the manipy 
                 (ppointer->process
                     (process-spawn manipy
@@ -62,7 +62,7 @@
                     #f
                     0
                     #f
-                    :name "vin-effect"))
+                    :name name))
                     )
                 )
             (vscale (new 'static 'vector))
@@ -71,6 +71,33 @@
             (set! (-> vscale x) 175.0)
             (set! (-> vscale y) 175.0)
             (set! (-> vscale z) 175.0)
+            (send-event vin 'scale vscale)
+            (send-event vin 'rot-x (degrees 78))
+        )
+    (none)
+)
+
+(defun spawn-giant-vin-effect ((vec vector))
+    (let ((vin (the manipy 
+                (ppointer->process
+                    (process-spawn manipy
+                    :init
+                    manipy-init
+                    vec
+                    #f
+                    (art-group-get-by-name *level* "skel-vin-effect" (the (pointer level) #f))
+                    #f
+                    0
+                    #f
+                    :name "vin-effect-giant"))
+                    )
+                )
+            (vscale (new 'static 'vector))
+            (qscale (new 'static 'quaternion))
+            )
+            (set! (-> vscale x) 775.0)
+            (set! (-> vscale y) 775.0)
+            (set! (-> vscale z) 775.0)
             (send-event vin 'scale vscale)
             (send-event vin 'rot-x (degrees 78))
         )

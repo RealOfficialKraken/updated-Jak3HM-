@@ -3678,7 +3678,7 @@
                   )
                 )
           )
-      (if (and (< (-> *TARGET-bank* fall-far) f0-1)(= in-arena-fight? #f))
+      (if (and (< (-> *TARGET-bank* fall-far) f0-1)(task-node-open? (game-task-node desert-vin-quest-introduction))(= in-arena-fight? #f))
           (go target-hit-ground-hard f0-1)
           )
       )

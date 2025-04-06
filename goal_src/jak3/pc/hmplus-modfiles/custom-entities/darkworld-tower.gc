@@ -27,6 +27,9 @@
     )
   :trans (behavior ()
     ;(spawn (-> self part) (-> self root trans))
+    (when (not *dark-forest*)
+        (process-deactivate)
+      )
     (start-rift-particle (-> self root trans))
     (if (>= 0.0 (-> self hit-points))
         (go-virtual die)
@@ -249,6 +252,9 @@
     )
   :code (behavior ()
     (until #f
+      (when (not *dark-forest*)
+        (process-deactivate)
+      )
       (ja-no-eval :group! (ja-group) :num! (seek!) :frame-num 0.0)
       (until (ja-done? 0)
         (suspend)
@@ -416,6 +422,7 @@
          )
          ;base height changes are around 47.2500 meters
         ;;;;MAIN TOWER;;;;
+        (set! *dark-forest* #t)
         (set-vector! base-1 (meters 3496.1220) (meters 26.1725) (meters 880.4041) 1.0)
         (process-spawn dark-tree base-1 7 *16k-dead-pool* :name "darkworld-tower")
         (set-vector! orb-1 (meters 3496.1220) (meters 408.105) (meters 880.4041) 1.0)
