@@ -92,6 +92,13 @@ im-loopin-it!
 )
 
 (defun start-menu-music! ()
-    (play-main-music "snd/music/main-menu.wav" 175)
+    (cond
+        ((= in-main-menu? #t)
+            (play-main-music "snd/music/main-menu.wav" 175)
+        )
+        (else
+            (play-main-music "snd/music/dark-world-theme.wav" 175)
+        )
+    )
     (none)
 )
