@@ -19,8 +19,10 @@ It's structured this way so changes can be made all in one place.
               (when (> rnd 0.75)
                 (set! rnd 0.75)
               )
+              ;; above is also depracated
+              (set! rnd 0.0)
               (cond ((rand-vu-percent? rnd)
-                (spawn-target-fireball proj-type (-> s1-0 pos) (-> s1-0 vel) 827000.0)
+                (spawn-target-fireball proj-type (-> s1-0 pos) (-> s1-0 vel) (meters 10))
               )
               (else
                 (spawn-projectile proj-type s1-0 proc *default-dead-pool*)
@@ -28,11 +30,8 @@ It's structured this way so changes can be made all in one place.
               )
             )
           )
-          ((= gunmod-ratshooter #t) ;rats
+          ((= gunmod-ratshooter #t) ;rats, also a meme
             (quick-rat! (-> s1-0 pos))
-          )
-          ((= gunmod-nukeonly #t) ;nukes
-            (someone-fire-dark-3 (-> s1-0 pos) (-> s1-0 vel))
           )
           ((= gunmod-freeze #t) ;freeze
             (spawn-projectile proj-type s1-0 proc *default-dead-pool*)

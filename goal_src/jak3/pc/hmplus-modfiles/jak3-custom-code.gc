@@ -1742,20 +1742,20 @@ BUGS:
     (when (task-node-closed? (game-task-node mody-fireball))
         (cond
             ((= gunmod-fireball #t)
-                (set! yellow-1s "<COLOR_GREEN>Chanced Fireball")
+                (set! yellow-1s "<COLOR_GREEN>Catapult Fury")
             )
             (else
-                (set! yellow-1s "<COLOR_RED>Chanced Fireball")
+                (set! yellow-1s "<COLOR_RED>Catapult Fury")
             )
         )
     )
     (when (task-node-closed? (game-task-node mody-nukeonly))
         (cond
             ((= gunmod-nukeonly #t)
-                (set! yellow-2s "<COLOR_GREEN>Mini Nuke")
+                (set! yellow-2s "<COLOR_GREEN>Critical Shot")
             )
             (else
-                (set! yellow-2s "<COLOR_RED>Mini Nuke")
+                (set! yellow-2s "<COLOR_RED>Critical Shot")
             )
         )
     )
