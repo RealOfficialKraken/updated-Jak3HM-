@@ -1020,6 +1020,11 @@
     (set-time! (-> self check-timer))
     (set-time! (-> self hint-timer))
     (set-time! (-> self state-time))
+    (set! *enemies-explode* #t)
+    (blank-hint! "<COLOR_RED>Careful!" "<COLOR_YELLOW>All enemies <COLOR_ORANGE>explode<COLOR_YELLOW> on death!" 340 300)
+    (when (!= enemy-noto 1)
+      (set! enemy-noto 1)
+    )
     )
   :code (behavior ()
     (local-vars (v1-38 symbol))
@@ -1175,6 +1180,9 @@
           )
         )
       )
+    (when *enemies-explode*
+      (set! *enemies-explode* #f)
+    )
     (send-event self 'complete)
     (if *target*
         (send-event *target* 'change-mode 'flut self)

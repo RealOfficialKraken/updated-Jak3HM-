@@ -270,6 +270,7 @@
                         (set! in-dialogue? #f)
                         (set! log-sec 0)
                         (set! log-id 0)
+                        (activate-crystalhud *target*)
                         (turn-to-scene-camera
                             (new 'static 'vector :x (meters 2209.9941) :y (meters 680.3785) :z (meters 317.6049) :w 1.0)
                             (new 'static 'vector :x (meters 2209.9462) :y (meters 143.4277) :z (meters -46.9804) :w 1.0)

@@ -2665,7 +2665,7 @@ BUGS:
     )
     (cond
         ((>= cars-level 2)
-            (set! skill-cars-string1 "<COLOR_GREEN>Increased vehicle turbo per level")
+            (set! skill-cars-string1 "<COLOR_GREEN>Turbos can also repair your vehicle")
         )
         (else
             (set! skill-cars-string1 "<COLOR_RED>LOCKED")
@@ -2691,7 +2691,7 @@ BUGS:
     (= menu-slot 2)
         (clear matt-str)
         (clear *pc-encoded-matt-str*)
-        (format matt-str "<COLOR_PINK>Vehicles:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>Wasteland cars can have better output damage on guns~%~%<COLOR_YELLOW>Earn reputation while on a vehicle to earn XP~%~%~%<COLOR_ORANGE>At Level 2~%~s~%<COLOR_ORANGE>At Level 6~%~s~%<COLOR_ORANGE>At Level 14~%~s"
+        (format matt-str "<COLOR_PINK>Vehicles:<COLOR_CYAN> ~d ~%~%<COLOR_ORANGE>All of Jak's cars get boost upgrades per level. Vehicle Guns can do more damage!~%~%<COLOR_YELLOW>Earn reputation while on a vehicle to earn XP~%~%~%<COLOR_ORANGE>At Level 2~%~s~%<COLOR_ORANGE>At Level 6~%~s~%<COLOR_ORANGE>At Level 14~%~s"
         cars-level
         skill-cars-string1
         skill-cars-string2
@@ -4741,10 +4741,10 @@ BUGS:
                 (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
                 (clear matt-str)
                 (clear *pc-encoded-matt-str*)
-                (format matt-str "<COLOR_ORANGE>Current Challenge:~%~%<COLOR_YELLOW>~s~%~%<COLOR_CYAN>Reward:~%~%<COLOR_PINK>~s~%~%<COLOR_RED>Arena:~%~%<COLOR_ORANGE>~s"
+                (format matt-str "<COLOR_ORANGE>Current Challenge:~%~%<COLOR_YELLOW>~s~%~%<COLOR_RED>Arena:~%~%<COLOR_ORANGE>~s~%~%<COLOR_CYAN>Reward:~%~%<COLOR_PINK>~s"
                 achallenge-str
-                areward-str
                 aarena-str
+                areward-str
                 )
                 (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
                 (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -5701,6 +5701,31 @@ BUGS:
         (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
         (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
         (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 255 0.0 (font-color default) (font-flags middle shadow kerning large))))
+        (set! (-> font-ctx scale) 0.625)
+        (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+
+    (when
+        (and
+            *target*
+            (not *scene-player*)
+            (= blank-hint #t)
+            (= (paused?) #f)
+        )
+        (+! bhint-i 1)
+        (when (>= bhint-i bhint-max)
+            (set! blank-hint #f)
+        )
+        (clear matt-str)
+        (clear *pc-encoded-matt-str*)
+        (format matt-str "~s~%~S"
+        bhint-string
+        bhint-string2
+        )
+        (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+        (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 255 bhint-y 0.0 (font-color default) (font-flags middle shadow kerning large))))
         (set! (-> font-ctx scale) 0.625)
         (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     )
@@ -7062,6 +7087,9 @@ BUGS:
     (kill-by-name "darkworld-tower" *active-pool*)
     (kill-by-name "jak3logo" *active-pool*)
     (kill-by-name "jak3logo-flicker" *active-pool*)
+    (when (not (task-node-open? (game-task-node wascity-leaper-race-resolution)))
+        (set! *enemies-explode* #f)
+    )
     (when (ppointer->process *jak3logo*)
         (send-event (ppointer->process *jak3logo*) 'diepls #t)
     )
@@ -7142,5 +7170,15 @@ BUGS:
     (set! in-arena-fight? #f)
     (set! pause-menu-blocked? #f)
     (camera-unlocked)
+    (none)
+)
+
+(defun blank-hint! ((say string) (say2 string) (y-axis int) (time int))
+    (set! bhint-max time)
+    (set! bhint-string say)
+    (set! bhint-string2 say2)
+    (set! bhint-i 0)
+    (set! bhint-y y-axis)
+    (set! blank-hint #t)
     (none)
 )

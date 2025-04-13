@@ -314,6 +314,8 @@
   (define autosave-delayed #f)
   (define auto-i 0)
 
+  (define *enemies-explode* #f)
+
   (defun-extern spawn-vin-effect vector string none)
   (defun-extern spawn-giant-vin-effect vector none)
   (define *dark-forest* #f)
@@ -576,6 +578,14 @@
   (define in-main-menu? #f)
 
   (define the-maker-count 0)
+
+  (define blank-hint #f)
+  (define bhint-i 0)
+  (define bhint-string "")
+  (define bhint-string2 "")
+  (define bhint-max 0)
+  (define bhint-y 255)
+  (defun-extern blank-hint! string string int int none)
 
   (define arena-token-count 0)
   (defun-extern spawn-gun-upgrade vector float none)

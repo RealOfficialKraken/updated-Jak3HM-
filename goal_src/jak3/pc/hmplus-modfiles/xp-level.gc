@@ -1088,6 +1088,7 @@
             )
             (when ;WASCITYA
                 (and
+                    (not (task-node-open? (game-task-node wascity-leaper-race-resolution)))
                     (= (-> (level-get-target-inside *level*) name) 'wascitya)
                     (!= enemy-noto 81)
                 )
@@ -1095,6 +1096,7 @@
             )
             (when ;WASCITYB
                 (and
+                    (not (task-node-open? (game-task-node wascity-leaper-race-resolution)))
                     (= (-> (level-get-target-inside *level*) name) 'wascityb)
                     (not (task-node-open? (game-task-node wascity-pre-game-battle)))
                     (!= enemy-noto 91)
@@ -1459,6 +1461,7 @@
                     (when (not (task-node-closed? (game-task-node wascity-pre-game-introduction)))
                     (when ;WASCITYA
                         (and
+                            (not (task-node-open? (game-task-node wascity-leaper-race-resolution)))
                             (= (-> (level-get-target-inside *level*) name) 'wascitya)
                             (!= enemy-noto 1)
                         )
@@ -1466,6 +1469,7 @@
                     )
                     (when ;WASCITYB
                         (and
+                            (not (task-node-open? (game-task-node wascity-leaper-race-resolution)))
                             (= (-> (level-get-target-inside *level*) name) 'wascityb)
                             (not (task-node-open? (game-task-node wascity-pre-game-battle)))
                             (!= enemy-noto 2)
