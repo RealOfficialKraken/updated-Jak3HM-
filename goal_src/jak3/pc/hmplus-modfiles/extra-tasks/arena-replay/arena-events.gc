@@ -138,7 +138,7 @@ dead
                    )
                    (= (-> self paused-proc?) #f)
                 )
-                    (blank-hint! "<COLOR_RED>CAUTION" "<COLOR_CYAN>ARENA EVENTS ACTIVE" 90 300)
+                    (blank-hint! "<COLOR_RED>CAUTION" "<COLOR_CYAN>ARENA EVENTS ACTIVE" 110 300)
                     (go-virtual idle)
             )
             (format *stdcon* "~%~s, DORMANT~%" (-> self name))
@@ -201,7 +201,7 @@ dead
     :event arena-event-event-handler
     :code
     (behavior ()
-        (blank-hint! "<COLOR_RED>METEOR SHOWER" "" 90 300)
+        (blank-hint! "<COLOR_RED>METEOR SHOWER" "" 110 300)
         (loop
             (+! (-> self gen-i) 1)
             (when (rand-vu-percent? 0.25)
@@ -229,7 +229,7 @@ dead
     )
     :code
     (behavior ()
-        (blank-hint! "<COLOR_CYAN>FIRE TESLA EXTERMINATOR" "" 90 300)
+        (blank-hint! "<COLOR_CYAN>FIRE TESLA EXTERMINATOR" "" 110 300)
         (loop
             (+! (-> self gen-i) 1)
             (+! (-> self tesla-fire-time) 1)
@@ -296,7 +296,7 @@ dead
     :event arena-event-event-handler
     :code
     (behavior ()
-        (blank-hint! "<COLOR_PINK>ITS RAINING BARRELS" "" 90 300)
+        (blank-hint! "<COLOR_PINK>ITS RAINING BARRELS" "" 110 300)
         (loop
             (+! (-> self gen-i) 1)
             ;put event here
@@ -318,7 +318,7 @@ dead
     :event arena-event-event-handler
     :code
     (behavior ()
-        (blank-hint! "<COLOR_RED>ENEMIES EXPLODE" "ON DEATH" 90 300)
+        (blank-hint! "<COLOR_RED>ENEMIES EXPLODE" "ON DEATH" 110 300)
         (loop
             (+! (-> self gen-i) 1)
             ;put event here
