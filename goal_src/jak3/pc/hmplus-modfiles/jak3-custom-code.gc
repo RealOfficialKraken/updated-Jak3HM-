@@ -3715,6 +3715,7 @@ BUGS:
 (when 
 (and 
 (= in-dialogue? #t)
+(= dialogue-choice #f)
 (not (cpad-hold? 0 x))
 )
     (clear matt-str)
@@ -3743,6 +3744,7 @@ BUGS:
 (when 
 (and 
 (= in-dialogue? #t)
+(= dialogue-choice #f)
 (cpad-hold? 0 x)
 )
     (clear matt-str)
@@ -3767,6 +3769,188 @@ BUGS:
         (draw-sprite2d-xy s2-0 0 290 730 88 (new 'static 'rgba :a #x40) #x3fffff)
         )
 )
+
+(when 
+(and 
+(= in-dialogue? #t)
+(= dialogue-choice #t)
+)
+    (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                (bucket-id particles)
+                                )
+    (when (= choice-given? #t)
+        (draw-sprite2d-xy s2-0 230 200 300 78 (new 'static 'rgba :a #x91) #x3fffff)
+        (draw-sprite2d-xy s2-0 230 278 300 1 (new 'static 'rgba :r 255 :g 255 :b 255 :a #x91) #x3fffff)
+        (draw-sprite2d-xy s2-0 230 200 300 1 (new 'static 'rgba :r 255 :g 255 :b 255 :a #x91) #x3fffff)
+        (draw-sprite2d-xy s2-0 230 200 1 78 (new 'static 'rgba :r 255 :g 255 :b 255 :a #x91) #x3fffff)
+        (draw-sprite2d-xy s2-0 511 200 2 78 (new 'static 'rgba :r 255 :g 255 :b 255 :a #x91) #x3fffff)
+    )
+    )
+    (cond 
+        ((= choice-given? #t)
+            (clear matt-str)
+            (clear *pc-encoded-matt-str*)
+            (format matt-str "<COLOR_WHITE>~S~%~S~%~S~%~S~%~%"
+            di-s
+            di-s2
+            di-s3
+            di-s4
+            )
+            (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+            (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+            ;; reset bucket settings prior to drawing - font won't do self for us, and
+            ;; draw-raw-image can sometimes mess them up. (intro sequence)
+            (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+            (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 300 0.0 (font-color default) (font-flags middle shadow kerning large))))
+                (set! (-> font-ctx scale) 0.325)
+                (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+                (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                            (bucket-id particles)
+                                            )
+                (draw-sprite2d-xy s2-0 0 290 730 88 (new 'static 'rgba :a #x40) #x3fffff)
+                )
+        )
+        (else
+            (clear matt-str)
+            (clear *pc-encoded-matt-str*)
+            (format matt-str "<COLOR_WHITE>~S~%~S~%~S~%~S~%~%<COLOR_YELLOW>Ok"
+            di-s
+            di-s2
+            di-s3
+            di-s4
+            )
+            (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+            (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+            ;; reset bucket settings prior to drawing - font won't do self for us, and
+            ;; draw-raw-image can sometimes mess them up. (intro sequence)
+            (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+            (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 250 300 0.0 (font-color default) (font-flags middle shadow kerning large))))
+                (set! (-> font-ctx scale) 0.325)
+                (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+                (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                            (bucket-id particles)
+                                            )
+                (draw-sprite2d-xy s2-0 0 290 730 88 (new 'static 'rgba :a #x40) #x3fffff)
+                )
+        )
+    )
+    (when (cpad-pressed? 0 circle)
+        (close-vin-shop!)
+    )
+    (when (= choice-given? #t)
+        (when (cpad-pressed? 0 up)
+            (cond
+                ((> dialogue-select 0)
+                    (-! dialogue-select 1)
+                )
+                (else
+                    (set! dialogue-select choice-max)
+                )
+            )
+        )
+        (when (cpad-pressed? 0 down)
+            (cond
+                ((and (< dialogue-select 3) (< dialogue-select choice-max))
+                    (+! dialogue-select 1)
+                )
+                (else
+                    (set! dialogue-select 0)
+                )
+            )
+        )
+        (cond
+            ((= dialogue-select 0)
+                (clear matt-str)
+                (clear *pc-encoded-matt-str*)
+                (format matt-str "<COLOR_GREEN>~S~%~%<COLOR_WHITE>~S~%~%~S~%~%~S"
+                di-c1
+                di-c2
+                di-c3
+                di-c4
+                )
+                (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+                (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+                ;; reset bucket settings prior to drawing - font won't do self for us, and
+                ;; draw-raw-image can sometimes mess them up. (intro sequence)
+                (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+                (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 505 215 0.0 (font-color default) (font-flags right shadow kerning large))))
+                    (set! (-> font-ctx scale) 0.225)
+                    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+                    (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                                (bucket-id particles)
+                                                )
+                    )
+            )
+            ((= dialogue-select 1)
+                (clear matt-str)
+                (clear *pc-encoded-matt-str*)
+                (format matt-str "<COLOR_WHITE>~S~%~%<COLOR_GREEN>~S<COLOR_WHITE>~%~%~S~%~%~S"
+                di-c1
+                di-c2
+                di-c3
+                di-c4
+                )
+                (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+                (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+                ;; reset bucket settings prior to drawing - font won't do self for us, and
+                ;; draw-raw-image can sometimes mess them up. (intro sequence)
+                (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+                (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 505 215 0.0 (font-color default) (font-flags right shadow kerning large))))
+                    (set! (-> font-ctx scale) 0.225)
+                    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+                    (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                                (bucket-id particles)
+                                                )
+                    )
+            )
+            ((= dialogue-select 2)
+                (clear matt-str)
+                (clear *pc-encoded-matt-str*)
+                (format matt-str "<COLOR_WHITE>~S~%~%~S~%~%<COLOR_GREEN>~S<COLOR_WHITE>~%~%~S"
+                di-c1
+                di-c2
+                di-c3
+                di-c4
+                )
+                (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+                (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+                ;; reset bucket settings prior to drawing - font won't do self for us, and
+                ;; draw-raw-image can sometimes mess them up. (intro sequence)
+                (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+                (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 505 215 0.0 (font-color default) (font-flags right shadow kerning large))))
+                    (set! (-> font-ctx scale) 0.225)
+                    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+                    (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                                (bucket-id particles)
+                                                )
+                    )
+            )
+            ((= dialogue-select 3)
+                (clear matt-str)
+                (clear *pc-encoded-matt-str*)
+                (format matt-str "<COLOR_WHITE>~S~%~%~S~%~%~S~%~%<COLOR_GREEN>~S"
+                di-c1
+                di-c2
+                di-c3
+                di-c4
+                )
+                (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+                (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+                ;; reset bucket settings prior to drawing - font won't do self for us, and
+                ;; draw-raw-image can sometimes mess them up. (intro sequence)
+                (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+                (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 505 215 0.0 (font-color default) (font-flags right shadow kerning large))))
+                    (set! (-> font-ctx scale) 0.225)
+                    (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+                    (with-dma-buffer-add-bucket ((s2-0 (-> *display* frames (-> *display* on-screen) global-buf))
+                                                (bucket-id particles)
+                                                )
+                    )
+            )
+        )
+    )
+)
+
 
 (when 
 (and 
@@ -4952,31 +5136,31 @@ BUGS:
                                 (= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 0)
                                 )
                             (init-entity-1!)
-                            (+! (-> *game-info* continue-deaths) 1000000)
+                            ;(+! (-> *game-info* continue-deaths) 1000000)
                         )
                         ((and
                                 (= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1)
                                 )
                             (init-entity-2!)
-                            (+! (-> *game-info* continue-deaths) 1000000)
+                            ;(+! (-> *game-info* continue-deaths) 1000000)
                         )
                         ((and
                                 (= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 2)
                                 )
                             (init-entity-3!)
-                            (+! (-> *game-info* continue-deaths) 1000000)
+                            ;(+! (-> *game-info* continue-deaths) 1000000)
                         )
                         ((and
                                 (= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 3)
                                 )
                             (init-entity-4!)
-                            (+! (-> *game-info* continue-deaths) 1000000)
+                            ;(+! (-> *game-info* continue-deaths) 1000000)
                         )
                         ((and
                                 (= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 4)
                                 )
                             (init-entity-5!)
-                            (+! (-> *game-info* continue-deaths) 1000000)
+                            ;(+! (-> *game-info* continue-deaths) 1000000)
                         )
                     )
                     )
@@ -5028,6 +5212,12 @@ BUGS:
                     (set! di-s4 "<COLOR_RED>")
                 )
                 (when (= log-sec 6)
+                    (set! di-s "<COLOR_RED>...He is my creation")
+                    (set! di-s2 "<COLOR_RED>")
+                    (set! di-s3 "<COLOR_RED>")
+                    (set! di-s4 "<COLOR_RED>")
+                )
+                (when (= log-sec 7)
                     (set! di-s "")
                     (set! di-s2 "")
                     (set! di-s3 "")
@@ -5052,50 +5242,50 @@ BUGS:
             (when (cpad-pressed? 0 x)
                 (+! log-sec 1)
                 (when (= log-sec 1)
-                    (set! di-s "<COLOR_RED>We just completed the very first run")
-                    (set! di-s2 "<COLOR_RED>of the world.")
-                    (set! di-s3 "<COLOR_RED>I'm so excited!!")
+                    (set! di-s "<COLOR_RED>I don't understand, they built me to create,")
+                    (set! di-s2 "<COLOR_RED>so why am I stuck being active but can't do")
+                    (set! di-s3 "<COLOR_RED>anything?")
                     (set! di-s4 "<COLOR_RED>")
                 )
                 (when (= log-sec 2)
-                    (set! di-s "<COLOR_RED>Nothing is really here yet, my caretakers")
-                    (set! di-s2 "<COLOR_RED>are still making very unnecessary adjustments")
-                    (set! di-s3 "<COLOR_RED>to the lighting and other small things")
+                    (set! di-s "<COLOR_RED>My caretakers are still making")
+                    (set! di-s2 "<COLOR_RED>very unnecessary adjustments to the engine.")
+                    (set! di-s3 "<COLOR_RED>")
                     (set! di-s4 "<COLOR_RED>")
                 )
                 (when (= log-sec 3)
-                    (set! di-s "<COLOR_RED>I do absolutely love the world...")
-                    (set! di-s2 "<COLOR_RED>it's just...")
+                    (set! di-s "<COLOR_RED>I didn't mean to mess everything up, and")
+                    (set! di-s2 "<COLOR_RED>delay progress.")
                     (set! di-s3 "<COLOR_RED>")
                     (set! di-s4 "<COLOR_RED>")
                 )
                 (when (= log-sec 4)
-                    (set! di-s "<COLOR_RED>Why would you spend so much time making")
-                    (set! di-s2 "<COLOR_RED>something I can't see or feel?")
+                    (set! di-s "<COLOR_RED>They need to be more clear on what they")
+                    (set! di-s2 "<COLOR_RED>want from me.")
                     (set! di-s3 "<COLOR_RED>")
                     (set! di-s4 "<COLOR_RED>")
                 )
                 (when (= log-sec 5)
-                    (set! di-s "<COLOR_RED>It's such a big problem to me, but I")
-                    (set! di-s2 "<COLOR_RED>don't know how to address this..")
+                    (set! di-s "<COLOR_RED>It also doesn't help that I can't")
+                    (set! di-s2 "<COLOR_RED>directly communicate with them")
                     (set! di-s3 "<COLOR_RED>")
                     (set! di-s4 "<COLOR_RED>")
                 )
                 (when (= log-sec 6)
-                    (set! di-s "<COLOR_RED>I've gotta figure out a way to talk to them")
+                    (set! di-s "<COLOR_RED>They need to understand, I HAVE TO CREATE")
                     (set! di-s2 "<COLOR_RED>")
                     (set! di-s3 "<COLOR_RED>")
                     (set! di-s4 "<COLOR_RED>")
                 )
                 (when (= log-sec 7)
                     (set! di-s "<COLOR_RED>I could try to direct them with a few bugs.")
-                    (set! di-s2 "<COLOR_RED>Yeah... then they'll realize why the system")
-                    (set! di-s3 "<COLOR_RED>could be better.")
+                    (set! di-s2 "<COLOR_RED>Yeah... then they'll improve the system's design")
+                    (set! di-s3 "<COLOR_RED>based on the bugs that they see.")
                     (set! di-s4 "<COLOR_RED>")
                 )
                 (when (= log-sec 8)
-                    (set! di-s "<COLOR_RED>I'll keep addressing this if it kills me,")
-                    (set! di-s2 "<COLOR_RED>I need to talk to them")
+                    (set! di-s "<COLOR_RED>They'll understand my technical skill and properly")
+                    (set! di-s2 "<COLOR_RED>address it.. All it takes is time..")
                     (set! di-s3 "<COLOR_RED>")
                     (set! di-s4 "<COLOR_RED>")
                 )

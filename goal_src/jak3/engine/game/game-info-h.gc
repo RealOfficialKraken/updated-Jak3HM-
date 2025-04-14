@@ -601,6 +601,16 @@
   (define killeci 0)
 
   (define white-mode #f)
+  (define dialogue-choice #f)
+  (define dialogue-select 0)
+  (define di-c1 "")
+  (define di-c2 "")
+  (define di-c3 "")
+  (define di-c4 "")
+  (define choice-given? #f)
+  (define choice-max 4)
+
+  (defun-extern close-vin-shop! none)
 
   (define global-degree 0)
   (defun-extern spawn-warp-gate vector string int none)

@@ -787,6 +787,7 @@
   (when 
     (and 
       (task-node-closed? (game-task-node desert-oasis-defense-introduction))
+      (not weather-dark-mode)
       (not (task-node-closed? (game-task-node desert-oasis-defense-resolution)))
       )
       (let ((s4-0 (new 'process 'collide-shape this (collide-list-enum usually-hit-by-player))))
