@@ -4365,7 +4365,7 @@ BUGS:
                 )
                 (clear matt-str)
                 (clear *pc-encoded-matt-str*)
-                (format matt-str "<COLOR_WHITE>Samos~%Keira~%Ashelin~%Damos~%Kliever~%and everyone else~%...are all missing"
+                (format matt-str "<COLOR_WHITE>Samos~%Keira~%Ashelin~%Damos~%and everyone else~%...are all missing"
                 )
                 (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
                 (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4395,7 +4395,7 @@ BUGS:
             (when (and (>= pro-i 1220) (< pro-i 1800))
                 (clear matt-str)
                 (clear *pc-encoded-matt-str*)
-                (format matt-str "<COLOR_WHITE>With the time loop restored, there lay only one dimension that's~%covered in darkness, and the void persists"
+                (format matt-str "<COLOR_WHITE>With the time loop restored, there lay only one last dimension that's~%covered in darkness. Jak and <COLOR_RED>The Entity<COLOR_WHITE> persist"
                 )
                 (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
                 (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
@@ -4410,7 +4410,7 @@ BUGS:
             (when (and (>= pro-i 1820) (< pro-i 2400))
                 (clear matt-str)
                 (clear *pc-encoded-matt-str*)
-                (format matt-str "<COLOR_WHITE>Jak had only the Entity to speak with, the unknown force that caused this.~%But now all has fallen silent for far too long"
+                (format matt-str "<COLOR_WHITE>Years later, Jak roams the desolate world and hears nothing.~%All has fallen silent for far too long"
                 )
                 (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
                 (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
