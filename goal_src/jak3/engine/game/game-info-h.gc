@@ -287,6 +287,8 @@
   (define log-sec 0)
   (define log-id 0)
 
+  (defun-extern tp-fb! (none))
+
   ;; test-level stuff
   (define test-level-loaded? #f)
   (define test-level-loaded-dark? #f)

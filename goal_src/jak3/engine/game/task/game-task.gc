@@ -1640,7 +1640,7 @@
             :task (game-task desert-interceptors)
             :name "tp-fb-fight"
             :when-open #f
-            :flags (game-task-node-flag close-task no-percent bbush)
+            :flags (game-task-node-flag no-percent bbush)
             :parent-node (new 'static 'array game-task-node 4
               (game-task-node tp-fb-ground)
               (game-task-node none)
